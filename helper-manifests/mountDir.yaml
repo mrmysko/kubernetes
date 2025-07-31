@@ -1,0 +1,28 @@
+# This is a manifest for rooting into a pod with mountpoints.
+# Chown the permissions as you want.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mountDir
+  # Change this, cant mount a pvc in a different namespace
+  namespace: homepage
+spec:
+  restartPolicy: Never
+  containers:
+    - name: mountDir
+      image: busybox
+      command: ["sh"]
+      stdin: true
+      tty: true
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+        # Change this
+        - name: homepage
+          mountPath: /data
+      resources: {}
+  volumes:
+    # Change this
+    - name: homepage
+      persistentVolumeClaim:
+        claimName: homepage-pvc
