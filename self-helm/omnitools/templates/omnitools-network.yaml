@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-svc
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "navidrome" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: frontend
+  ports:
+    - protocol: TCP
+      port: {{ .Values.network.port }}
+      targetPort: {{ .Values.network.port }}
+  type: ClusterIP
+---
+# This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-route
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "navidrome" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: OmniTools
+    gethomepage.dev/description: Good to have
+    gethomepage.dev/icon: si-toml
+    gethomepage.dev/href: "https://{{ .Values.network.baseUrl }}"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/component=frontend"
+    gethomepage.dev/group: Frontend
+    gethomepage.dev/weight: "10"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.network.baseUrl }}`)
+      services:
+        - kind: Service
+          name: {{ .Release.Name }}-svc
+          port: {{ .Values.network.port }}
+      middlewares:
+        - name: "authelia-forward-auth"
+          namespace: traefik

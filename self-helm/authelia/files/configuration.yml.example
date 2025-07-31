@@ -1,0 +1,68 @@
+server:
+  # asset_path: '/config/assets/'
+  # disable_healthcheck: false
+
+  tls:
+    # client_certificates: []
+
+  # headers:
+  # csp_template: ''
+
+telemetry:
+  metrics:
+    enabled: true
+
+webauthn:
+  disable: true
+
+authentication_backend:
+  ldap:
+    tls:
+      # maximum_version: 'TLS1.3'
+
+    # group_search_mode: 'filter'
+    permit_referrals: false
+
+access_control:
+  rules:
+    # Single factor login
+    - domain: "somepage.example.com"
+      policy: "one_factor"
+
+    # Catch-all - Everyone can login with two_factor to these.
+    - domain:
+        - "home.example.com"
+      policy: "two_factor"
+
+    # Only admins can login with two factor to these urls.
+    - domain_regex: '^.*\.example\.com$'
+      subject: "group:service-admins"
+      policy: "two_factor"
+
+session:
+  cookies:
+    - name: "auth_cookie"
+      domain: "invis.space"
+      authelia_url: "https://auth.example.com"
+      default_redirection_url: "https://home.example.com"
+      same_site: "strict"
+      inactivity: "5 minutes"
+      expiration: "2 hour"
+      remember_me: "7 days"
+
+regulation:
+  ## The number of failed login attempts before user is banned. Set it to 0 to disable regulation.
+  max_retries: 0
+  find_time: "5 minutes"
+  ban_time: "2 hours"
+
+notifier:
+  disable_startup_check: false
+
+identity_providers:
+  oidc:
+    jwks:
+      - algorithm: "RS256"
+        use: "sig"
+        key: |
+          {{ secret "/path/OIDC_KEY" | mindent 10 "|" | msquote }}

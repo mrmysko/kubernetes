@@ -1,0 +1,75 @@
+# This volume requires smb csi drivers - https://github.com/kubernetes-csi/csi-driver-smb
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-games
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "romm" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - file_mode=0664
+    - dir_mode=02775
+    - uid={{ .Values.app.uid }} # svc-romm
+    - gid={{ .Values.app.gid }} # storage-access
+    - noperm
+    - noserverino
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: {{ .Release.Name }}-smb-share-01
+    volumeAttributes:
+      source: "{{ .Values.storage.smbShare }}"
+    nodeStageSecretRef:
+      name: {{ .Release.Name }}-smb-credentials
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-games
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "romm" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: {{ .Release.Name }}-games
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-assets
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "romm" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-resources
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "romm" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi

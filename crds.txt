@@ -1,0 +1,10 @@
+Installed custom resources:
+
+MariaDB operator
+Reloader
+SMB CSI driver
+Cert-manager
+Metallb
+Traefik
+Flannel
+Longhorn

@@ -1,0 +1,95 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-server
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: server
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.app.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: server
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.app.uid }}
+        runAsGroup: {{ .Values.app.gid }}
+      initContainers:
+        - name: postgresql-isready
+          image: "docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-env
+                  key: DB_USERNAME
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-env
+                  key: DB_DATABASE_NAME
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          command:
+            - /bin/sh
+            - -c
+            - until pg_isready -U "${POSTGRES_USER}" -d "dbname=${POSTGRES_DB}"
+              -h {{ .Release.Name }}-database -p 5432 ; do sleep 2 ; done
+      containers:
+        - name: {{ .Release.Name }}-server
+          image: "{{ .Values.app.image.repo }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+                optional: false
+            - secretRef:
+                name: {{ .Release.Name }}-secret
+                optional: false
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/server/ping
+              port: {{ .Values.network.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/server/ping
+              port: {{ .Values.network.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          volumeMounts:
+            - name: library
+              mountPath: /usr/src/app/upload
+      volumes:
+        - name: library
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-upload-pvc

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-svc
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "homepage" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.network.port }}
+      targetPort: {{ .Values.network.port }}
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ .Values.appName | default "homepage" }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-route
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "homepage" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.network.baseUrl }}`)
+      services:
+        - kind: Service
+          name: {{ .Release.Name }}-svc
+          port: {{ .Values.network.port }}
+          sticky:
+            cookie:
+              httpOnly: true
+              secure: true
+              sameSite: none
+      middlewares:
+        - name: "authelia-forward-auth"
+          namespace: traefik

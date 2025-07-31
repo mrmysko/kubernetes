@@ -1,0 +1,33 @@
+title: Local - Invis.space
+headerStyle: clean
+target: _blank
+hideErrors: false
+theme: dark
+color: gray
+fullWidth: true
+
+layout:
+  - Frontend:
+      tab: Not-Docker
+      header: false
+      style: column
+  - Backend:
+      tab: Not-Docker
+      header: false
+      style: column
+  - Calendar:
+      tab: Docker
+      header: false
+      style: column
+  - Containers:
+      tab: Docker
+      header: false
+      style: column
+
+useEqualHeights: true
+showStats: false
+statusStyle: "dot"
+hideVersion: true
+
+quicklaunch:
+  searchDescriptions: true

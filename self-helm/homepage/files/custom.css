@@ -1,0 +1,8 @@
+body {
+    font-family: JetBrains Mono, monospace !important;
+}
+
+.theme-gray {
+    --color-200: 112 174 244 !important;
+    --color-800: 35 38 56 !important;
+}

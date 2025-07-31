@@ -1,0 +1,119 @@
+- Frontend:
+    - Home Assistant:
+        icon: si-homeassistant
+        href: [[HOMEPAGE_VAR_HOMEASSISTANT]]
+        description: Home Automation
+        siteMonitor: [[HOMEPAGE_VAR_HOMEASSISTANT]]
+
+- Backend:
+    - Proxmox:
+        icon: si-proxmox
+        href: [[HOMEPAGE_VAR_PROXMOX]]
+        description: Virtualization Platform
+        siteMonitor: [[HOMEPAGE_VAR_PROXMOX]]
+        widget:
+          type: proxmox
+          url: [[HOMEPAGE_VAR_PROXMOX]]
+          username: [[HOMEPAGE_VAR_PROXMOX_USER]]
+          password: [[HOMEPAGE_VAR_PROXMOX_PASSWORD]]
+          node: node1
+
+    - Proxmox Backup Server:
+        icon: si-proxmox
+        href: [[HOMEPAGE_VAR_PBS]]
+        siteMonitor: [[HOMEPAGE_VAR_PBS]]
+
+    - FreeIPA:
+        icon: freeipa.png
+        href: [[HOMEPAGE_VAR_FREEIPA]]
+        description: Identity Manager
+        siteMonitor: [[HOMEPAGE_VAR_FREEIPA]]
+
+    - PiKVM:
+        icon: si-raspberrypi
+        href: [[HOMEPAGE_VAR_PIKVM]]
+        description: Proxmox KVM
+        siteMonitor: [[HOMEPAGE_VAR_PIKVM]]
+
+- Calendar:
+    - Calendar:
+        widget:
+          type: calendar
+          view: monthly
+          showTime: true
+          #timezone: Europe/Stockholm
+          integrations:
+            - type: sonarr
+              service_group: Containers
+              service_name: Sonarr
+              color: cyan
+            - type: radarr
+              service_group: Containers
+              service_name: Radarr
+              color: orange
+    - Upcoming:
+        widget:
+          type: calendar
+          view: agenda
+          maxEvents: 15
+          showTime: true
+          #timezone: Europe/Stockholm
+          integrations:
+            - type: sonarr
+              service_group: Containers
+              service_name: Sonarr
+              color: teal
+              params:
+                unmonitored: false
+            - type: radarr
+              service_group: Containers
+              service_name: Radarr
+              color: orange
+              params:
+                unmonitored: true
+- Containers:
+    - Jellyfin:
+        icon: si-jellyfin
+        href: [[HOMEPAGE_VAR_JELLYFIN]]
+        description: Movies & TV Shows
+        siteMonitor: [[HOMEPAGE_VAR_JELLYFIN]]
+    - Radarr:
+        icon: si-radarr
+        href: [[HOMEPAGE_VAR_RADARR]]
+        description: Download Movies
+        siteMonitor: [[HOMEPAGE_VAR_RADARR]]
+        widget:
+          type: radarr
+          url: https://[[HOMEPAGE_VAR_INTERNAL_URL]]:[[HOMEPAGE_VAR_RADARR_PORT]]
+          key: [[HOMEPAGE_VAR_RADARR_API]]
+          fields: []
+    - Sonarr:
+        icon: si-sonarr
+        href: [[HOMEPAGE_VAR_SONARR]]
+        description: Download Series
+        siteMonitor: [[HOMEPAGE_VAR_SONARR]]
+        widget:
+          type: sonarr
+          url: https://[[HOMEPAGE_VAR_INTERNAL_URL]]:[[HOMEPAGE_VAR_SONARR_PORT]]
+          key: [[HOMEPAGE_VAR_SONARR_API]]
+          fields: []
+    - Bazarr:
+        icon: bazarr.png
+        href: [[HOMEPAGE_VAR_BAZARR]]
+        description: Download Subtitles
+        siteMonitor: [[HOMEPAGE_VAR_BAZARR]]
+    - Huntarr:
+        icon: huntarr.png
+        href: [[HOMEPAGE_VAR_HUNTARR]]
+        description: Fetch Media Upgrades
+        siteMonitor: [[HOMEPAGE_VAR_HUNTARR]]
+    - Prowlarr:
+        icon: prowlarr.png
+        href: [[HOMEPAGE_VAR_PROWLARR]]
+        description: Index Manager
+        siteMonitor: [[HOMEPAGE_VAR_PROWLARR]]
+    - qBittorrent:
+        icon: si-qbittorrent
+        href: [[HOMEPAGE_VAR_QBIT]]
+        description: Torrent Client
+        siteMonitor: [[HOMEPAGE_VAR_QBIT]]

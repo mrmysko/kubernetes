@@ -1,0 +1,64 @@
+- name: Local
+  columns:
+    - size: small
+      widgets:
+        - type: custom-api
+          title: Public IP
+          cache: 6h
+          url: https://api.ipify.org?format=json
+          template: |
+            <p class="size-h4 color-paragraph">{{ .JSON.String "ip" }}</p>
+
+        - type: custom-api
+          title: Gluetun status
+          cache: 1m
+          url: ${GLUETUN_URL}/v1/publicip/ip
+          headers:
+            X-API-Key: ${GLUETUN_API_KEY}
+          template: |
+            {{ if eq .Response.StatusCode 200 }}
+              {{ $ip := (.JSON.String "public_ip") }}
+              {{ $city := (.JSON.String "city") }}
+              {{ $country := (.JSON.String "country") }}
+              {{ if eq $ip "" }}
+                {{ $ip = "-" }}
+                {{ $city = "-" }}
+                {{ $country = "-" }}
+              {{ end }}
+              <div class="flex justify-between text-center">
+                <div>
+                    <div class="color-highlight size-h4">{{ $ip }}</div>
+                    <div class="size-h6">VPN IP</div>
+                </div>
+                <div>
+                    <div class="color-highlight size-h4">{{ $country }}</div>
+                    <div class="size-h6">COUNTRY</div>
+                </div>
+                <div>
+                    <div class="color-highlight size-h4">{{ $city }}</div>
+                    <div class="size-h6">CITY</div>
+                </div>
+              </div>
+            {{ else }}
+              <div style="text-align: center; color: var(--color-negative);">
+                Error: {{ .Response.StatusCode }} - {{ .Response.Status }}
+              </div>
+            {{ end }}
+
+        - type: bookmarks
+          groups:
+            - title: Network
+              links:
+                - title: Unifi
+                  url: ${UNIFI_URL}
+                - title: Tele2 Gateway
+                  url: ${GATEWAY_URL}
+                - title: HP iLO
+                  url: ${ILO_URL}
+
+    - size: full
+      widgets:
+        - type: iframe
+          source: ${HOMEPAGE_URL}
+          height: 1000
+          hide-header: true

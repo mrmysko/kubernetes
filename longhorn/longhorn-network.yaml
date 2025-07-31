@@ -1,0 +1,29 @@
+# This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: longhorn-route
+  namespace: longhorn-system
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Longhorn
+    gethomepage.dev/description: Cluster Storage
+    gethomepage.dev/icon: longhorn.png
+    gethomepage.dev/href: "https://longhorn.kube.invis.space"
+    gethomepage.dev/pod-selector: app=longhorn-ui
+    gethomepage.dev/group: Backend
+    gethomepage.dev/weight: "10"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`longhorn.kube.invis.space`)
+      services:
+        - kind: Service
+          name: longhorn-frontend
+          port: 80
+      middlewares:
+        - name: "authelia-forward-auth"
+          namespace: traefik

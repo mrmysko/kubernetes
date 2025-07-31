@@ -1,0 +1,64 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-svc
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: server
+  ports:
+    - port: {{ .Values.network.port }}
+      targetPort: {{ .Values.network.port }}
+      protocol: TCP
+---
+# This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-route
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Immich
+    gethomepage.dev/description: Photo Manager
+    gethomepage.dev/icon: si-immich
+    gethomepage.dev/href: "https://{{ .Values.network.baseUrl }}"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/component=server"
+    gethomepage.dev/group: Frontend
+    gethomepage.dev/weight: "10"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.network.baseUrl }}`)
+      services:
+        - kind: Service
+          name: {{ .Release.Name }}-svc
+          port: {{ .Values.network.port }}
+---
+# This doesnt work right now, no ML deployment created.
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-machine-learning
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-machine-learning
+  ports:
+    - port: {{ .Values.machineLearning.port }}
+      targetPort: {{ .Values.machineLearning.port }}
+      protocol: TCP
+---
+

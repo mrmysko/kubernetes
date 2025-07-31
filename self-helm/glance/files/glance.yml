@@ -1,0 +1,28 @@
+server:
+  assets-path: /app/assets
+  proxied: true
+
+branding:
+  hide-footer: true
+
+theme:
+  light: false
+  disable-picker: true
+  background-color: 232 23 18
+  primary-color: 220 83 75
+  contrast-multiplier: 1.2
+
+  custom-css-file: /assets/user.css
+
+  presets:
+    catppuccin_macchiato:
+      background-color: 232 23 18
+      contrast-multiplier: 1.2
+      primary-color: 220 83 75
+      positive-color: 105 48 72
+      negative-color: 351 74 73
+
+pages:
+  - $include: internet.yml
+  - $include: local.yml
+# - $include: test.yml

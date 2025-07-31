@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "navidrome" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  navidrome.toml: |
+    LogLevel = 'info'
+    EnableInsightsCollector = 'false'
+    BaseUrl = 'https://{{ .Values.network.baseUrl }}'
+    ReverseProxyWhitelist = '{{ .Values.app.reverseProxyWhitelist }}'
+    ReverseProxyUserHeader = 'Remote-User'
+
+    LastFM.Enabled = 'true'
+    Deezer.Enabled = 'true'
+    ListenBrainz.Enabled = 'false'
+    Agents = 'deezer,lastfm'
+    LastFM.Language = 'en'
+
+    EnableCoverAnimation = 'true'
+    EnableSharing = 'false'
+    DefaultTheme = 'nord'
+    AutoImportPlaylists = 'true'
+    SessionTimeout = '48h'
+    EnableStarRating = 'false'
+    Scanner.Enabled = 'true'
+    Scanner.WatcherWait = '5s'
+    Scanner.ScanOnStartup = 'true'

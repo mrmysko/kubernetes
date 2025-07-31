@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "authelia" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: frontend
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.app.replicas | default 1 }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.appName | default "authelia" }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: frontend
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.app.image.repo }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+          command:
+            - authelia
+          args:
+            - "--config=/config/configuration.yml"
+            - "--config=/config/configuration.clients.yml"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.network.port }}
+          securityContext:
+            runAsUser: {{ .Values.app.uid }}
+            runAsGroup: {{ .Values.app.gid }}
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+            - secretRef:
+                name: {{ .Release.Name }}-secret
+          resources:
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /api/health
+              port: {{ .Values.network.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /api/health
+              port: {{ .Values.network.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: {{ .Release.Name }}-config
+              mountPath: /config
+            - name: {{ .Release.Name }}-cert
+              mountPath: /tmp/certs
+              readOnly: true
+            - name: {{ .Release.Name }}-secret
+              mountPath: /secrets
+              readOnly: true
+      volumes:
+        - name: {{ .Release.Name }}-config
+          configMap:
+            name: {{ .Release.Name }}-config
+        - name: {{ .Release.Name }}-cert
+          secret:
+            secretName: {{ .Release.Name }}-server-cert
+        - name: {{ .Release.Name }}-secret
+          secret:
+            secretName: {{ .Release.Name }}-secret
+
+      enableServiceLinks: false
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Release.Name }}-server-cert
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "authelia" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  secretName: {{ .Release.Name }}-server-cert
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+  privateKey:
+    rotationPolicy: Always
+  commonName: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+  dnsNames:
+    - "{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ .Release.Name }}.{{ .Release.Namespace }}.svc"
+    - "{{ .Release.Name }}.{{ .Release.Namespace }}"
+    - "{{ .Release.Name }}"
+    - "localhost"

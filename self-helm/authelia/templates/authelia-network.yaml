@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-svc
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "authelia" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: frontend
+  ports:
+    - protocol: TCP
+      port: {{ .Values.network.port }}
+      targetPort: {{ .Values.network.port }}
+  type: ClusterIP
+---
+# This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-route
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "authelia" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Authelia
+    gethomepage.dev/description: SSO
+    gethomepage.dev/icon: si-authelia
+    gethomepage.dev/href: "https://{{ .Values.network.baseUrl }}"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/component=frontend"
+    gethomepage.dev/group: Frontend
+    gethomepage.dev/weight: "15"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.network.baseUrl }}`)
+      services:
+        - kind: Service
+          name: {{ .Release.Name }}-svc
+          port: {{ .Values.network.port }}
+          scheme: https
+          serversTransport: {{ .Release.Name }}-transport
+          sticky:
+            cookie: {}
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: {{ .Release.Name }}-transport
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName | default "authelia" }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  serverName: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+  insecureSkipVerify: true
