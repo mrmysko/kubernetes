@@ -45,6 +45,16 @@ spec:
                 name: {{ .Release.Name }}-env
           resources:
           {{- toYaml .Values.app.resources | nindent 12 }}
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1"]
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}

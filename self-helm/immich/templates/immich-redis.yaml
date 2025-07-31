@@ -36,6 +36,16 @@ spec:
                   key: REDIS_PASSWORD
           resources:
           {{- toYaml .Values.redis.resources | nindent 12 }}
+          #livenessProbe:
+          #  exec:
+          #    command: ["/usr/local/bin/redis-cli", "-a", "{{ .Values.redis.password }}", "ping"]
+          #  initialDelaySeconds: 15
+          #  periodSeconds: 10
+          #readinessProbe:
+          #  exec:
+          #    command: ["/usr/local/bin/redis-cli", "-a", "{{ .Values.redis.password }}", "ping"]
+          #  initialDelaySeconds: 15
+          #  periodSeconds: 10
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
