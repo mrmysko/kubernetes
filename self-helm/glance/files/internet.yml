@@ -105,3 +105,6 @@
             - helm/helm
             - kubernetes/kubernetes
             - siderolabs/talos
+            - VictoriaMetrics/operator
+            - grafana/grafana-operator
+            - traefik/traefik

@@ -40,7 +40,6 @@ spec:
         - name: {{ .Release.Name }}
           image: {{ .Values.app.image.repo }}:{{ .Values.app.image.tag }}
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
-          imagePullPolicy: Always
           ports:
             - containerPort: {{ .Values.network.port }}
           envFrom:
