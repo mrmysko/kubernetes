@@ -278,7 +278,7 @@ admissionWebhooks:
   # -- Enables custom ca bundle, if you are not using cert-manager. In case of custom ca, you have to create secret - {chart-name}-validation with keys: tls.key, tls.crt, ca.crt
   certManager:
     # -- Enables cert creation and injection by cert-manager.
-    enabled: false
+    enabled: true
     # --If needed, provide own issuer. Operator will create self-signed if empty.
     issuer: {}
     # -- Certificate Authority parameters
@@ -336,4 +336,3 @@ probe:
 
 # -- Add extra specs dynamically to this chart
 extraObjects: []
-

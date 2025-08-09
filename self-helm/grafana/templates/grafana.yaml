@@ -48,8 +48,6 @@ spec:
       allow_assign_grafana_admin: "true"
       signout_redirect_url: https://{{ .Values.app.oidc.url }}/logout
       skip_org_role_sync: "false"
-    #plugins:
-    #  preinstall: '["victoriametrics-metrics-datasource", "victoriametrics-logs-datasource"]'
   deployment:
     spec:
       template:
@@ -88,13 +86,6 @@ spec:
             - name: grafana-server-cert
               secret:
                 secretName: grafana-server-cert
-  persistentVolumeClaim:
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate

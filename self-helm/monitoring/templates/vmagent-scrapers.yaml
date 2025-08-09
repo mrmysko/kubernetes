@@ -1,0 +1,104 @@
+# Requires victoriametrics operator - https://github.com/VictoriaMetrics/operator
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMNodeScrape
+metadata:
+  name: cadvisor
+  labels:
+    app.kubernetes.io/name: cadvisor-scraper
+    app.kubernetes.io/component: monitoring
+spec:
+  interval: 10s
+  path: /metrics
+  port: "443"
+  scheme: https
+  honorTimestamps: false
+  tlsConfig:
+    caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecureSkipVerify: false
+  bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+  relabelConfigs:
+    - sourceLabels: ['__meta_kubernetes_node_label_(.+)']
+      action: labelmap
+      regex: '__meta_kubernetes_node_label_(.+)'
+    
+    - targetLabel: __address__
+      replacement: kubernetes.default.svc:443
+    
+    - sourceLabels: ['__meta_kubernetes_node_name']
+      targetLabel: __metrics_path__
+      regex: '(.+)'
+      replacement: '/api/v1/nodes/$1/proxy/metrics/cadvisor'
+---
+# Requires victoriametrics operator - https://github.com/VictoriaMetrics/operator
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMNodeScrape
+metadata:
+  name: kubelet
+  labels:
+    app.kubernetes.io/name: kubelet-scraper
+    app.kubernetes.io/component: monitoring
+spec:
+  interval: 10s
+  path: /metrics
+  port: "443"
+  scheme: https
+  tlsConfig:
+    caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecureSkipVerify: false
+  bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  relabelConfigs:
+    - sourceLabels: ['__meta_kubernetes_node_label_(.+)']
+      action: labelmap
+      regex: '__meta_kubernetes_node_label_(.+)'
+   
+    - targetLabel: __address__
+      replacement: kubernetes.default.svc:443
+   
+    - sourceLabels: ['__meta_kubernetes_node_name']
+      targetLabel: __metrics_path__
+      regex: '(.+)'
+      replacement: '/api/v1/nodes/$1/proxy/metrics'
+---
+# Requires victoriametrics operator - https://github.com/VictoriaMetrics/operator
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: kubernetes-apiservers
+  labels:
+    app.kubernetes.io/name: kubernetes-apiserver-scraper
+    app.kubernetes.io/component: monitoring
+spec:
+  endpoints:
+  - port: https
+    interval: 10s
+    path: /metrics
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: false
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes  
+  namespaceSelector:
+    any: true
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: kube-state-metrics
+  labels:
+    app.kubernetes.io/name: kube-state-metrics-scraper
+    app.kubernetes.io/component: monitoring
+spec:
+  endpoints:
+  - port: http-metrics
+    interval: 30s
+    path: /metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics
+  namespaceSelector:
+    any: true

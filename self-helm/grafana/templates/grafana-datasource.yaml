@@ -5,13 +5,14 @@ metadata:
 spec:
   datasource:
     access: proxy
-    type: victoriametrics-metrics-datasource
+    #type: victoriametrics-metrics-datasource
+    type: prometheus
     jsonData:
       timeInterval: 5s
       # Fix...doesnt trust my internal CA certificate
       tlsSkipVerify: true
     name: VictoriaMetrics
-    url: https://vmetrics.internal.invis.space:8428
+    url: {{ .Values.app.vmUrl }}
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -32,7 +33,7 @@ spec:
       # Fix...doesnt trust my internal CA certificate
       tlsSkipVerify: true
     name: VictoriaLogs
-    url: https://vmetrics.internal.invis.space:9428
+    url: {{ .Values.app.vlUrl }}
   instanceSelector:
     matchLabels:
       dashboards: grafana

@@ -1,0 +1,34 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: {{ .Values.appName }}
+spec:
+  replicas: {{ .Values.vmagent.replicas }}
+  image:
+    repository: {{ .Values.vmagent.image.repo }}
+    tag: {{ .Values.vmagent.image.tag }}
+    pullPolicy: {{ .Values.vmagent.image.pullPolicy | default "IfNotPresent" }}
+  resources:
+  {{- toYaml .Values.vmagent.resources | nindent 4 }}
+  remoteWrite:
+    - url: {{ .Values.vmagent.remoteWriteUrl }}
+      tlsConfig:
+        insecureSkipVerify: true
+  serviceAccountName: {{ .Values.appName }}
+  extraArgs:
+    envflag.enable: "true"
+    envflag.prefix: "VM_"
+    loggerFormat: "json"
+    httpListenAddr: ":8429"
+    promscrape.maxScrapeSize: "167772160"
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+  nodeSelector: {}
+  serviceScrapeSelector: {}
+  podScrapeSelector: {}
+  nodeScrapeSelector: {}
+  tolerations:
+    - operator: Exists
+  externalLabels: {}
