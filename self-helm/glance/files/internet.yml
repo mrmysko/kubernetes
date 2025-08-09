@@ -90,7 +90,8 @@
           cache: 1d
           # Without authentication the Github API allows for up to 60 requests per hour. You can create a
           # read-only token from your Github account settings and use it here to increase the limit.
-          # token: ...
+          token: ${GITHUB_TOKEN}
+          collapse-after: 7
           repositories:
             - jellyfin/jellyfin
             - glanceapp/glance
@@ -99,12 +100,20 @@
             - radarr/radarr
             - sonarr/sonarr
             - gethomepage/homepage
-            - longhorn/longhorn
             - music-assistant/server
             - authelia/authelia
+            - crowdsecurity/crowdsec
+            - rommapp/romm
+            - iib0011/omni-tools
+            # Kube-adjacent
             - helm/helm
             - kubernetes/kubernetes
             - siderolabs/talos
+            - traefik/traefik
+            - longhorn/longhorn
+            - cert-manager/cert-manager
+            # Operators
             - VictoriaMetrics/operator
             - grafana/grafana-operator
-            - traefik/traefik
+            - mongodb/mongodb-kubernetes
+            - grafana/grafana-operator
