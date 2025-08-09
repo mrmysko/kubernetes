@@ -10,7 +10,7 @@ data:
   DB_DATABASE_NAME: "{{ .Values.db.name }}"
   DB_HOSTNAME: "{{ .Release.Name }}-database"
   DB_USERNAME: "{{ .Values.db.user }}"
-  IMMICH_MACHINE_LEARNING_URL: "http://{{ .Release.Name }}-machine-learning:{{ .Values.machineLearning.port }}"
+  IMMICH_MACHINE_LEARNING_URL: "{{ .Values.machineLearning.url }}"
   REDIS_HOSTNAME: "{{ .Release.Name }}-redis.{{ .Release.Namespace }}.svc.cluster.local"
   REDIS_PORT: "{{ .Values.redis.port }}"
   REDIS_USERNAME: "{{ .Values.redis.user }}"

@@ -45,20 +45,19 @@ spec:
           port: {{ .Values.network.port }}
 ---
 # This doesnt work right now, no ML deployment created.
-kind: Service
-apiVersion: v1
-metadata:
-  name: {{ .Release.Name }}-machine-learning
-  labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-spec:
-  type: ClusterIP
-  selector:
-    app: {{ .Release.Name }}-machine-learning
-  ports:
-    - port: {{ .Values.machineLearning.port }}
-      targetPort: {{ .Values.machineLearning.port }}
-      protocol: TCP
----
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: {{ .Release.Name }}-machine-learning
+#   labels:
+#     app.kubernetes.io/name: {{ .Values.appName | default "immich" }}
+#     app.kubernetes.io/instance: {{ .Release.Name }}
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app: {{ .Release.Name }}-machine-learning
+#   ports:
+#     - port: {{ .Values.machineLearning.port }}
+#       targetPort: {{ .Values.machineLearning.port }}
+#       protocol: TCP
 
