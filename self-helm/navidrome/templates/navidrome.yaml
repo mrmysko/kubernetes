@@ -28,20 +28,12 @@ spec:
         - name: init-chown
           image: busybox:1.36
           command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /data"]
-          volumeMounts:
-            - name: config-pvc
-              mountPath: /data
-    spec:
-      initContainers:
-        - name: init-chown
-          image: busybox:1.36
-          command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /data"]
           securityContext:
             allowPrivilegeEscalation: false
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
-            - name: {{ .Release.Name }}-resources
+            - name: config-pvc
               mountPath: /data
       containers:
         - name: {{ .Release.Name }}

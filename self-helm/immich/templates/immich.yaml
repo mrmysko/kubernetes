@@ -88,7 +88,7 @@ spec:
             periodSeconds: 10
           volumeMounts:
             - name: library
-              mountPath: /usr/src/app/upload
+              mountPath: /data
       volumes:
         - name: library
           persistentVolumeClaim:

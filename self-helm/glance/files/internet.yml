@@ -112,6 +112,8 @@
             - traefik/traefik
             - longhorn/longhorn
             - cert-manager/cert-manager
+            - kubernetes-csi/csi-driver-smb
+            - flannel-io/flannel
             # Operators
             - VictoriaMetrics/operator
             - grafana/grafana-operator

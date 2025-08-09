@@ -12,7 +12,7 @@ metadata:
     gethomepage.dev/description: Monitoring Dashboards
     gethomepage.dev/icon: si-grafana
     gethomepage.dev/href: "https://{{ .Values.network.baseUrl }}"
-    gethomepage.dev/pod-selector: "app.kubernetes.io/component=frontend"
+    gethomepage.dev/pod-selector: "app=grafana"
     gethomepage.dev/group: Frontend
     gethomepage.dev/weight: "10"
 spec:

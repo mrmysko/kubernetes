@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: cadvisor-scraper
     app.kubernetes.io/component: monitoring
 spec:
-  interval: 10s
+  interval: {{ .Values.vmagent.scrapeInterval }}
   path: /metrics
   port: "443"
   scheme: https
@@ -29,6 +29,12 @@ spec:
       targetLabel: __metrics_path__
       regex: '(.+)'
       replacement: '/api/v1/nodes/$1/proxy/metrics/cadvisor'
+
+    - sourceLabels: [instance]
+      targetLabel: node
+      regex: (.+)
+      replacement: $1
+      action: replace
 ---
 # Requires victoriametrics operator - https://github.com/VictoriaMetrics/operator
 apiVersion: operator.victoriametrics.com/v1beta1
@@ -39,7 +45,7 @@ metadata:
     app.kubernetes.io/name: kubelet-scraper
     app.kubernetes.io/component: monitoring
 spec:
-  interval: 10s
+  interval: {{ .Values.vmagent.scrapeInterval }}
   path: /metrics
   port: "443"
   scheme: https
@@ -71,7 +77,7 @@ metadata:
 spec:
   endpoints:
   - port: https
-    interval: 10s
+    interval: {{ .Values.vmagent.scrapeInterval }}
     path: /metrics
     scheme: https
     tlsConfig:
@@ -83,7 +89,8 @@ spec:
       component: apiserver
       provider: kubernetes  
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{ .Release.Namespace }}
 ---
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMServiceScrape
@@ -95,7 +102,7 @@ metadata:
 spec:
   endpoints:
   - port: http-metrics
-    interval: 30s
+    interval: {{ .Values.vmagent.scrapeInterval }}
     path: /metrics
   selector:
     matchLabels:
