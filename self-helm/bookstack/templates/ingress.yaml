@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-route
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ingress
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Bookstack
+    gethomepage.dev/description: Documentation
+    gethomepage.dev/icon: si-bookstack
+    gethomepage.dev/href: "https://{{ .Values.ingress.baseUrl }}"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/component=frontend"
+    gethomepage.dev/group: Frontend
+    gethomepage.dev/weight: "15"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.ingress.baseUrl }}`)
+      services:
+        - kind: Service
+          name: {{ .Release.Name }}-svc
+          port: {{ .Values.service.port }}
+{{- end }}

@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "bookstack" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
@@ -12,12 +11,12 @@ spec:
   replicas: {{ .Values.app.replicas | default 1 }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.appName | default "bookstack" }}
+      app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.appName | default "bookstack" }}
+        app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: frontend
     spec:
@@ -26,7 +25,7 @@ spec:
           image: "{{ .Values.app.image.repo }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
-            - containerPort: {{ .Values.network.port }}
+            - containerPort: {{ .Values.service.port }}
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
@@ -36,20 +35,22 @@ spec:
               type: RuntimeDefault
           resources:
           {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- if .Values.app.healthCheck.enabled }}
           livenessProbe:
             httpGet:
-              scheme: HTTP
-              path: /status
-              port: {{ .Values.network.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+              scheme: {{ .Values.app.healthCheck.scheme }}
+              path: {{ .Values.app.healthCheck.path }}
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: {{ .Values.app.healthCheck.initialDelay }}
+            periodSeconds: {{ .Values.app.healthCheck.periodSeconds }}
           readinessProbe:
             httpGet:
-              scheme: HTTP
-              path: /status
-              port: {{ .Values.network.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+              scheme: {{ .Values.app.healthCheck.scheme }}
+              path: {{ .Values.app.healthCheck.path }}
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: {{ .Values.app.healthCheck.initialDelay }}
+            periodSeconds: {{ .Values.app.healthCheck.periodSeconds }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-config
@@ -59,16 +60,24 @@ spec:
             - name: {{ .Release.Name }}-storage
               mountPath: /var/www/bookstack/storage/uploads
               subPath: uploads
+            {{- if (.Values.mariadb.enabled) }}
+              {{ if (.Values.mariadb.tls.enabled) }}
             - name: db-{{ .Release.Name }}-ca-bundle
               mountPath: /tmp/ca.crt
               subPath: ca.crt
+              {{- end }}
+            {{- end }}
       volumes:
+        {{- if (.Values.mariadb.enabled) }}
+          {{ if (.Values.mariadb.tls.enabled) }}
         - name: db-{{ .Release.Name }}-ca-bundle
           secret:
             secretName: db-{{ .Release.Name }}-ca-bundle
             items:
               - key: ca.crt
                 path: ca.crt
+          {{- end }}
+        {{- end }}
         - name: {{ .Release.Name }}-storage
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-pvc

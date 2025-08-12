@@ -3,12 +3,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-pvc
   labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "bookstack" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 3Gi
+      storage: {{ .Values.storage.size | default "3Gi" }}
