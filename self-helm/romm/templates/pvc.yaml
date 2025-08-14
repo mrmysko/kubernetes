@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-games
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: {{ .Release.Name }}-games
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-assets
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-resources
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi

@@ -3,14 +3,13 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-configmap
   labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "navidrome" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
 data:
   navidrome.toml: |
     LogLevel = 'info'
     EnableInsightsCollector = 'false'
-    BaseUrl = 'https://{{ .Values.network.baseUrl }}'
-    ReverseProxyWhitelist = '{{ .Values.app.reverseProxyWhitelist }}'
+    BaseUrl = 'https://{{ .Values.ingress.baseUrl }}'
+    ReverseProxyWhitelist = '{{ .Values.config.reverseProxyWhitelist }}'
     ReverseProxyUserHeader = 'Remote-User'
 
     LastFM.Enabled = 'true'

@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-music
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  volumeMode: Filesystem
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: {{ .Release.Name }}-music
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-config-pvc
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+{{- if .Values.storage.existingPvcName }}
+  volumeName: {{ .Values.storage.existingPvcName }}
+{{- end }}

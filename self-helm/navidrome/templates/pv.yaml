@@ -1,0 +1,31 @@
+# This volume requires smb csi drivers - https://github.com/kubernetes-csi/csi-driver-smb
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-music
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - file_mode=0664
+    - dir_mode=02775
+    - uid={{ .Values.storage.smb.uid }}
+    - gid={{ .Values.storage.smb.gid }}
+    - noperm
+    - noserverino
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: {{ .Release.Name }}-music-volume
+    volumeAttributes:
+      source: {{ .Values.storage.smb.url }}
+    nodeStageSecretRef:
+      name: {{ .Release.Name }}-smb-credentials
+      namespace: kube-system

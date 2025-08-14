@@ -3,8 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-config
   labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "technitium" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany

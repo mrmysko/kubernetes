@@ -3,14 +3,13 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "navidrome" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.app.replicas | default 1 }}
+  replicas: {{ .Values.app.replicaCount | default 1 }}
   strategy:
     type: Recreate
   selector:
@@ -20,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.appName | default "navidrome" }}
+        app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: frontend
     spec:
@@ -40,7 +39,7 @@ spec:
           image: "{{ .Values.app.image.repo }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
-            - containerPort: {{ .Values.network.port }}
+            - containerPort: {{ .Values.service.port }}
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-secret
@@ -53,14 +52,14 @@ spec:
             httpGet:
               scheme: HTTP
               path: /ping
-              port: {{ .Values.network.port }}
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
             httpGet:
               scheme: HTTP
               path: /ping
-              port: {{ .Values.network.port }}
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 10
             periodSeconds: 10
           securityContext:
@@ -78,8 +77,9 @@ spec:
             - name: configmap
               mountPath: /data/navidrome.toml
               subPath: navidrome.toml
-            - mountPath: /data/cache
-              name: {{ .Release.Name }}-cache
+              readOnly: true
+            - name: {{ .Release.Name }}-cache
+              mountPath: /data/cache
             - name: {{ .Release.Name }}-music
               mountPath: /music
               readOnly: true
@@ -93,9 +93,6 @@ spec:
             items:
               - key: navidrome.toml
                 path: navidrome.toml
-        - name: {{ .Release.Name }}-secret
-          secret:
-            secretName: {{ .Release.Name }}-secret
         - name: {{ .Release.Name }}-music
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-music
