@@ -1,0 +1,36 @@
+appName: navidrome
+app:
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/navidrome/navidrome
+    tag: 0.58.0
+
+  uid: 1001
+  gid: 1001
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      memory: "512Mi"
+
+network:
+  port: 4533
+
+ingress:
+  baseUrl:
+
+storage:
+  smb:
+    url:
+    uid:
+    gid:
+
+  existingPvcName:
+
+config:
+  reverseProxyWhitelist:
+  smbUser:
+  smbPassword:

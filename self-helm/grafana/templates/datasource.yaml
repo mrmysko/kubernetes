@@ -1,0 +1,45 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: victoria-metrics
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  datasource:
+    access: proxy
+    type: prometheus
+    jsonData:
+      timeInterval: 5s
+      # Fix...doesnt trust my internal CA certificate
+      tlsSkipVerify: {{ .Values.config.datasource.tlsSkipVerify }}
+    name: VictoriaMetrics
+    url: {{ .Values.config.datasource.vm.url }}
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  plugins:
+    - name: {{ .Values.config.datasource.vm.name }}
+      version: {{ .Values.config.datasource.vm.version }}
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: victoria-logs
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  datasource:
+    access: proxy
+    type: victoriametrics-logs-datasource
+    jsonData:
+      timeInterval: 5s
+      # Fix...doesnt trust my internal CA certificate
+      tlsSkipVerify: {{ .Values.config.datasource.tlsSkipVerify }}
+    name: VictoriaLogs
+    url: {{ .Values.config.datasource.vl.url }}
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  plugins:
+    - name: {{ .Values.config.datasource.vl.name }}
+      version: {{ .Values.config.datasource.vl.version }}

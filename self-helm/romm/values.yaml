@@ -1,0 +1,62 @@
+appName: romm
+app:
+  replicaCount: 1
+
+  image:
+    repository: rommapp/romm
+    tag: 4.0.1
+
+  uid:
+  gid:
+
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "512Mi"
+    limits:
+      memory: "2Gi"
+
+mariadb:
+  replicaCount: 1
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      memory: "1Gi"
+
+  host: db-romm
+  name: romm
+  port: 3306
+  sslCa: /tmp/db-ca.crt
+  user: romm-user
+
+redis:
+  replicaCount: 1
+
+  port: 6379
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "64Mi"
+    limits:
+      memory: "256Mi"
+
+storage:
+  smbUrl:
+
+service:
+  port: 8080
+
+ingress:
+  baseUrl:
+
+config:
+  dbDriver: mariadb
+
+  oidc:
+    redirectUri:
+    serverApplicationUrl:
+    tlsCaCertFile: /tmp/fullchain.pem

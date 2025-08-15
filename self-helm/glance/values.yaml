@@ -1,0 +1,24 @@
+appName: glance
+app:
+  replicaCount: 1
+
+  image:
+    repository: glanceapp/glance
+    tag: latest
+    pullPolicy: Always
+
+  uid: 1001
+  gid: 1001
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "64Mi"
+    limits:
+      memory: "256Mi"
+
+service:
+  port: 8080
+
+ingress:
+  baseUrl:

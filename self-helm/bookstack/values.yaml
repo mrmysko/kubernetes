@@ -1,0 +1,63 @@
+appName: bookstack
+
+app:
+  replicaCount: 1
+
+  image:
+    repository: solidnerd/bookstack
+    tag: 25.2
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+
+  healthCheck:
+    enabled: true
+    scheme: HTTP
+    path: /status
+    initialDelay: 10
+    periodSeconds: 10
+
+storage:
+  size:
+
+mariadb:
+  enabled: true
+  replicas: 1
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+  healthCheck:
+    enabled: true
+
+  storage:
+    size: 3Gi
+  tls:
+    enabled: true
+
+  port: 3306
+
+service:
+  port: 8080
+
+ingress:
+  enabled: true
+  baseUrl:
+
+# App specific config
+config:
+  oidc:
+    name:
+    endSessionEndpoint:
+    issuer:
+    displayNameClaims:

@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/component: monitoring
 spec:
-  replicas: {{ .Values.ksm.replicas }}
+  replicas: {{ .Values.ksm.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: kube-state-metrics
@@ -27,7 +27,7 @@ spec:
             - containerPort: 8081
               name: telemetry
           resources:
-          {{- toYaml .Values.ksm.resources | nindent 12 }}
+          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
             httpGet:
               path: /livez

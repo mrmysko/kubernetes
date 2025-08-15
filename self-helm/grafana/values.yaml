@@ -1,0 +1,36 @@
+appName: grafana
+app:
+
+mariadb:
+  host:
+  name:
+  user:
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      memory: "1Gi"
+
+service:
+  port: 3000
+
+ingress:
+  baseUrl:
+
+config:
+  oidc:
+    issuerUrl:
+    clientSecret:
+
+  datasource:
+    tlsSkipVerify: true
+    vm:
+      name: victoriametrics-metrics-datasource
+      version: 0.18.2
+      url:
+    vl:
+      name: victoriametrics-logs-datasource
+      version: 0.19.2
+      url:

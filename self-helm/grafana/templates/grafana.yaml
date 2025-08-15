@@ -5,8 +5,7 @@ kind: Grafana
 metadata:
   name: grafana
   labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "grafana" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
     dashboards: grafana
   annotations:
     reloader.stakater.com/auto: "true"
@@ -17,14 +16,14 @@ spec:
     log:
       mode: "console"
     server:
-      root_url: https://{{ .Values.network.baseUrl }}
+      root_url: https://{{ .Values.ingress.baseUrl }}
       enable_gzip: "true"
     database:
-      url: "mysql://{{ .Values.db.user }}:${MYSQL_PASSWORD}@{{ .Values.db.host }}.{{ .Release.Namespace }}.svc:3306/{{ .Values.db.name }}"
+      url: "mysql://{{ .Values.mariadb.user }}:${MYSQL_PASSWORD}@{{ .Values.mariadb.host }}.{{ .Release.Namespace }}.svc:3306/{{ .Values.mariadb.name }}"
       ca_cert_path: /tmp/certs/ca.crt
       client_cert_path: /tmp/certs/tls.crt
       client_key_path: /tmp/certs/tls.key
-      server_cert_name: {{ .Values.db.host }}.{{ .Release.Namespace }}.svc.cluster.local
+      server_cert_name: {{ .Values.mariadb.host }}.{{ .Release.Namespace }}.svc.cluster.local
       ssl_mode: "true"
     auth:
       disable_login_form: "true"
@@ -34,19 +33,19 @@ spec:
       icon: signin
       client_id: "${OIDC_CLIENT_ID}"
       # This is bad, find out how to fix it...
-      client_secret: {{ .Values.app.oidc.clientSecret }}
+      client_secret: {{ .Values.config.oidc.clientSecret }}
       scopes: openid,email,profile,groups
       empty_scopes: "false"
-      auth_url: https://{{ .Values.app.oidc.url }}/api/oidc/authorization
-      token_url: https://{{ .Values.app.oidc.url }}/api/oidc/token
-      api_url: https://{{ .Values.app.oidc.url }}/api/oidc/userinfo
+      auth_url: https://{{ .Values.config.oidc.url }}/api/oidc/authorization
+      token_url: https://{{ .Values.config.oidc.url }}/api/oidc/token
+      api_url: https://{{ .Values.config.oidc.url }}/api/oidc/userinfo
       login_attribute_path: preferred_username
       groups_attribute_path: groups
       name_attribute_path: name
       use_pkce: "true"
       role_attribute_path: contains(groups[*], 'service-admins') && 'GrafanaAdmin'
       allow_assign_grafana_admin: "true"
-      signout_redirect_url: https://{{ .Values.app.oidc.url }}/logout
+      signout_redirect_url: https://{{ .Values.config.oidc.url }}/logout
       skip_org_role_sync: "false"
   deployment:
     spec:
@@ -61,14 +60,14 @@ spec:
                   httpGet:
                     scheme: HTTP
                     path: /api/health
-                    port: {{ .Values.network.port }}
+                    port: {{ .Values.service.port }}
                   initialDelaySeconds: 10
                   periodSeconds: 10
               readinessProbe:
                   httpGet:
                     scheme: HTTP
                     path: /api/health
-                    port: {{ .Values.network.port }}
+                    port: {{ .Values.service.port }}
                   initialDelaySeconds: 10
                   periodSeconds: 10
               securityContext:
@@ -86,25 +85,3 @@ spec:
             - name: grafana-server-cert
               secret:
                 secretName: grafana-server-cert
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: grafana-server-cert
-  labels:
-    app.kubernetes.io/name: {{ .Values.appName | default "grafana" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-spec:
-  secretName: grafana-server-cert
-  issuerRef:
-    name: cluster-ca
-    kind: ClusterIssuer
-  privateKey:
-    rotationPolicy: Always
-  commonName: grafana.{{ .Release.Namespace }}.svc.cluster.local
-  dnsNames:
-    - "grafana.{{ .Release.Namespace }}.svc.cluster.local"
-    - "grafana.{{ .Release.Namespace }}.svc"
-    - "grafana.{{ .Release.Namespace }}"
-    - "grafana"
-    - "localhost"

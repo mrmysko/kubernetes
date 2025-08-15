@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+data: # Place config files into files directory
+{{- range $path, $bytes := .Files.Glob "files/*.yml" }}
+  {{ base $path }}: |-
+{{ $bytes | toString | indent 4 }}
+{{- end }}

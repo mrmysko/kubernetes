@@ -1,0 +1,28 @@
+appName: technitium
+app:
+  replicaCount: 1
+
+  image:
+    repository: technitium/dns-server
+    tag: latest
+    pullPolicy: Always
+
+  uid: 1001
+  gid: 1001
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      memory: "512Mi"
+
+service:
+  port: 5380
+
+ingress:
+  baseUrl:
+
+config:
+  dnsServerDomain:
+  dnsServerAdminPassword:

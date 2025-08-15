@@ -1,0 +1,19 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: User
+metadata:
+  name: {{ .Release.Name }}-user
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  name: {{ .Release.Name }}-user
+  mariaDbRef:
+    name: db-{{ .Release.Name }}
+  passwordSecretKeyRef:
+    name: {{ .Release.Name }}-secret
+    key: DB_PASSWD
+  maxUserConnections: 20
+  host: "%"
+  cleanupPolicy: Delete
+  requeueInterval: 30s
+  retryInterval: 5s

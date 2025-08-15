@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cache
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.redis.replicaCount | default 1 }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: cache
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: cache
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-redis
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.redis.port }}
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: REDIS_PASSWORD
+          resources:
+          {{- toYaml .Values.redis.resources | nindent 12 }}
+          #livenessProbe:
+          #  exec:
+          #    command: ["/usr/local/bin/redis-cli", "-a", "{{ .Values.redis.password }}", "ping"]
+          #  initialDelaySeconds: 15
+          #  periodSeconds: 10
+          #readinessProbe:
+          #  exec:
+          #    command: ["/usr/local/bin/redis-cli", "-a", "{{ .Values.redis.password }}", "ping"]
+          #  initialDelaySeconds: 15
+          #  periodSeconds: 10
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: {{ .Release.Name }}-redis-data
+              mountPath: /data
+      volumes:
+        - name: {{ .Release.Name }}-redis-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis-data

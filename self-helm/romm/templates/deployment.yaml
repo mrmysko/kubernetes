@@ -19,8 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
       initContainers:
@@ -36,7 +35,7 @@ spec:
               mountPath: /data
       containers:
         - name: {{ .Release.Name }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: {{ .Values.service.port }}
@@ -55,7 +54,7 @@ spec:
             - secretRef:
                 name: {{ .Release.Name }}-secret
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
             httpGet:
               scheme: HTTP

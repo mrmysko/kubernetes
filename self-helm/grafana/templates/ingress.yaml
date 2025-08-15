@@ -1,0 +1,29 @@
+# This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-route
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Grafana
+    gethomepage.dev/description: Monitoring Dashboards
+    gethomepage.dev/icon: si-grafana
+    gethomepage.dev/href: "https://{{ .Values.ingress.baseUrl }}"
+    gethomepage.dev/pod-selector: "app=grafana"
+    gethomepage.dev/group: Frontend
+    gethomepage.dev/weight: "10"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.ingress.baseUrl }}`)
+      services:
+        - kind: Service
+          name: grafana-service
+          port: {{ .Values.service.port }}
+          sticky:
+            cookie: {}

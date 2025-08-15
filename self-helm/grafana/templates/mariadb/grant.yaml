@@ -1,0 +1,20 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Grant
+metadata:
+  name: grafana-user-grant
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  mariaDbRef:
+    name: {{ .Values.mariadb.host }}
+  privileges:
+    - "ALL"
+  database: {{ .Values.mariadb.name }}
+  table: "*"
+  username: {{ .Values.mariadb.user }}
+  host: "%"
+  grantOption: false
+  cleanupPolicy: Delete
+  requeueInterval: 30s
+  retryInterval: 5s

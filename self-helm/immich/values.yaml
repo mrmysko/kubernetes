@@ -1,0 +1,73 @@
+appName: immich
+app:
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/immich-app/immich-server
+    tag: release
+    pullPolicy: Always
+
+  uid:
+  gid:
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      memory: "2Gi"
+
+redis:
+  replicaCount: 1
+
+  image:
+    repository: 11notes/redis
+    tag: 7.4.5
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "64Mi"
+    limits:
+      memory: "256Mi"
+
+  user: "default"
+  port: 6379
+  existingPvcName:
+
+postgres:
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/immich-app/postgres
+    tag: 14-vectorchord0.3.0-pgvectors0.2.0
+
+  databaseName:
+  user:
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      memory: "1Gi"
+
+  port: 5432
+  existingPvcName:
+
+storage:
+  smb:
+    url:
+
+service:
+  port: 2283
+
+ingress:
+  baseUrl:
+
+config:
+  machineLearning:
+    url:
+
+    smbUser:
+    smbPassword:

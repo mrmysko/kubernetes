@@ -1,0 +1,46 @@
+app:
+  replicaCount: 2
+
+  image:
+    repository: ghcr.io/mrmysko/docker-compost/789548356823
+    tag: latest
+    pullPolicy: Always
+
+  uid: 33
+  gid: 33
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "128Mi"
+    limits:
+      cpu: "1000m"
+      memory: "256Mi"
+
+mariadb:
+  replicaCount: 1
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      memory: "1Gi"
+
+storage:
+  data:
+    existingPvcName:
+  extensions:
+    existingPvcName:
+
+service:
+  port: 8080
+
+ingress:
+  baseUrl:
+
+config:
+  trustedProxy:
+
+  oidc:
+    providerMetadataUrl:

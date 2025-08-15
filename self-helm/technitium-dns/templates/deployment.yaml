@@ -18,8 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
       initContainers:
@@ -45,7 +44,7 @@ spec:
             - secretRef:
                 name: {{ .Release.Name }}-secret
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
             exec:
               command: ["sh", "-c", "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1"]

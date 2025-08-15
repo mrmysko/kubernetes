@@ -1,0 +1,30 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoriametrics-single-node
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  folder: "Imports"
+  grafanaCom:
+    id: 10229
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: kubernetes-cluster-monitoring-via-prometheus
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  folder: "Imports"
+  datasources:
+    - inputName: "DS__VICTORIAMETRICS-PROD-ALL"
+      datasourceName: "VictoriaMetrics"
+  grafanaCom:
+    id: 15661

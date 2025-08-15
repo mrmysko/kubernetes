@@ -1,0 +1,58 @@
+app:
+  replicaCount: 2
+
+  image:
+    repository: authelia/authelia
+    tag: 4.39
+
+  uid: 1001
+  gid: 1001
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "128Mi"
+    limits:
+      memory: "256Mi"
+
+mariadb:
+  replicaCount: 1
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      memory: "1Gi"
+
+redis:
+  replicaCount: 1
+
+  image:
+    pullPolicy:
+
+  port: 6379
+
+  user: default
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "64Mi"
+    limits:
+      memory: "256Mi"
+
+service:
+  port: 9091
+
+ingress:
+  baseUrl:
+
+config:
+  secretsDir: /secrets
+  ldap:
+    url:
+    searchUser:
+    baseDN:
+    userFilter:
+    groupFilter:

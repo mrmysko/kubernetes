@@ -1,0 +1,25 @@
+appName: homepage
+app:
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/gethomepage/homepage
+    tag: v1.4
+
+  uid: 1001
+  gid: 1001
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "128Mi"
+    limits:
+      memory: "512Mi"
+
+service:
+  port: 3000
+
+ingress:
+  baseUrl: homepage.kube.invis.space
+
+config:
