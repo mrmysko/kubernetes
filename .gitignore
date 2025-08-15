@@ -1,20 +1,16 @@
 # Helm secrets and env files
-*.secret.yaml
-values.yaml
+*.tgz
+*-values.yaml
+secret.yaml
+*-secret.yaml
 .env
 .envrc
-*.tgz
 
 # Other stuff...
-*-secret.yaml
-!-secret.yaml.tmpl
 *.pem
 invis-wildcard-cert.yaml
-old/
+gitignore/
 
 # Authelia
 self-helm/authelia/files/configuration.clients.yml
 self-helm/authelia/files/configuration.yml
-
-# Romm
-authelia-fullchain-configmap.yaml
