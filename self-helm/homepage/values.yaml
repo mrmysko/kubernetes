@@ -20,6 +20,6 @@ service:
   port: 3000
 
 ingress:
-  baseUrl: homepage.kube.invis.space
+  baseUrl:
 
 config:
