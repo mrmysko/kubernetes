@@ -5,13 +5,13 @@ metadata:
 spec:
   replicas: {{ .Values.vmagent.replicaCount }}
   image:
-    repository: {{ .Values.vmagent.image.repo }}
+    repository: {{ .Values.vmagent.image.repository }}
     tag: {{ .Values.vmagent.image.tag }}
     pullPolicy: {{ .Values.vmagent.image.pullPolicy | default "IfNotPresent" }}
   resources:
   {{- toYaml ( .Values.app.resources | default dict ) | nindent 4 }}
   remoteWrite:
-    - url: {{ .Values.vmagent.remoteWriteUrl }}
+    - url: {{ .Values.config.remoteWriteUrl }}
       tlsConfig:
         insecureSkipVerify: true
   serviceAccountName: {{ .Values.appName }}

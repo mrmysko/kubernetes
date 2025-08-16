@@ -18,7 +18,7 @@ spec:
     spec:
       automountServiceAccountToken: true
       containers:
-        - image: {{ .Values.ksm.image.repo }}:{{ .Values.ksm.image.tag }}
+        - image: {{ .Values.ksm.image.repository }}:{{ .Values.ksm.image.tag }}
           imagePullPolicy: {{ .Values.ksm.image.pullPolicy | default "IfNotPresent" }}
           name: kube-state-metrics
           ports:

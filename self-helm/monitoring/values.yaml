@@ -13,10 +13,6 @@ vmagent:
     limits:
       memory: 512Mi
 
-  remoteWriteUrl:
-
-  scrapeInterval: 10s
-
 ksm:
   replicaCount: 1
 
@@ -30,3 +26,8 @@ ksm:
       memory: 256Mi
     limits:
       memory: 512Mi
+
+config:
+  remoteWriteUrl:
+
+  scrapeInterval: 10s

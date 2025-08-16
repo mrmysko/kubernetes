@@ -1,8 +1,6 @@
-# Technitium
+# Navidrome
 
-Deploys a [Technitium](https://github.com/TechnitiumSoftware/DnsServer) DNS server.
-
-Multiple replicas will handle requests independently, no shared states.
+Deploys [Navidrome](https://github.com/navidrome/navidrome) music server.
 
 ## Prerequisites
 
@@ -18,7 +16,13 @@ Multiple replicas will handle requests independently, no shared states.
 |ingress.baseUrl            |Traefik ingress URL        |
 |config.dnsServerDomain     |                           |         |
 |config.dnsServerAdminPassword|WebUI password           |         |No
-
+|storage.smb.url            |
+|storage.smb.uid            |
+|storage.smb.gid            |
+|storage.existingPvcName    |
+|config.reverseProxyWhitelist|
+|config.smbUser             |
+|config.smbPassword         |
 
 ### Creating the secret
 Place in the templates directory.
@@ -36,4 +40,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n technitium technitium -f values.yaml ./
+helm upgrade -i --create-namespace -n navidrome navidrome -f values.yaml ./

@@ -1,1 +1,0 @@
-# Self-templated helm charts

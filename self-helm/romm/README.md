@@ -1,11 +1,11 @@
-# Technitium
+# RomM
 
-Deploys a [Technitium](https://github.com/TechnitiumSoftware/DnsServer) DNS server.
-
-Multiple replicas will handle requests independently, no shared states.
+Deploys [RomM - Rom Manager](https://github.com/rommapp/romm).
 
 ## Prerequisites
 
+- [csi-driver-smb](https://github.com/kubernetes-csi/csi-driver-smb)
+- [MariaDB operator](https://github.com/mariadb-operator/mariadb-operator)
 - [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
 - Helm >= 3.10
 
@@ -16,9 +16,10 @@ Multiple replicas will handle requests independently, no shared states.
 |---                        |---                        |:---:    |:---:|
 |service.port               |Service port               |
 |ingress.baseUrl            |Traefik ingress URL        |
-|config.dnsServerDomain     |                           |         |
-|config.dnsServerAdminPassword|WebUI password           |         |No
-
+|config.dbDriver            |                           |mariadb   |
+|oidc.redirectUri           |
+|oidc.serverApplicationUrl  |
+|oidc.tlsCaCertFile         |                           |/tmp/fullchain.pem|
 
 ### Creating the secret
 Place in the templates directory.
@@ -36,4 +37,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n technitium technitium -f values.yaml ./
+helm upgrade -i --create-namespace -n romm romm -f values.yaml ./
