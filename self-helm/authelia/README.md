@@ -1,10 +1,10 @@
-# Immich
+# Authelia
 
-Deploys [Immich](https://github.com/immich-app/immich) photo manager.
+Deploys [Authelia](https://github.com/authelia/authelia).
 
 ## Prerequisites
 
-- [csi-driver-smb](https://github.com/kubernetes-csi/csi-driver-smb)
+- [MariaDB operator](https://github.com/mariadb-operator/mariadb-operator)
 - [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
 - Helm >= 3.10
 
@@ -13,11 +13,14 @@ Deploys [Immich](https://github.com/immich-app/immich) photo manager.
 ### Values
 |Parameter                  |Description                |Default  |Required|
 |---                        |---                        |:---:    |:---:|
-|service.port               |Service port               |
+|service.port               |Service port               |8080
 |ingress.baseUrl            |Traefik ingress URL        |
-|config.machineLearning.url |
-|config.smbUser             |
-|config.smbPassword         |
+|config.secretsDir          | |/secrets
+|config.ldap.url            |
+|config.ldap.searchUser     |
+|config.ldap.baseDN         |
+|config.ldap.userFilter     |
+|config.ldap.groupFilter    |
 
 
 ### Creating the secret
@@ -36,4 +39,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n immich immich -f values.yaml ./
+helm upgrade -i --create-namespace -n authelia authelia -f values.yaml ./

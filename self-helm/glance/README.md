@@ -1,10 +1,9 @@
-# Immich
+# Glance
 
-Deploys [Immich](https://github.com/immich-app/immich) photo manager.
+Deploys [Glance](https://github.com/glanceapp/glance), a homepage dashboard.
 
 ## Prerequisites
 
-- [csi-driver-smb](https://github.com/kubernetes-csi/csi-driver-smb)
 - [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
 - Helm >= 3.10
 
@@ -13,11 +12,8 @@ Deploys [Immich](https://github.com/immich-app/immich) photo manager.
 ### Values
 |Parameter                  |Description                |Default  |Required|
 |---                        |---                        |:---:    |:---:|
-|service.port               |Service port               |
+|service.port               |Service port               |8080
 |ingress.baseUrl            |Traefik ingress URL        |
-|config.machineLearning.url |
-|config.smbUser             |
-|config.smbPassword         |
 
 
 ### Creating the secret
@@ -36,4 +32,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n immich immich -f values.yaml ./
+helm upgrade -i --create-namespace -n glance glance -f values.yaml ./

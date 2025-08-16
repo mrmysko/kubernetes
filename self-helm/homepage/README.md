@@ -1,10 +1,11 @@
-# Immich
+# Homepage
 
-Deploys [Immich](https://github.com/immich-app/immich) photo manager.
+Deploys [Homepage](https://github.com/gethomepage/homepage) for use as an iframe with [glance](https://github.com/mrmysko/kubernetes/tree/main/self-helm/glance).
+
+Other deployments are annotated for autodiscovery by this deployment.
 
 ## Prerequisites
 
-- [csi-driver-smb](https://github.com/kubernetes-csi/csi-driver-smb)
 - [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
 - Helm >= 3.10
 
@@ -13,11 +14,8 @@ Deploys [Immich](https://github.com/immich-app/immich) photo manager.
 ### Values
 |Parameter                  |Description                |Default  |Required|
 |---                        |---                        |:---:    |:---:|
-|service.port               |Service port               |
+|service.port               |Service port               |3000
 |ingress.baseUrl            |Traefik ingress URL        |
-|config.machineLearning.url |
-|config.smbUser             |
-|config.smbPassword         |
 
 
 ### Creating the secret
@@ -36,4 +34,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n immich immich -f values.yaml ./
+helm upgrade -i --create-namespace -n homepage homepage -f values.yaml ./
