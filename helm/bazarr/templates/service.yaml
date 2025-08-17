@@ -6,7 +6,8 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
+  clusterIP: None
   ports:
-    - port: {{ .Values.externalName.bazarr.port }}
-      targetPort: {{ .Values.externalName.bazarr.port }}
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
       protocol: TCP

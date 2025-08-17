@@ -4,11 +4,12 @@ Manifest files for my kubernetes cluster.
 
 ### Todo
 <ul> 
-<li>Add chart dependency charts</li>
-<li>Helm charts (crowdsec)</li>
+<li>Expand READMEs</li>
 <li>Live/readiness checks (redis)</li>
 <li>Network policies</li>
-<li>Jellyfin + remote ffmpeg?</li>
+<li>Jellyfin, crowdsec deployments</li>
+<li>Add notes</li>
+<li>Set template default values</li>
 </ul>
 
 ![cluster image](img/cluster.png)

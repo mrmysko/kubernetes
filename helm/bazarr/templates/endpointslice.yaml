@@ -8,12 +8,11 @@ metadata:
 addressType: IPv4
 endpoints:
   - addresses:
-      - "10.40.40.21"
+      - "{{ .Values.endpoint.ip }}"
     conditions:
       ready: true
       serving: true
       terminating: false
 ports:
-  - name: http
-    port: {{ .Values.externalName.bazarr.port }}
+  - port: {{ .Values.service.port }}
     protocol: TCP

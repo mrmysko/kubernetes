@@ -1,5 +1,6 @@
-externalName:
-  bazarr:
-    dnsName:
-    url:
-    port:
+endpoint:
+  ip:
+
+service:
+  url:
+  port:
