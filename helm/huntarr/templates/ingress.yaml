@@ -7,9 +7,9 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/name: Bazarr
-    gethomepage.dev/description: Download Subtitles
-    gethomepage.dev/icon: bazarr.png
+    gethomepage.dev/name: Huntarr
+    gethomepage.dev/description: Search Media Upgrades
+    gethomepage.dev/icon: huntarr.png
     gethomepage.dev/href: "https://{{ .Values.service.url }}"
     gethomepage.dev/group: Containers
     gethomepage.dev/weight: "20"

@@ -7,9 +7,9 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/name: Bazarr
-    gethomepage.dev/description: Download Subtitles
-    gethomepage.dev/icon: bazarr.png
+    gethomepage.dev/name: Prowlarr
+    gethomepage.dev/description: Index Manager
+    gethomepage.dev/icon: prowlarr.png
     gethomepage.dev/href: "https://{{ .Values.service.url }}"
     gethomepage.dev/group: Containers
     gethomepage.dev/weight: "20"
@@ -24,7 +24,7 @@ spec:
         - kind: Service
           name: {{ .Release.Name }}-external
           port: {{ .Values.service.port }}
-          scheme: http
+          scheme: https
       middlewares:
         - name: authelia-forward-auth
           namespace: traefik

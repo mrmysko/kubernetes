@@ -1,0 +1,6 @@
+apiVersion: v2
+name: prowlarr-external
+description: Basic helm template for external Prowlarr
+type: application
+version: 0.1.0
+appVersion: "0.1"
