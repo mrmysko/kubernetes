@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: authelia-forward-auth
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  forwardAuth:
+    address: {{ .Values.forwardAuth.address }}
+    trustForwardHeader: true
+    authResponseHeaders:
+      - "Remote-User"
+      - "Remote-Groups"
+      - "Remote-Name"
+      - "Remote-Email"
+    authRequestHeaders:
+      - Authorization
+      - Cookie

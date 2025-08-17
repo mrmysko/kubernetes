@@ -62,7 +62,7 @@ spec:
               scheme: HTTPS
               path: /api/health
               port: {{ .Values.service.port }}
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 10
           volumeMounts:
             - name: {{ .Release.Name }}-config
@@ -71,7 +71,7 @@ spec:
               mountPath: /tmp/certs
               readOnly: true
             - name: {{ .Release.Name }}-secret
-              mountPath: /secrets
+              mountPath: {{ .Values.config.secretsDir }}
               readOnly: true
       volumes:
         - name: {{ .Release.Name }}-config

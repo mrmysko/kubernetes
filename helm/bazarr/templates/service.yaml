@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bazarr-external
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.externalName.bazarr.port }}
+      targetPort: {{ .Values.externalName.bazarr.port }}
+      protocol: TCP

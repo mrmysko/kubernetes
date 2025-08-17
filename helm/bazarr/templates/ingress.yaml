@@ -1,0 +1,30 @@
+# This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bazarr-route
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Bazarr
+    gethomepage.dev/description: Download Subtitles
+    gethomepage.dev/icon: bazarr.png
+    gethomepage.dev/href: "https://{{ .Values.externalName.bazarr.dnsName }}"
+    gethomepage.dev/group: Docker
+    gethomepage.dev/weight: "5"
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.externalName.bazarr.dnsName }}`)
+      services:
+        - kind: Service
+          name: bazarr-external
+          port: {{ .Values.externalName.bazarr.port }}
+          scheme: http
+      middlewares:
+        - name: authelia-forward-auth
+          namespace: traefik

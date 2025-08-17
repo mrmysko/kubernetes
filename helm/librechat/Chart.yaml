@@ -1,0 +1,11 @@
+apiVersion: v2
+name: librechat-stack
+description: A Helm chart for Librechat, with extra manifests for redis and traefik
+type: application
+version: 0.2.0
+appVersion: "v0.8.0-rc1"
+
+dependencies:
+  - name: librechat
+    version: 1.8.10
+    repository: https://charts.blue-atlas.de

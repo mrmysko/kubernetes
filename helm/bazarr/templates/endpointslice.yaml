@@ -1,0 +1,19 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: bazarr-external
+  labels:
+    kubernetes.io/service-name: bazarr-external
+    {{- include "common.labels" . | nindent 4 }}
+addressType: IPv4
+endpoints:
+  - addresses:
+      - "10.40.40.21"
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
+ports:
+  - name: http
+    port: {{ .Values.externalName.bazarr.port }}
+    protocol: TCP
