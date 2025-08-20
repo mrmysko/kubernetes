@@ -1,5 +1,5 @@
 apiVersion: v2
-name: external-proxy
+name: reverse-proxy
 description: Basic helm template for proxying external services
 type: application
 version: 0.1.0

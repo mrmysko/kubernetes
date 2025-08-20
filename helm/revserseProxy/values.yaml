@@ -8,6 +8,7 @@
 #     port:
 #     scheme:
 #     homepage:
+#       enabled:
 #       description:
 #       icon:
 #       weight:
@@ -15,6 +16,7 @@
 #     port:
 #     scheme:
 #     homepage:
+#       enabled:
 #       description:
 #       icon:
 #       weight:

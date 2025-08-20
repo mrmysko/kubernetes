@@ -8,13 +8,21 @@ metadata:
     app.kubernetes.io/name: {{ $name }}
     {{- include "common.labels" $ | nindent 4 }}
   annotations:
+    {{- if eq $config.homepage.enabled true }}
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: {{ $name | title }}
     gethomepage.dev/description: {{ $config.homepage.description }}
     gethomepage.dev/icon: {{ $config.homepage.icon }}
     gethomepage.dev/href: "https://{{ $name }}.{{ $.Values.domain }}"
-    gethomepage.dev/group: Containers
+    gethomepage.dev/group: {{ $config.homepage.group }}
     gethomepage.dev/weight: "{{ $config.homepage.weight }}"
+    {{- if $config.homepage.widget }}
+      {{- range $k, $v := $config.homepage.widget }}
+        {{- $annotationKey := printf "gethomepage.dev/widget.%s" $k }}
+    {{ $annotationKey }}: "{{ $v }}"
+      {{- end }}
+    {{- end }}
+    {{- end }}
 spec:
   entryPoints:
     - web
