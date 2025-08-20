@@ -1,0 +1,22 @@
+{{- range $name, $config := .Values.services }}
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}-external
+  labels:
+    kubernetes.io/service-name: {{ $.Release.Name }}-{{ $name }}-external
+    {{- include "common.labels" $ | nindent 4 }}
+addressType: IPv4
+endpoints:
+  - addresses:
+      - "{{ $.Values.external.ip }}"
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
+ports:
+  - name: {{ $name }}
+    port: {{ $config.port }}
+    protocol: TCP
+---
+{{- end }}

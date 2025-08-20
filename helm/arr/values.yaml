@@ -1,0 +1,20 @@
+# domain:
+
+# external:
+#   url:
+#   ip:
+# services:
+#   service1:
+#     port:
+#     scheme:
+#     homepage:
+#       description:
+#       icon:
+#       weight:
+#   service2:
+#     port:
+#     scheme:
+#     homepage:
+#       description:
+#       icon:
+#       weight:

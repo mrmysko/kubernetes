@@ -40,8 +40,8 @@
         widget:
           type: calendar
           view: monthly
+          maxEvents: 3
           showTime: true
-          #timezone: Europe/Stockholm
           integrations:
             - type: sonarr
               service_group: Containers
@@ -55,9 +55,8 @@
         widget:
           type: calendar
           view: agenda
-          maxEvents: 15
+          maxEvents: 12
           showTime: true
-          #timezone: Europe/Stockholm
           integrations:
             - type: sonarr
               service_group: Containers
@@ -97,21 +96,21 @@
           url: https://[[HOMEPAGE_VAR_INTERNAL_URL]]:[[HOMEPAGE_VAR_SONARR_PORT]]
           key: [[HOMEPAGE_VAR_SONARR_API]]
           fields: []
-    #    - Bazarr:
-    #        icon: bazarr.png
-    #        href: [[HOMEPAGE_VAR_BAZARR]]
-    #        description: Download Subtitles
-    #        siteMonitor: [[HOMEPAGE_VAR_BAZARR]]
-    #    - Huntarr:
-    #        icon: huntarr.png
-    #        href: [[HOMEPAGE_VAR_HUNTARR]]
-    #        description: Fetch Media Upgrades
-    #        siteMonitor: [[HOMEPAGE_VAR_HUNTARR]]
-    #    - Prowlarr:
-    #        icon: prowlarr.png
-    #        href: [[HOMEPAGE_VAR_PROWLARR]]
-    #        description: Index Manager
-    #        siteMonitor: [[HOMEPAGE_VAR_PROWLARR]]
+    - Bazarr:
+        icon: bazarr.png
+        href: [[HOMEPAGE_VAR_BAZARR]]
+        description: Download Subtitles
+        siteMonitor: [[HOMEPAGE_VAR_BAZARR]]
+    - Huntarr:
+        icon: huntarr.png
+        href: [[HOMEPAGE_VAR_HUNTARR]]
+        description: Fetch Media Upgrades
+        siteMonitor: [[HOMEPAGE_VAR_HUNTARR]]
+    - Prowlarr:
+        icon: prowlarr.png
+        href: [[HOMEPAGE_VAR_PROWLARR]]
+        description: Index Manager
+        siteMonitor: [[HOMEPAGE_VAR_PROWLARR]]
     - qBittorrent:
         icon: si-qbittorrent
         href: [[HOMEPAGE_VAR_QBIT]]

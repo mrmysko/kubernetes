@@ -1,6 +1,0 @@
-apiVersion: v2
-name: huntarr-external
-description: Basic helm template for external Huntarr
-type: application
-version: 0.1.0
-appVersion: "0.1"
