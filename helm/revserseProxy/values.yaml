@@ -11,6 +11,7 @@
 #       enabled:
 #       description:
 #       icon:
+#       group:
 #       weight:
 #   service2:
 #     port:
@@ -19,4 +20,5 @@
 #       enabled:
 #       description:
 #       icon:
+#       group:
 #       weight:
