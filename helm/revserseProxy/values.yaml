@@ -13,6 +13,10 @@
 #       icon:
 #       group:
 #       weight:
+#     middleware:
+#       auth:
+#     external:
+#       ip:
 #   service2:
 #     port:
 #     scheme:
@@ -22,3 +26,7 @@
 #       icon:
 #       group:
 #       weight:
+#     middleware:
+#       auth:
+#     external:
+#       ip:

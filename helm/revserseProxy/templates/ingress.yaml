@@ -39,7 +39,9 @@ spec:
           serversTransport: external-transport
           {{- end }}
       middlewares:
+        {{- if eq $config.middleware.auth true }}
         - name: authelia-forward-auth
           namespace: traefik
+        {{- end }}
 ---
 {{- end }}

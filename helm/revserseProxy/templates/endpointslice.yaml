@@ -9,7 +9,7 @@ metadata:
 addressType: IPv4
 endpoints:
   - addresses:
-      - "{{ $.Values.external.ip }}"
+      - "{{ $config.external.ip }}"
     conditions:
       ready: true
       serving: true

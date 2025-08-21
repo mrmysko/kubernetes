@@ -1,3 +1,10 @@
+- Frontend:
+    - Home Assistant:
+        icon: si-homeassistant
+        href: [[HOMEPAGE_VAR_HOMEASSISTANT]]
+        description: Home Automation
+        siteMonitor: [[HOMEPAGE_VAR_HOMEASSISTANT]]
+
 - Backend:
     - Proxmox:
         icon: si-proxmox
@@ -109,6 +116,3 @@
         href: [[HOMEPAGE_VAR_QBIT]]
         description: Torrent Client
         siteMonitor: [[HOMEPAGE_VAR_QBIT]]
-
-- Frontend:
-    - Hidden:
