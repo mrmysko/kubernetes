@@ -33,6 +33,23 @@ spec:
           volumeMounts:
             - name: {{ .Release.Name }}-resources
               mountPath: /data
+        - name: init-config
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /config/config.yml ]; then
+                cp /config-default/config.yml /config/config.yml
+                echo "Seeded config.yml into PVC"
+              else
+                echo "config.yml already exists, skipping seed"
+              fi
+          volumeMounts:
+            - name: {{ .Release.Name }}-default-config
+              mountPath: /config-default
+            - name: {{ .Release.Name }}-config
+              mountPath: /config
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
@@ -96,7 +113,14 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-resources
         - name: {{ .Release.Name }}-config
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-config
+        - name: {{ .Release.Name }}-default-config
+          configMap:
+            name: {{ .Release.Name }}-config
+            items:
+              - key: config.yml
+                path: config.yml
         - name: db-ca
           secret:
             secretName: db-{{ .Release.Name }}-server-cert

@@ -24,3 +24,27 @@ data:
   ROMM_DB_DRIVER: "{{ .Values.config.dbDriver }}"
   SCHEDULED_RESCAN_CRON: "0 5 * * *"
   HASHEOUS_API_ENABLED: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+data: 
+  config.yml: |
+    exclude:
+      platforms: []
+      roms:
+        single_file:
+          extensions: []
+          names: []
+        multi_file:
+          names: []
+          parts:
+            names: []
+            extensions: []
+    system:
+      platforms: {}
+      versions: {}
+    filesystem: {}
