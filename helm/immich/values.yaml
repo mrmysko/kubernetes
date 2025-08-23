@@ -69,5 +69,5 @@ config:
   machineLearning:
     url:
 
-    smbUser:
-    smbPassword:
+  smbUser:
+  smbPassword:
