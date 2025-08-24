@@ -7,6 +7,9 @@ secret.yaml
 .envrc
 
 # Other stuff...
+*.cert
+*.crt
+*.key
 *.pem
 invis-wildcard-cert.yaml
 gitignore/

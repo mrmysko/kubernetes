@@ -8,7 +8,6 @@ Manifest files for my kubernetes cluster.
 <li>Live/readiness checks (redis)</li>
 <li>Network policies</li>
 <li>Jellyfin, crowdsec deployments</li>
-<li>Add notes</li>
 <li>Set template default values</li>
 </ul>
 
