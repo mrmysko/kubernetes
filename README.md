@@ -14,10 +14,9 @@ Manifest files for my kubernetes cluster.
 
 ![cluster image](img/cluster.png)
 
-## Installed resources/controllers:
+## Necessary resources/controllers:
 
 - MariaDB operator
-- Reloader
 - SMB CSI
 - Cert-manager
 - Metallb
