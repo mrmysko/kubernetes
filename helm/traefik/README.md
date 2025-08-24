@@ -13,4 +13,4 @@ Deploys some traefik things...
 
 ## Install
 
-helm upgrade -i --create-namespace -n traefik traefik -f values.yaml ./
+```helm upgrade -i --create-namespace -n traefik traefik -f values.yaml ./```

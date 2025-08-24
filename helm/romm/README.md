@@ -37,4 +37,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n romm romm -f values.yaml ./
+```helm upgrade -i --create-namespace -n romm romm -f values.yaml ./```

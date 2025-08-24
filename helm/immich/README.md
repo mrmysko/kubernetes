@@ -36,4 +36,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n immich immich -f values.yaml ./
+```helm upgrade -i --create-namespace -n immich immich -f values.yaml ./```

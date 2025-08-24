@@ -32,4 +32,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n glance glance -f values.yaml ./
+```helm upgrade -i --create-namespace -n glance glance -f values.yaml ./```

@@ -40,4 +40,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n navidrome navidrome -f values.yaml ./
+```helm upgrade -i --create-namespace -n navidrome navidrome -f values.yaml ./```

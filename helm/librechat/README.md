@@ -25,4 +25,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n librechat librechat -f values.yaml ./
+```helm upgrade -i --create-namespace -n librechat librechat -f values.yaml ./```

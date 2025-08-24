@@ -21,4 +21,4 @@ Requires an external victoriametrics and grafana server.
 
 ## Install
 
-helm upgrade -i --create-namespace -n monitoring monitoring -f values.yaml ./
+```helm upgrade -i --create-namespace -n monitoring monitoring -f values.yaml ./```

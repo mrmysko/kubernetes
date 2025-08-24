@@ -13,4 +13,4 @@ A deployment for proxying external services with middlewares between.
 
 ## Install
 
-helm upgrade -i --create-namespace -n reverse reverse -f values.yaml ./
+```helm upgrade -i --create-namespace -n reverse reverse -f values.yaml ./```

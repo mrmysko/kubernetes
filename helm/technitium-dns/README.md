@@ -36,4 +36,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n technitium technitium -f values.yaml ./
+```helm upgrade -i --create-namespace -n technitium technitium -f values.yaml ./```

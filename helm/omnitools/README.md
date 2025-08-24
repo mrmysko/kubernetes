@@ -19,4 +19,4 @@ Deploys [omni-tools](https://github.com/iib0011/omni-tools).
 
 ## Install
 
-helm upgrade -i --create-namespace -n omnitools omnitools -f values.yaml ./
+```helm upgrade -i --create-namespace -n omnitools omnitools -f values.yaml ./```

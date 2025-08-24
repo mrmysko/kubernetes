@@ -35,4 +35,4 @@ stringData:
 
 ## Install
 
-helm upgrade -i --create-namespace -n freshrss freshrss -f values.yaml ./
+```helm upgrade -i --create-namespace -n freshrss freshrss -f values.yaml ./```
