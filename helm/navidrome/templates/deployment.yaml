@@ -35,7 +35,7 @@ spec:
               mountPath: /data
       containers:
         - name: {{ .Release.Name }}
-          image: "{{ .Values.app.image.repo }}:{{ .Values.app.image.tag }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: {{ .Values.service.port }}

@@ -20,6 +20,15 @@ spec:
     - websecure
   routes:
     - kind: Rule
+      match: Host(`{{ .Values.ingress.baseUrl }}`) && PathPrefix(`/rest`)
+      services:
+        - name: {{ .Release.Name }}-svc
+          port: {{ .Values.service.port }}
+      middlewares:
+        - name: ha-ipwhitelist
+          namespace: traefik
+
+    - kind: Rule
       match: Host(`{{ .Values.ingress.baseUrl }}`)
       services:
         - kind: Service

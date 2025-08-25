@@ -1,0 +1,12 @@
+# Traefik middleware bypass for Music Assistant.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: ha-ipwhitelist
+  namespace: traefik
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  ipWhiteList:
+    sourceRange:
+      - "{{ .Values.middleware.whitelist.ip }}"
