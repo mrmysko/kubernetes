@@ -1,0 +1,18 @@
+# Let's Encrypt Certificates
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.secretName }}
+  namespace: traefik
+spec:
+  secretName: {{ .Values.secretName }}
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  privateKey:
+    rotationPolicy: Always
+  commonName: "{{ .Values.commonName }}"
+  dnsNames:
+{{- range .Values.dnsNames }}
+    - {{ . | quote }}
+{{- end }}
