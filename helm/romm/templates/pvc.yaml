@@ -27,6 +27,9 @@ spec:
   resources:
     requests:
       storage: 3Gi
+{{- if .Values.storage.assets.existingPvcName }}
+  volumeName: {{ .Values.storage.assets.existingPvcName }}
+{{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -41,6 +44,9 @@ spec:
   resources:
     requests:
       storage: 10Gi
+{{- if .Values.storage.resources.existingPvcName }}
+  volumeName: {{ .Values.storage.resources.existingPvcName }}
+{{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -55,3 +61,6 @@ spec:
   resources:
     requests:
       storage: 1Gi
+{{- if .Values.storage.config.existingPvcName }}
+  volumeName: {{ .Values.storage.config.existingPvcName }}
+{{- end }}

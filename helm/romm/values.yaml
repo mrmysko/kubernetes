@@ -45,7 +45,14 @@ redis:
       memory: "256Mi"
 
 storage:
-  smbUrl:
+  games:
+    smbUrl:
+  assets:
+    existingPvcName:
+  resources:
+    existingPvcName:
+  config:
+    existingPvcName:
 
 service:
   port: 8080
