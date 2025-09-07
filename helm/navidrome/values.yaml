@@ -25,8 +25,6 @@ ingress:
 storage:
   smb:
     url:
-    uid:
-    gid:
 
   existingPvcName:
 

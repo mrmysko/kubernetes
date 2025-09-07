@@ -17,8 +17,8 @@ spec:
   mountOptions:
     - file_mode=0664
     - dir_mode=02775
-    - uid={{ .Values.storage.smb.uid }}
-    - gid={{ .Values.storage.smb.gid }}
+    - uid={{ .Values.app.uid }}
+    - gid={{ .Values.app.gid }}
     - noperm
     - noserverino
   csi:
