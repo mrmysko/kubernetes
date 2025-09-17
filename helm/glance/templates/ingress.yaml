@@ -17,3 +17,6 @@ spec:
         - kind: Service
           name: {{ .Release.Name }}-svc
           port: {{ .Values.service.port }}
+      middlewares:
+        - name: "authelia-forward-auth"
+          namespace: traefik
