@@ -34,8 +34,5 @@ spec:
     serverCertIssuerRef:
       name: cluster-ca
       kind: ClusterIssuer
-    clientCertIssuerRef:
-      name: cluster-ca
-      kind: ClusterIssuer
   {{- end }}
 {{- end }}
