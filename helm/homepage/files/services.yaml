@@ -29,6 +29,12 @@
         description: Identity Manager
         siteMonitor: [[HOMEPAGE_VAR_FREEIPA]]
 
+    - TrueNAS:
+        icon: si-truenas
+        href: [[HOMEPAGE_VAR_TRUENAS]]
+        description: Storage Server
+        siteMonitor: [[HOMEPAGE_VAR_TRUENAS]]
+
     - PiKVM:
         icon: si-raspberrypi
         href: [[HOMEPAGE_VAR_PIKVM]]
