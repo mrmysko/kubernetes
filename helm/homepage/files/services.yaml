@@ -82,6 +82,11 @@
         href: [[HOMEPAGE_VAR_JELLYFIN]]
         description: Movies & TV Shows
         siteMonitor: [[HOMEPAGE_VAR_JELLYFIN]]
+    - Tdarr:
+        icon: tdarr.png
+        href: [[HOMEPAGE_VAR_TDARR]]
+        description: Transcoding Pipeline
+        siteMonitor: [[HOMEPAGE_VAR_TDARR]]
     - Radarr:
         icon: si-radarr
         href: [[HOMEPAGE_VAR_RADARR]]
@@ -102,11 +107,6 @@
           url: https://[[HOMEPAGE_VAR_INTERNAL_URL]]:[[HOMEPAGE_VAR_SONARR_PORT]]
           key: [[HOMEPAGE_VAR_SONARR_API]]
           fields: []
-    - Bazarr:
-        icon: bazarr.png
-        href: [[HOMEPAGE_VAR_BAZARR]]
-        description: Download Subtitles
-        siteMonitor: [[HOMEPAGE_VAR_BAZARR]]
     - Huntarr:
         icon: huntarr.png
         href: [[HOMEPAGE_VAR_HUNTARR]]
