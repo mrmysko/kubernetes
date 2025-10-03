@@ -20,6 +20,8 @@ spec:
     serverCertIssuerRef:
       name: cluster-ca
       kind: ClusterIssuer
+  maxScaleRef:
+    name: {{ .Release.Name }}-maxscale
   galera:
     enabled: true
     primary:

@@ -1,0 +1,21 @@
+{{- if .Values.maxScale.enabled }}
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MaxScale
+metadata:
+  name: {{ .Release.Name }}-maxscale
+spec:
+  mariaDbRef:
+    name: {{ .Release.Name }}
+
+  auth:
+    adminUsername: mariadb-operator
+    adminPasswordSecretKeyRef:
+      name: {{ .Release.Name }}-secret
+      key: ROOT_PASSWORD
+
+  kubernetesService:
+    type: LoadBalancer
+    metadata:
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: {{ .Values.maxScale.metalLB.ip }}
+{{- end}}

@@ -3,6 +3,11 @@ galera:
 
   rootPassword:
 
+maxScale:
+  enabled: true
+  metalLB:
+    ip:
+
 backup:
   enabled: true
   schedule: "0 23 * * *"
