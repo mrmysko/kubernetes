@@ -1,0 +1,34 @@
+appName: vikunja
+app:
+  replicaCount: 1
+
+  image:
+    repository: vikunja/vikunja
+    tag: 1.0.0-rc2
+    pullPolicy: IfNotPresent
+
+  uid: 1000
+  gid: 1000
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      memory: "512Mi"
+
+mariadb:
+  databaseName:
+  databasePassword:
+  username:
+
+service:
+  port: 3456
+
+ingress:
+  baseUrl:
+
+config:
+  oidc:
+    url:
+    secret:

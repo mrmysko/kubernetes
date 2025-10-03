@@ -1,0 +1,16 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Database
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  name: "{{ .Values.mariadb.databaseName }}"
+  mariaDbRef:
+    name: db-{{ .Release.Name }}
+  characterSet: utf8mb4
+  collate: utf8mb4_unicode_ci
+  cleanupPolicy: Skip
+  requeueInterval: 30s
+  retryInterval: 5s

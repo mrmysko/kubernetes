@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.app.replicaCount | default 1 }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "common.labels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-secret
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+          resources:
+          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          securityContext:
+            runAsUser: {{ .Values.app.uid }}
+            runAsGroup: {{ .Values.app.gid }}
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: configmap
+              mountPath: /app/vikunja/config.yml
+              subPath: config.yml
+      volumes:
+        - name: configmap
+          configMap:
+            name: {{ .Release.Name }}-config
+            items:
+              - key: config.yml
+                path: config.yml
