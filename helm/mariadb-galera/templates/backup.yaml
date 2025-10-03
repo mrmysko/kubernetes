@@ -1,0 +1,34 @@
+{{- if .Values.backup.enabled }}
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Backup
+metadata:
+  name: {{ .Release.Name }}-backup
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
+spec:
+  mariaDbRef:
+    name: {{ .Release.Name }}
+  maxRetention: 1440h # 60 days
+  compression: gzip
+  storage:
+    s3:
+      bucket: mariadb
+      prefix: mariadb
+      endpoint: {{ .Values.backup.endpoint }}
+      region:  us-east-1
+      accessKeyIdSecretKeyRef:
+        name: {{ .Release.Name }}-s3-credentials
+        key: ACCESS_KEY
+      secretAccessKeySecretKeyRef:
+        name: {{ .Release.Name }}-s3-credentials
+        key: SECRET_KEY
+      tls:
+        enabled: true
+        caSecretKeyRef:
+          name: invis-external-bundle
+          key: ca.crt
+  schedule:
+    cron: "{{ .Values.backup.schedule }}"
+    suspend: false
+{{- end }}

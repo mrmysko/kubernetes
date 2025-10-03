@@ -1,0 +1,45 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  replicasAllowEvenNumber: true # Remove this when 3-node
+  replicas: {{ .Values.galera.replicaCount | default 3 }}
+  service:
+    type: ClusterIP
+    sessionAffinity: None
+  storage:
+    size: 10Gi
+    storageClassName: local-storage
+  tls:
+    enabled: true
+    required: true
+    serverCertIssuerRef:
+      name: cluster-ca
+      kind: ClusterIssuer
+  galera:
+    enabled: true
+    primary:
+      podIndex: 0
+      automaticFailover: true
+    agent:
+      kubernetesAuth:
+        enabled: true
+    config:
+      reuseStorageVolume: false
+      volumeClaimTemplate:
+        resources:
+          requests:
+            storage: 100Mi
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-storage
+  rootPasswordSecretKeyRef:
+    name: {{ .Release.Name }}-secret
+    key: ROOT_PASSWORD
+  myCnf: |
+    [mariadb-backup]
+    ssl-ca = /etc/pki/ca.crt

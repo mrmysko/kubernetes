@@ -1,0 +1,12 @@
+galera:
+  replicaCount: 2
+
+  rootPassword:
+
+backup:
+  enabled: true
+  schedule: "0 23 * * *"
+
+  endpoint:
+  accessKey:
+  secretKey:
