@@ -3,4 +3,4 @@ name: immich
 description: A Helm chart for Immich
 type: application
 version: 0.3.0
-appVersion: "v1.139.2"
+appVersion: "v2.0.0"
