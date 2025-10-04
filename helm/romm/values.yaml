@@ -16,12 +16,14 @@ app:
     limits:
       memory: "2Gi"
 
-mariadb:
-  namespace:
+database:
+  type:
+  host:
   instanceName:
-  port: 3306
-  dbName:
-  user:
+  namespace:
+  port:
+  name:
+  username:
   password:
 
 redis:
@@ -56,9 +58,6 @@ ingress:
   baseUrl:
 
 config:
-  dbDriver:
-  dbHost:
-
   igdb:
     clientId:
     clientSecret:
