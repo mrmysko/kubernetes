@@ -4,37 +4,30 @@ app:
 
   image:
     repository: rommapp/romm
-    tag: 4.0.1
+    tag: 4.3.0
 
-  uid:
-  gid:
+  uid: "3005"
+  gid: "3100"
 
   resources:
     requests:
-      cpu: "1000m"
+      cpu: "500m"
       memory: "512Mi"
     limits:
       memory: "2Gi"
 
 mariadb:
-  replicaCount: 1
-
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "256Mi"
-    limits:
-      memory: "1Gi"
-
-  host: db-romm
-  name: romm
+  namespace:
+  instanceName:
   port: 3306
-  sslCa: /tmp/db-ca.crt
-  user: romm-user
+  dbName:
+  user:
+  password:
 
 redis:
   replicaCount: 1
 
+  password:
   port: 6379
 
   resources:
@@ -46,6 +39,8 @@ redis:
 
 storage:
   games:
+    username:
+    password:
     smbUrl:
   assets:
     existingPvcName:
@@ -61,9 +56,19 @@ ingress:
   baseUrl:
 
 config:
-  dbDriver: mariadb
+  dbDriver:
+  dbHost:
+
+  igdb:
+    clientId:
+    clientSecret:
+
+  steamGridApiKey:
+  rommAuthSecretKey:
 
   oidc:
+    clientId:
+    clientSecret:
     redirectUri:
     serverApplicationUrl:
-    tlsCaCertFile: /tmp/fullchain.pem
+    tlsCaCertFile:

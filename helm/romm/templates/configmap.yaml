@@ -5,11 +5,11 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
-  DB_HOST: "{{ .Values.mariadb.host }}"
-  DB_NAME: "{{ .Values.mariadb.name }}"
-  DB_PORT: "{{ .Values.mariadb.port }}"
-  DB_SSL_CA: "{{ .Values.mariadb.sslCa }}"
-  DB_USER: "{{ .Values.mariadb.user }}"
+  DB_HOST: "{{ .Values.database.host }}"
+  DB_NAME: "{{ .Values.database.name }}"
+  DB_PORT: "{{ .Values.database.port }}"
+  DB_USER: "{{ .Values.database.username }}"
+  DB_QUERY_JSON: '{"ssl": "true"}'
   DISABLE_RUFFLE_RS: "true"
   DISABLE_USERPASS_LOGIN: "true"
   ENABLE_SCHEDULED_RESCAN: "true"
@@ -21,30 +21,8 @@ data:
   REDIS_HOST: "{{ .Release.Name }}-redis"
   REDIS_PORT: "{{ .Values.redis.port }}"
   ROMM_BASE_URL: "https://{{ .Values.ingress.baseUrl }}"
-  ROMM_DB_DRIVER: "{{ .Values.config.dbDriver }}"
+  ROMM_DB_DRIVER: "{{ .Values.database.type }}"
   SCHEDULED_RESCAN_CRON: "0 5 * * *"
   HASHEOUS_API_ENABLED: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-config
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-data: 
-  config.yml: |
-    exclude:
-      platforms: []
-      roms:
-        single_file:
-          extensions: []
-          names: []
-        multi_file:
-          names: []
-          parts:
-            names: []
-            extensions: []
-    system:
-      platforms: {}
-      versions: {}
-    filesystem: {}
+  HLTB_API_ENABLED: "true"
+  ENABLE_RESCAN_ON_FILESYSTEM_CHANGE: "true"
