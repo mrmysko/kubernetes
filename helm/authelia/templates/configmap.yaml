@@ -79,7 +79,7 @@ data:
   AUTHELIA_SESSION_REDIS_PASSWORD_FILE: "{{ .Values.config.secretsDir }}/REDIS_PASSWORD"
   #AUTHELIA_SESSION_REDIS_TLS_MINIMUM_VERSION: "TLS1.2"
 
-  AUTHELIA_STORAGE_MYSQL_ADDRESS: "tcp4://{{ .Values.database.host }}:{{ .Values.database.port }}"
+  AUTHELIA_STORAGE_MYSQL_ADDRESS: "tcp://{{ .Values.database.host }}:{{ .Values.database.port }}"
   AUTHELIA_STORAGE_MYSQL_USERNAME: "{{ .Values.database.username }}"
   AUTHELIA_STORAGE_MYSQL_DATABASE: "{{ .Values.database.name }}"
   AUTHELIA_STORAGE_MYSQL_TIMEOUT: "5 seconds"

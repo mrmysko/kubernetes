@@ -18,7 +18,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-extensions
+  name: "{{ .Release.Name }}-extensions"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage

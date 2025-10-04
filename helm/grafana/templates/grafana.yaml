@@ -19,11 +19,10 @@ spec:
       root_url: https://{{ .Values.ingress.baseUrl }}
       enable_gzip: "true"
     database:
-      url: "mysql://{{ .Values.mariadb.user }}:${MYSQL_PASSWORD}@{{ .Values.mariadb.host }}.{{ .Release.Namespace }}.svc:3306/{{ .Values.mariadb.name }}"
+      type: "{{ .Values.database.type }}"
+      url: "mysql://{{ .Values.database.username }}:${MYSQL_PASSWORD}@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.name }}"
       ca_cert_path: /tmp/certs/ca.crt
-      client_cert_path: /tmp/certs/tls.crt
-      client_key_path: /tmp/certs/tls.key
-      server_cert_name: {{ .Values.mariadb.host }}.{{ .Release.Namespace }}.svc.cluster.local
+      server_cert_name: "{{ .Values.database.host }}"
       ssl_mode: "true"
     auth:
       disable_login_form: "true"
@@ -32,20 +31,20 @@ spec:
       name: OAuth
       icon: signin
       client_id: "${OIDC_CLIENT_ID}"
-      # This is bad, find out how to fix it...
-      client_secret: {{ .Values.config.oidc.clientSecret }}
+      # This is bad, fix it...
+      client_secret: "{{ .Values.config.oidc.clientSecret }}"
       scopes: openid,email,profile,groups
       empty_scopes: "false"
-      auth_url: https://{{ .Values.config.oidc.url }}/api/oidc/authorization
-      token_url: https://{{ .Values.config.oidc.url }}/api/oidc/token
-      api_url: https://{{ .Values.config.oidc.url }}/api/oidc/userinfo
+      auth_url: https://{{ .Values.config.oidc.issuerUrl }}/api/oidc/authorization
+      token_url: https://{{ .Values.config.oidc.issuerUrl }}/api/oidc/token
+      api_url: https://{{ .Values.config.oidc.issuerUrl }}/api/oidc/userinfo
       login_attribute_path: preferred_username
       groups_attribute_path: groups
       name_attribute_path: name
       use_pkce: "true"
       role_attribute_path: contains(groups[*], 'service-admins') && 'GrafanaAdmin'
       allow_assign_grafana_admin: "true"
-      signout_redirect_url: https://{{ .Values.config.oidc.url }}/logout
+      signout_redirect_url: https://{{ .Values.config.oidc.issuerUrl }}/logout
       skip_org_role_sync: "false"
   deployment:
     spec:
@@ -55,7 +54,7 @@ spec:
             - name: grafana
               envFrom:
                 - secretRef:
-                    name: grafana-secret
+                    name: "{{ .Release.Name }}-secret"
               livenessProbe:
                   httpGet:
                     scheme: HTTP
@@ -78,10 +77,10 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
               volumeMounts:
-                - name: grafana-server-cert
+                - name: "invis-external-bundle"
                   mountPath: /tmp/certs
                   readOnly: true
           volumes:
-            - name: grafana-server-cert
+            - name: "invis-external-bundle"
               secret:
-                secretName: grafana-server-cert
+                secretName: "invis-external-bundle"

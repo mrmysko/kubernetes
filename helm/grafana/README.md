@@ -26,21 +26,6 @@ Deploys [Grafana](https://github.com/gethomepage/homepage), configures datasourc
 |config.datasource.vl.version|
 |config.datasource.vl.url   |
 
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n grafana grafana -f values.yaml ./```

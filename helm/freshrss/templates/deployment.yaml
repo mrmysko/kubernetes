@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -30,21 +30,21 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
-            - name: {{ .Release.Name }}-data
+            - name: "{{ .Release.Name }}-data"
               mountPath: /data
-            - name: {{ .Release.Name }}-extensions
+            - name: "{{ .Release.Name }}-extensions"
               mountPath: /extensions
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: {{ .Values.service.port }}
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
             - configMapRef:
-                name: {{ .Release.Name }}-env
+                name: "{{ .Release.Name }}-env"
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
@@ -71,23 +71,20 @@ spec:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           volumeMounts:
-            - name: {{ .Release.Name }}-data
+            - name: "{{ .Release.Name }}-data"
               mountPath: /var/www/FreshRSS/data
-            - name: {{ .Release.Name }}-extensions
+            - name: "{{ .Release.Name }}-extensions"
               mountPath: /var/www/FreshRSS/extensions
-            - name: cluster-ca
-              mountPath: /tmp/cluster-ca.crt
-              subPath: cluster-ca.crt
+            - name: invis-external-bundle
+              mountPath: /tmp/certs
+              readOnly: true
       volumes:
-        - name: {{ .Release.Name }}-data
+        - name: "{{ .Release.Name }}-data"
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-data
-        - name: {{ .Release.Name }}-extensions
+            claimName: "{{ .Release.Name }}-data"
+        - name: "{{ .Release.Name }}-extensions"
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-extensions
-        - name: cluster-ca
+            claimName: "{{ .Release.Name }}-extensions"
+        - name: invis-external-bundle
           secret:
-            secretName: cluster-ca
-            items:
-              - key: Cluster_CA.pem
-                path: cluster-ca.crt
+            secretName: invis-external-bundle

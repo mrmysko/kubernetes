@@ -18,21 +18,6 @@ Deploys [FreshRSS](https://github.com/FreshRSS/FreshRSS), an RSS aggregator.
 |config.trustedProxy        |
 |config.oidc.providerMetadataUrl|
 
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n freshrss freshrss -f values.yaml ./```
