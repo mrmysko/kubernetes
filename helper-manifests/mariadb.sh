@@ -1,1 +1,1 @@
-kubectl run mariadb-shell --rm -it --image=mariadb -- /bin/bash
+kubectl run mariadb-shell --rm -it --image=mariadb:11.8.2 -- /bin/bash

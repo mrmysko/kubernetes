@@ -105,6 +105,7 @@
             - crowdsecurity/crowdsec
             - rommapp/romm
             - iib0011/omni-tools
+            - smallstep/certificates
             # Kube-adjacent
             - helm/helm
             - kubernetes/kubernetes
