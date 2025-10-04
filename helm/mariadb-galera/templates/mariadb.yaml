@@ -12,11 +12,11 @@ spec:
     type: ClusterIP
     sessionAffinity: None
   storage:
-    size: 10Gi
+    size: 25Gi
     storageClassName: local-storage
   tls:
     enabled: true
-    required: true
+    required: false
     serverCertIssuerRef:
       name: cluster-ca
       kind: ClusterIssuer
@@ -39,6 +39,10 @@ spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: local-storage
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
   rootPasswordSecretKeyRef:
     name: {{ .Release.Name }}-secret
     key: ROOT_PASSWORD

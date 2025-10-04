@@ -8,14 +8,29 @@ spec:
     name: {{ .Release.Name }}
 
   auth:
-    adminUsername: mariadb-operator
-    adminPasswordSecretKeyRef:
-      name: {{ .Release.Name }}-secret
-      key: ROOT_PASSWORD
+    generate: true
+
+  tls:
+    enabled: true
+    serverCASecretRef:
+      name: {{ .Release.Name }}-ca-bundle
+    serverCertSecretRef:
+      name: {{ .Release.Name }}-client-cert
+    adminCertIssuerRef:
+      name: cluster-ca
+      kind: ClusterIssuer
+    listenerCertIssuerRef:
+      name: cluster-ca
+      kind: ClusterIssuer
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
 
   kubernetesService:
     type: LoadBalancer
     metadata:
       annotations:
-        metallb.universe.tf/loadBalancerIPs: {{ .Values.maxScale.metalLB.ip }}
-{{- end}}
+        metallb.universe.tf/loadBalancerIPs: "{{ .Values.maxScale.metalLB.ip }}"
+{{- end }}
