@@ -17,10 +17,14 @@ app:
     limits:
       memory: "512Mi"
 
-mariadb:
-  databaseName:
-  databasePassword:
+database:
+  type:
+  host:
+  instanceName:
+  namespace:
+  name:
   username:
+  password:
 
 service:
   port: 3456
