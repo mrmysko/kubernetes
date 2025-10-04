@@ -23,3 +23,5 @@ Manifest files for my kubernetes cluster.
 - Flannel
 - Longhorn
 - VMAgent
+- Trust-manager
+- Local path provisioner

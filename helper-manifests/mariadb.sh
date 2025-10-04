@@ -1,0 +1,1 @@
+kubectl run mariadb-shell --rm -it --image=mariadb -- /bin/bash
