@@ -1,19 +1,20 @@
-{{- if .Values.mariadb.enabled }}
+{{- if .Values.database.enabled }}
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: Grant
 metadata:
-  name: {{ .Release.Name }}-user-grant
+  name: "{{ .Release.Name }}-db-grant"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
   mariaDbRef:
-    name: db-{{ .Release.Name }}
+    name: "{{ .Values.database.instanceName }}"
+    namespace: "{{ .Values.database.namespace }}"
   privileges:
     - "ALL"
-  database: {{ .Release.Name }}-db
+  database: "{{ .Values.database.name }}"
   table: "*"
-  username: {{ .Release.Name }}-user
+  username: "{{ .Values.database.username }}"
   host: "%"
   grantOption: false
   cleanupPolicy: Delete

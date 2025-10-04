@@ -1,17 +1,18 @@
-{{- if .Values.mariadb.enabled }}
+{{- if .Values.database.enabled }}
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: Database
 metadata:
-  name: {{ .Release.Name }}-db
+  name: "{{ .Release.Name }}-db"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  name: {{ .Release.Name }}-db
+  name: "{{ .Values.database.name }}"
   mariaDbRef:
-    name: db-{{ .Release.Name }}
-  characterSet: utf8
-  collate: utf8_general_ci
+    name: "{{ .Values.database.instanceName }}"
+    namespace: "{{ .Values.database.namespace }}"
+  characterSet: utf8mb4
+  collate: utf8mb4_unicode_ci
   cleanupPolicy: Skip
   requeueInterval: 30s
   retryInterval: 5s

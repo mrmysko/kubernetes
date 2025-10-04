@@ -9,16 +9,15 @@ data:
   APP_URL: "https://{{ .Values.ingress.baseUrl }}"
   AUTH_AUTO_INITIATE: "true"
   AUTH_METHOD: oidc
-  DB_HOST: "db-{{ .Release.Name }}"
-  DB_DATABASE: "{{ .Release.Name }}-db"
-  DB_USERNAME: "{{ .Release.Name }}-user"
-  {{- if (.Values.mariadb.enabled) }}
-    {{ if (.Values.mariadb.tls.enabled) }}
+  {{- if (.Values.database.enabled) }}
+  DB_HOST: "{{ .Values.database.host }}"
+  DB_PORT: "{{ .Values.database.port }}"
+  DB_DATABASE: "{{ .Values.database.name }}"
+  DB_USERNAME: "{{ .Values.database.username }}"
   MYSQL_ATTR_SSL_CA: /tmp/ca.crt
-    {{- end }}
   {{- end }}
-  OIDC_DISPLAY_NAME_CLAIMS: {{ .Values.config.oidc.displayNameClaims }}
-  OIDC_END_SESSION_ENDPOINT: {{ .Values.config.oidc.endSessionEndpoint }}
-  OIDC_ISSUER: {{ .Values.config.oidc.issuer }}
-  OIDC_NAME: {{ .Values.config.oidc.name }}
+  OIDC_DISPLAY_NAME_CLAIMS: "{{ .Values.config.oidc.displayNameClaims }}"
+  OIDC_END_SESSION_ENDPOINT: "{{ .Values.config.oidc.endSessionEndpoint }}"
+  OIDC_ISSUER: "{{ .Values.config.oidc.issuer }}"
+  OIDC_NAME: "{{ .Values.config.oidc.name }}"
   OIDC_ISSUER_DISCOVER: "true"

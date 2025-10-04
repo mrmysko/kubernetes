@@ -59,23 +59,19 @@ spec:
             - name: {{ .Release.Name }}-storage
               mountPath: /var/www/bookstack/storage/uploads
               subPath: uploads
-            {{- if (.Values.mariadb.enabled) }}
-              {{ if (.Values.mariadb.tls.enabled) }}
-            - name: db-{{ .Release.Name }}-ca-bundle
+            {{- if (.Values.database.enabled) }}
+            - name: invis-external-bundle
               mountPath: /tmp/ca.crt
               subPath: ca.crt
-              {{- end }}
             {{- end }}
       volumes:
-        {{- if (.Values.mariadb.enabled) }}
-          {{ if (.Values.mariadb.tls.enabled) }}
-        - name: db-{{ .Release.Name }}-ca-bundle
+        {{- if (.Values.database.enabled) }}
+        - name: invis-external-bundle
           secret:
-            secretName: db-{{ .Release.Name }}-ca-bundle
+            secretName: invis-external-bundle
             items:
               - key: ca.crt
                 path: ca.crt
-          {{- end }}
         {{- end }}
         - name: {{ .Release.Name }}-storage
           persistentVolumeClaim:

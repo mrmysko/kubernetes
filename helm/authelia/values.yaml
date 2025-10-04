@@ -15,15 +15,17 @@ app:
     limits:
       memory: "256Mi"
 
-mariadb:
-  replicaCount: 1
+database:
+  enabled: true
 
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "256Mi"
-    limits:
-      memory: "1Gi"
+  type:
+  host:
+  instanceName:
+  namespace:
+  port: 3306
+  name:
+  username:
+  password:
 
 redis:
   replicaCount: 1
@@ -33,7 +35,8 @@ redis:
 
   port: 6379
 
-  user: default
+  username: default
+  password:
 
   resources:
     requests:

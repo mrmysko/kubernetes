@@ -25,25 +25,16 @@ app:
 storage:
   size:
 
-mariadb:
+database:
   enabled: true
-  replicas: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "256Mi"
-    limits:
-      memory: "1Gi"
 
-  healthCheck:
-    enabled: true
-
-  storage:
-    size: 3Gi
-  tls:
-    enabled: true
-
+  host:
+  instanceName:
+  namespace:
   port: 3306
+  name:
+  username:
+  password:
 
 service:
   port: 8080
@@ -54,8 +45,12 @@ ingress:
 
 # App specific config
 config:
+  appKey:
+
   oidc:
     name:
+    clientId:
+    clientSecret:
     endSessionEndpoint:
     issuer:
     displayNameClaims:

@@ -1,14 +1,15 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: User
 metadata:
-  name: {{ .Release.Name }}-user
+  name: "{{ .Release.Name }}-db-user"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  name: {{ .Release.Name }}-user
+  name: "{{ .Values.database.username }}"
   mariaDbRef:
-    name: db-{{ .Release.Name }}
+    name: "{{ .Values.database.instanceName }}"
+    namespace: "{{ .Values.database.namespace }}"
   passwordSecretKeyRef:
     name: {{ .Release.Name }}-secret
     key: MYSQL_PASSWORD

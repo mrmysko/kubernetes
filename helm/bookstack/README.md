@@ -20,20 +20,6 @@ Deploys [BookStack](https://github.com/BookStackApp/BookStack).
 |config.oidc.issuer         |
 |config.oidc.displayNameClaims|
 
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n bookstack bookstack -f values.yaml ./```
