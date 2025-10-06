@@ -6,22 +6,26 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  replicasAllowEvenNumber: true # Remove this when 3-node
   replicas: {{ .Values.galera.replicaCount | default 3 }}
+
   service:
     type: ClusterIP
     sessionAffinity: None
+
   storage:
     size: 25Gi
     storageClassName: local-storage
+
   tls:
     enabled: true
     required: false
     serverCertIssuerRef:
       name: cluster-ca
       kind: ClusterIssuer
+
   maxScaleRef:
     name: {{ .Release.Name }}-maxscale
+
   galera:
     enabled: true
     primary:
@@ -30,6 +34,7 @@ spec:
     agent:
       kubernetesAuth:
         enabled: true
+
     config:
       reuseStorageVolume: false
       volumeClaimTemplate:
@@ -39,13 +44,20 @@ spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: local-storage
+
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop: ["ALL"]
+
   rootPasswordSecretKeyRef:
     name: {{ .Release.Name }}-secret
     key: ROOT_PASSWORD
+
   myCnf: |
     [mariadb-backup]
     ssl-ca = /etc/pki/ca.crt
+
+    [mysqld]
+    character-set-server = utf8mb4
+    collation-server = utf8mb4_unicode_ci

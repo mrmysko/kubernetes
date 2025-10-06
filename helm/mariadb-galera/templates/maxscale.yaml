@@ -7,6 +7,10 @@ spec:
   mariaDbRef:
     name: {{ .Release.Name }}
 
+  admin:
+    port: 8989
+    guiEnabled: true
+
   auth:
     generate: true
 
