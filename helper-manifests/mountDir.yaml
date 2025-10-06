@@ -1,4 +1,4 @@
-# This is a manifest for rooting into a pod with mountpoints.
+# This is a manifest for manipulating persistentvolumes.
 # Chown the permissions as you want.
 apiVersion: v1
 kind: Pod
@@ -17,12 +17,11 @@ spec:
       securityContext:
         runAsUser: 0
       volumeMounts:
-        # Change this
-        - name: homepage
+        - name: mount
           mountPath: /data
       resources: {}
   volumes:
     # Change this
-    - name: homepage
+    - name: mount
       persistentVolumeClaim:
         claimName: homepage-pvc
