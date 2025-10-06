@@ -16,8 +16,6 @@ app:
       memory: "256Mi"
 
 database:
-  enabled: true
-
   type:
   host:
   instanceName:
@@ -53,9 +51,18 @@ ingress:
 
 config:
   secretsDir: /secrets
+  jwtSecret:
+  sessionSecret:
+  storageEncryptionKey:
+  hmacSecret:
+
+  # PEM-formatted
+  oidcKey: |
+
   ldap:
     url:
     searchUser:
+    password:
     baseDN:
     userFilter:
     groupFilter:

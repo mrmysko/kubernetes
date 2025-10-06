@@ -9,20 +9,6 @@ Deploys [Navidrome](https://github.com/navidrome/navidrome) music server.
 
 ## Configuration
 
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n librechat librechat -f values.yaml ./```

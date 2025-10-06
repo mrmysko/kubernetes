@@ -17,21 +17,6 @@ Other deployments are annotated for autodiscovery by this deployment.
 |service.port               |Service port               |3000
 |ingress.baseUrl            |Traefik ingress URL        |
 
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n homepage homepage -f values.yaml ./```

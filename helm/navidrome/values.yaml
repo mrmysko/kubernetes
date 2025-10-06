@@ -16,11 +16,15 @@ app:
     limits:
       memory: "512Mi"
 
-network:
+service:
   port: 4533
 
 ingress:
   baseUrl:
+
+middleware:
+  whitelist:
+    ip:
 
 storage:
   smb:

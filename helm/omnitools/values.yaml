@@ -4,11 +4,11 @@ app:
 
   image:
     repository: iib0011/omni-tools
-    tag: 0.5
+    tag: 0.6.0
 
   resources:
     requests:
-      cpu: "1000m"
+      cpu: "250m"
       memory: "128Mi"
     limits:
       memory: "1Gi"

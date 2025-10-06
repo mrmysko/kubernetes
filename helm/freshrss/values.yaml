@@ -14,18 +14,17 @@ app:
       cpu: "250m"
       memory: "128Mi"
     limits:
-      cpu: "1000m"
-      memory: "256Mi"
+      memory: "512Mi"
 
-mariadb:
-  replicaCount: 1
-
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "256Mi"
-    limits:
-      memory: "1Gi"
+database:
+  type:
+  host:
+  instanceName:
+  namespace:
+  port: 3306
+  name:
+  username:
+  password:
 
 storage:
   data:

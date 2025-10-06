@@ -1,17 +1,15 @@
 appName: grafana
 app:
 
-mariadb:
+database:
+  type: mysql
   host:
+  instanceName:
+  namespace:
+  port: 3306
   name:
-  user:
-
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "256Mi"
-    limits:
-      memory: "1Gi"
+  username:
+  password:
 
 service:
   port: 3000

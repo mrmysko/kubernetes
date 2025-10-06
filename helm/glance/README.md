@@ -15,21 +15,6 @@ Deploys [Glance](https://github.com/glanceapp/glance), a homepage dashboard.
 |service.port               |Service port               |8080
 |ingress.baseUrl            |Traefik ingress URL        |
 
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n glance glance -f values.yaml ./```

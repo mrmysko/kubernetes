@@ -32,6 +32,7 @@ redis:
       memory: "256Mi"
 
   user: "default"
+  password:
   port: 6379
   existingPvcName:
 
@@ -44,6 +45,7 @@ postgres:
 
   databaseName:
   user:
+  password:
 
   resources:
     requests:

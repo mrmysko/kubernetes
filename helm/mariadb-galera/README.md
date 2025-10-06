@@ -12,21 +12,6 @@ Backups are taken nightly to S3 storage.
 
 ## Configuration
 
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n mariadb-galera mariadb-galera -f values.yaml ./```

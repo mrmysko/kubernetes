@@ -19,21 +19,6 @@ Deploys [Immich](https://github.com/immich-app/immich) photo manager.
 |config.smbUser             |
 |config.smbPassword         |
 
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
 ## Install
 
 ```helm upgrade -i --create-namespace -n immich immich -f values.yaml ./```
