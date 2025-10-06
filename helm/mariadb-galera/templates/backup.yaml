@@ -1,6 +1,6 @@
 {{- if .Values.backup.enabled }}
 apiVersion: k8s.mariadb.com/v1alpha1
-kind: Backup
+kind: PhysicalBackup
 metadata:
   name: {{ .Release.Name }}-backup
   labels:
