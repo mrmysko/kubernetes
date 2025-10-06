@@ -35,6 +35,18 @@
         description: Storage Server
         siteMonitor: [[HOMEPAGE_VAR_TRUENAS]]
 
+    - MinIO:
+        icon: si-minio
+        href: [[HOMEPAGE_VAR_MINIO]]
+        description: S3 Storage
+        siteMonitor: [[HOMEPAGE_VAR_MINIO]]
+
+    - MaxScale:
+        icon: si-mariadb
+        href: [[HOMEPAGE_VAR_MAXSCALE]]
+        description: Database Proxy
+        siteMonitor: [[HOMEPAGE_VAR_MAXSCALE]]
+
     - PiKVM:
         icon: si-raspberrypi
         href: [[HOMEPAGE_VAR_PIKVM]]
