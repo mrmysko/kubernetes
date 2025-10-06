@@ -26,7 +26,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 3Gi
+      storage: {{ .Values.storage.assets.size }}
 {{- if .Values.storage.assets.existingPvcName }}
   volumeName: {{ .Values.storage.assets.existingPvcName }}
 {{- end }}
@@ -43,7 +43,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.storage.resources.size }}
 {{- if .Values.storage.resources.existingPvcName }}
   volumeName: {{ .Values.storage.resources.existingPvcName }}
 {{- end }}

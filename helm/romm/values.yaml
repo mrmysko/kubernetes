@@ -45,10 +45,13 @@ storage:
     password:
     smbUrl:
   assets:
+    size:
     existingPvcName:
   resources:
+    size:
     existingPvcName:
   config:
+    size:
     existingPvcName:
 
 service:
