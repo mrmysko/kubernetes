@@ -1,0 +1,28 @@
+{{- if .Values.backup.enabled }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: "{{ .Release.Name }}-backup-storage"
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
+spec:
+  configuration:
+    destinationPath: s3://postgres/
+    endpointURL: "{{ .Values.backup.endpointUrl }}"
+    endpointCA: 
+      name: "{{ .Values.certificate.caBundleSecret }}"
+      key: ca.crt
+    s3Credentials:
+      accessKeyId:
+        name: "{{ .Release.Name }}-s3-credentials"
+        key: ACCESS_KEY
+      secretAccessKey:
+        name: "{{ .Release.Name }}-s3-credentials"
+        key: SECRET_KEY
+    data:
+      compression: gzip
+    wal:
+      compression: gzip
+  retentionPolicy: "30d"
+{{- end }}

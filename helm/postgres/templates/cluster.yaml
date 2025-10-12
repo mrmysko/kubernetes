@@ -1,0 +1,55 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: "{{ .Release.Name }}-cluster"
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  instances: {{ .Values.replicaCount }}
+  imageName: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imagePullPolicy: IfNotPresent
+
+  postgresql:
+    synchronous:
+      method: any
+      number: 1
+    shared_preload_libraries:
+      - "vchord.so"
+
+  bootstrap:
+    initdb:
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+
+  certificates:
+    serverTLSSecret: "{{ .Release.Name }}-server-cert"
+    serverCASecret: "{{ .Release.Name }}-server-cert"
+
+  managed:
+    roles:
+    - name: "{{ .Values.database.immich.username }}"
+      ensure: present
+      comment: Immich
+      login: true
+      superuser: false
+      passwordSecret:
+        name: "{{ .Values.database.immich.username }}-credentials"
+
+  storage:
+    storageClass: local-storage
+    size: 25Gi
+
+
+  spec:
+    extensions:
+    - name: vchord
+      ensure: present
+
+  plugins:
+  {{- if .Values.backup.enabled }}
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: "{{ .Release.Name }}-backup-storage"
+  {{- end }}

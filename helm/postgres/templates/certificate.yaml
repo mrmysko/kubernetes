@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ .Release.Name }}-server-cert"
+spec:
+  secretName: "{{ .Release.Name }}-server-cert"
+  usages:
+    - server auth
+  dnsNames:
+    - "{{ .Release.Name }}.{{ .Values.certificate.domainName }}"
+    - "{{ .Release.Name }}-rw"
+    - "{{ .Release.Name }}-rw.default"
+    - "{{ .Release.Name }}-rw.default.svc"
+    - "{{ .Release.Name }}-r"
+    - "{{ .Release.Name }}-r.default"
+    - "{{ .Release.Name }}-r.default.svc"
+    - "{{ .Release.Name }}-ro"
+    - "{{ .Release.Name }}-ro.default"
+    - "{{ .Release.Name }}-ro.default.svc"
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+    group: cert-manager.io
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
