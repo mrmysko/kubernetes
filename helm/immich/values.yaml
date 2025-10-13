@@ -36,31 +36,11 @@ redis:
   port: 6379
   existingPvcName:
 
-postgres:
-  replicaCount: 1
-
-  image:
-    repository: ghcr.io/immich-app/postgres
-    tag: 14-vectorchord0.3.0-pgvectors0.2.0
-
-  databaseName:
-  user:
-  password:
-
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "256Mi"
-    limits:
-      memory: "1Gi"
-
-  port: 5432
-  existingPvcName:
-
 database:
-  name: immich
-  username: immich-user
-  password: w65uYiEFbDu9nB
+  host:
+  name:
+  username:
+  password:
 
 storage:
   smb:
