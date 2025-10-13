@@ -6,9 +6,9 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
 data:
   TZ: "Europe/Stockholm"
-  DB_DATABASE_NAME: "{{ .Values.postgres.databaseName }}"
-  DB_HOSTNAME: "{{ .Release.Name }}-database"
-  DB_USERNAME: "{{ .Values.postgres.user }}"
+  DB_DATABASE_NAME: "{{ .Values.database.name }}"
+  DB_HOSTNAME: "{{ .Values.database.host }}"
+  DB_USERNAME: "{{ .Values.database.username }}"
   IMMICH_MACHINE_LEARNING_URL: "{{ .Values.config.machineLearning.url }}"
   REDIS_HOSTNAME: "{{ .Release.Name }}-redis.{{ .Release.Namespace }}.svc.cluster.local"
   REDIS_PORT: "{{ .Values.redis.port }}"

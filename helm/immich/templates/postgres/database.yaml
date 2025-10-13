@@ -1,0 +1,11 @@
+# The user has to be created in the cnpg manifest
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: "{{ .Release.Name }}-db"
+  namespace: postgres
+spec:
+  name: "{{ .Values.database.name }}"
+  owner: "{{ .Values.database.username }}"
+  cluster:
+    name: "postgres-cluster"
