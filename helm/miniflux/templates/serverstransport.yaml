@@ -1,0 +1,11 @@
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: {{ .Release.Name }}-transport
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  serverName: "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
+  insecureSkipVerify: false
+  rootCAs:
+    - secret: invis-external-bundle

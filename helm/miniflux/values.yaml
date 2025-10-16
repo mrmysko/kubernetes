@@ -1,0 +1,52 @@
+# -- App name
+appName: miniflux
+app:
+  # -- Number of deployments
+  replicaCount: 1
+
+  image:
+    # App image
+    repository: miniflux/miniflux
+    # -- App version
+    tag: 2.2.13
+
+  # -- App user
+  uid: 1001
+  # -- App group
+  gid: 1001
+
+database:
+  # -- Database url
+  host:
+  # -- Database namespace
+  namespace:
+  # -- Database name
+  name:
+  # -- Database user
+  username:
+  # -- Database password
+  password:
+
+ingress:
+  # -- FQDN for application, without scheme
+  baseUrl:
+
+env:
+  # -- FQDN for application, with scheme
+  baseUrl:
+
+  oidc:
+    # -- Name of OIDC application
+    name:
+    # -- URL to OIDC endpoint, without discovery
+    endpoint:
+    # -- Miniflux redirect URL
+    redirectURL:
+    # -- Miniflux client ID
+    clientID:
+    # -- Miniflux client secret
+    clientSecret:
+
+service:
+  # -- Miniflux port
+  port: 8080
