@@ -11,15 +11,14 @@ data:
   KEY_FILE: "/etc/cert/tls.key"
   DISABLE_LOCAL_AUTH: "true"
   HTTPS: "true"
-  #DISABLE_HSTS: "true"
   PORT: "{{ .Values.service.port }}"
 
   DATABASE_URL: "host={{ .Values.database.host }} dbname={{ .Values.database.name }} user={{ .Values.database.username }} password={{ .Values.database.password }}"
   RUN_MIGRATIONS: "1"
 
   OAUTH2_CLIENT_ID: "{{ .Values.env.oidc.clientID }}"
-  OAUTH2_OIDC_DISCOVERY_ENDPOINT: "{{ .Values.env.oidc.endpoint }}"
+  OAUTH2_OIDC_DISCOVERY_ENDPOINT: "{{ .Values.env.oidc.url }}"
   OAUTH2_OIDC_PROVIDER_NAME: "{{ .Values.env.oidc.name }}"
   OAUTH2_PROVIDER: "oidc"
-  OAUTH2_REDIRECT_URL: "{{ .Values.env.oidc.redirectURL }}"
+  OAUTH2_REDIRECT_URL: "{{ .Values.env.oidc.redirectUrl }}"
   OAUTH2_USER_CREATION: "true"

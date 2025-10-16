@@ -1,25 +1,33 @@
-appName: grafana
 app:
+  # -- App name
+  name: grafana
 
 database:
+  # -- Kind of database
   type: mysql
   host:
   instanceName:
   namespace:
+  # -- Database port
   port: 3306
+  # -- Database name
   name:
+  # -- Database username
   username:
   password:
 
 service:
+  # App port
   port: 3000
 
 ingress:
+  # FQDN to the application
   baseUrl:
 
 config:
   oidc:
     issuerUrl:
+    # -- App client secret
     clientSecret:
 
   datasource:

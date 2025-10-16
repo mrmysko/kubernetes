@@ -1,3 +1,6 @@
+# -- Secret name to place the certificate in
 secretName:
+# -- Common name of certificate
 commonName:
+# -- List of valid domains in certificate
 dnsNames: []

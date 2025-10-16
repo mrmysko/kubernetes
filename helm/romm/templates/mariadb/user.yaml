@@ -6,12 +6,12 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  name: {{ .Values.database.username }}
+  name: "{{ .Values.database.username }}"
   mariaDbRef:
-    name: {{ .Values.database.instanceName }}
-    namespace: {{ .Values.database.namespace }}
+    name: "{{ .Values.database.instanceName }}"
+    namespace: "{{ .Values.database.namespace }}"
   passwordSecretKeyRef:
-    name: {{ .Release.Name }}-secret
+    name: "{{ .Release.Name }}-secret"
     key: DB_PASSWD
   maxUserConnections: 20
   host: "%"

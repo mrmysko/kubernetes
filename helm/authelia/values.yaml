@@ -1,11 +1,16 @@
 app:
+  # -- App name
+  name: authelia
+  # -- Number of pods
   replicaCount: 2
 
   image:
     repository: authelia/authelia
     tag: 4.39
 
+  # -- Runtime user
   uid: 1001
+  # -- Runtime group
   gid: 1001
 
   resources:
@@ -16,6 +21,7 @@ app:
       memory: "256Mi"
 
 database:
+  # -- Kind of database
   type:
   host:
   instanceName:
@@ -26,14 +32,19 @@ database:
   password:
 
 redis:
+  # -- Number of redis pods
   replicaCount: 1
 
   image:
+    # -- Redis image pull policy
     pullPolicy:
 
+  # -- Redis port
   port: 6379
 
+  # -- Redis username
   username: default
+  # -- Redis password
   password:
 
   resources:
@@ -44,9 +55,11 @@ redis:
       memory: "256Mi"
 
 service:
+  # -- App port
   port: 9091
 
 ingress:
+  # -- FQDN for application
   baseUrl:
 
 config:
@@ -56,13 +69,19 @@ config:
   storageEncryptionKey:
   hmacSecret:
 
-  # PEM-formatted
+  # -- PEM-formatted key
   oidcKey: |
 
   ldap:
+    # -- LDAP URL
     url:
+    # -- LDAP user
     searchUser:
+    # -- LDAP password
     password:
+    # -- LDAP search root
     baseDN:
+    # -- LDAP user filter
     userFilter:
+    # -- LDAP group filter
     groupFilter:

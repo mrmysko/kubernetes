@@ -1,11 +1,6 @@
 apiVersion: v2
-name: miniflux
-description: Basic helm template for Miniflux RSS-reader
+name: Miniflux
+description: A helm chart for Miniflux RSS-reader. Connecting to a clustered CNPG postgres database.
 type: application
 version: 0.1.0
 appVersion: "2"
-
-dependencies:
-  - name: _templates
-    version: "0.1.0"
-    repository: "file://../_templates"

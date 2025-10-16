@@ -1,13 +1,20 @@
-appName: immich
 app:
+  # -- App name
+  name: immich
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: ghcr.io/immich-app/immich-server
+    # -- Image version
     tag: release
+    # -- Image pull policy
     pullPolicy: Always
 
+  # -- Runtime user
   uid:
+  # -- Runtime group
   gid:
 
   resources:
@@ -18,10 +25,13 @@ app:
       memory: "2Gi"
 
 redis:
+  # -- Number of redis pods
   replicaCount: 1
 
   image:
+    # -- Redis image
     repository: 11notes/redis
+    # -- Redis image version
     tag: 7.4.5
 
   resources:
@@ -31,15 +41,24 @@ redis:
     limits:
       memory: "256Mi"
 
-  user: "default"
+  # -- Redis username
+  user: default
+  # -- Redis password
   password:
+  # -- Redis port
   port: 6379
   existingPvcName:
 
 database:
+  # -- Database URL
   host:
+  # -- Database namespace
+  namespace:
+  # -- Database name
   name:
+  # -- Database username
   username:
+  # -- Database password
   password:
 
 storage:
@@ -47,14 +66,18 @@ storage:
     url:
 
 service:
+  # -- App port
   port: 2283
 
 ingress:
+  # -- FQDN for the application
   baseUrl:
 
 config:
   machineLearning:
     url:
 
+  # -- Samba username
   smbUser:
+  # -- Samba password
   smbPassword:

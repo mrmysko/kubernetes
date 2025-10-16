@@ -106,6 +106,7 @@
             - rommapp/romm
             - iib0011/omni-tools
             - smallstep/certificates
+            - miniflux/v2
             # Kube-adjacent
             - helm/helm
             - kubernetes/kubernetes
@@ -115,8 +116,12 @@
             - cert-manager/cert-manager
             - kubernetes-csi/csi-driver-smb
             - flannel-io/flannel
+            - cloudnative-pg/plugin-barman-cloud
+            - cert-manager/trust-manager
             # Operators
             - VictoriaMetrics/operator
             - grafana/grafana-operator
             - mongodb/mongodb-kubernetes
             - grafana/grafana-operator
+            - cloudnative-pg/cloudnative-pg
+            - mariadb-operator/mariadb-operator

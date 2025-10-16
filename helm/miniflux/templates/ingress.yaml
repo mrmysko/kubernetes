@@ -20,7 +20,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ .Values.ingress.baseUrl }}`)
+      match: Host(`{{ .Values.env.baseUrl | replace "https://" "" | replace "http://" "" }}`)
       services:
         - kind: Service
           name: "{{ .Release.Name }}-svc"

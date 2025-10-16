@@ -1,12 +1,18 @@
-appName: homepage
 app:
+  # -- App name
+  name: homepage
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: ghcr.io/gethomepage/homepage
+    # -- Image version
     tag: v1.4
 
+  # -- Runtime user
   uid: 1001
+  # -- Runtime group
   gid: 1001
 
   resources:
@@ -17,9 +23,11 @@ app:
       memory: "512Mi"
 
 service:
+  # -- App port
   port: 3000
 
 ingress:
+  # -- FQDN for the application
   baseUrl:
 
 config:

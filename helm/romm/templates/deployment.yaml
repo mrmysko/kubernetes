@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -23,7 +23,7 @@ spec:
         app.kubernetes.io/component: frontend
     spec:
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
@@ -39,9 +39,9 @@ spec:
               type: RuntimeDefault
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-env
+                name: "{{ .Release.Name }}-env"
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
@@ -68,8 +68,8 @@ spec:
             - name: {{ .Release.Name }}-config
               mountPath: /romm/config
             - name: authelia-fullchain
-              mountPath: {{ .Values.config.oidc.tlsCaCertFile }}
-              subPath: {{ .Values.config.oidc.tlsCaCertFile | base }}
+              mountPath: "{{ .Values.config.oidc.tlsCaCertFile }}"
+              subPath: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
       volumes:
         - name: {{ .Release.Name }}-assets
           persistentVolumeClaim:
@@ -87,6 +87,6 @@ spec:
           configMap:
             name: authelia-fullchain
             items:
-              - key: {{ .Values.config.oidc.tlsCaCertFile | base }}
-                path: {{ .Values.config.oidc.tlsCaCertFile | base }}
+              - key: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
+                path: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
       enableServiceLinks: false

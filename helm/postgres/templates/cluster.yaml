@@ -16,6 +16,10 @@ spec:
       number: 1
     shared_preload_libraries:
       - "vchord.so"
+    #extensions:
+    #  - name: hstore
+    #    image:
+    #      reference: styriadigital/postgres_hstore
 
   bootstrap:
     initdb:
@@ -35,16 +39,17 @@ spec:
       superuser: false
       passwordSecret:
         name: "{{ .Values.database.immich.username }}-credentials"
+    - name: "{{ .Values.database.miniflux.username }}"
+      ensure: present
+      comment: Miniflux
+      login: true
+      superuser: false
+      passwordSecret:
+        name: "{{ .Values.database.miniflux.username }}-credentials"
 
   storage:
     storageClass: local-storage
     size: 25Gi
-
-
-  spec:
-    extensions:
-    - name: vchord
-      ensure: present
 
   plugins:
   {{- if .Values.backup.enabled }}

@@ -3,9 +3,12 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: "{{ .Release.Name }}-db"
-  namespace: postgres
+  namespace: "{{ .Values.database.namespace }}"
 spec:
   name: "{{ .Values.database.name }}"
   owner: "{{ .Values.database.username }}"
   cluster:
     name: "postgres-cluster"
+  extensions:
+  - name: vchord
+    ensure: present

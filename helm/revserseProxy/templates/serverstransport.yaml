@@ -6,4 +6,6 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
 spec:
   serverName: "{{ .Values.external.url }}."
-  insecureSkipVerify: true
+  insecureSkipVerify: false
+  rootCAs:
+    - secret: invis-external-bundle

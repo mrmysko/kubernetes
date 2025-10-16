@@ -1,31 +1,30 @@
 # Grafana
 
-Deploys [Grafana](https://github.com/gethomepage/homepage), configures datasources and dashboards for kubernetes cluster and oidc login.
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
-## Prerequisites
+A Helm chart for Grafana. The database is handled by a clustered MariaDB deployment.
 
-- [Grafana operator](https://github.com/grafana/grafana-operator)
-- [MariaDB operator](https://github.com/mariadb-operator/mariadb-operator)
-- [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
-- Helm >= 3.10
+## Values
 
-## Configuration
-
-### Values
-|Parameter                  |Description                |Default  |Required|
-|---                        |---                        |:---:    |:---:|
-|service.port               |Service port               |3000
-|ingress.baseUrl            |Traefik ingress URL        |
-|config.oidc.issuerUrl      |URL to OIDC server         | 
-|config.oidc.clientSecret   |
-|config.datasource.tlsSkipVerify|                       |true
-|config.datasource.vm.name  |
-|config.datasource.vm.version|
-|config.datasource.vm.url   |
-|config.datasource.vl.name  |
-|config.datasource.vl.version|
-|config.datasource.vl.url   |
-
-## Install
-
-```helm upgrade -i --create-namespace -n grafana grafana -f values.yaml ./```
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| app.name | string | `"grafana"` | App name |
+| config.datasource.tlsSkipVerify | bool | `true` |  |
+| config.datasource.vl.name | string | `"victoriametrics-logs-datasource"` |  |
+| config.datasource.vl.url | string | `nil` |  |
+| config.datasource.vl.version | string | `"0.19.2"` |  |
+| config.datasource.vm.name | string | `"victoriametrics-metrics-datasource"` |  |
+| config.datasource.vm.url | string | `nil` |  |
+| config.datasource.vm.version | string | `"0.18.2"` |  |
+| config.oidc.clientSecret | string | `nil` | App client secret |
+| config.oidc.issuerUrl | string | `nil` |  |
+| database.host | string | `nil` |  |
+| database.instanceName | string | `nil` |  |
+| database.name | string | `nil` | Database name |
+| database.namespace | string | `nil` |  |
+| database.password | string | `nil` |  |
+| database.port | int | `3306` | Database port |
+| database.type | string | `"mysql"` | Kind of database |
+| database.username | string | `nil` | Database username |
+| ingress.baseUrl | string | `nil` |  |
+| service.port | int | `3000` |  |

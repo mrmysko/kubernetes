@@ -1,12 +1,15 @@
-appName: navidrome
 app:
+  # -- App name
+  name: navidrome
   replicaCount: 1
 
   image:
     repository: ghcr.io/navidrome/navidrome
     tag: 0.58.0
 
+  # -- Runtime user
   uid: 1001
+  # -- Runtime group
   gid: 1001
 
   resources:
@@ -17,9 +20,11 @@ app:
       memory: "512Mi"
 
 service:
+  # -- App port
   port: 4533
 
 ingress:
+  # -- FQDN for the application
   baseUrl:
 
 middleware:

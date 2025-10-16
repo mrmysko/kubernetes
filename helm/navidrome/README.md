@@ -1,43 +1,27 @@
 # Navidrome
 
-Deploys [Navidrome](https://github.com/navidrome/navidrome) music server.
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.58.0](https://img.shields.io/badge/AppVersion-0.58.0-informational?style=flat-square)
 
-## Prerequisites
+A Helm chart for Navidrome
 
-- [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
-- Helm >= 3.10
+## Values
 
-## Configuration
-
-### Values
-|Parameter                  |Description                |Default  |Required|
-|---                        |---                        |:---:    |:---:|
-|service.port               |Service port               |
-|ingress.baseUrl            |Traefik ingress URL        |
-|config.dnsServerDomain     |                           |         |
-|config.dnsServerAdminPassword|WebUI password           |         |No
-|storage.smb.url            |
-|storage.smb.uid            |
-|storage.smb.gid            |
-|storage.existingPvcName    |
-|config.reverseProxyWhitelist|
-|config.smbUser             |
-|config.smbPassword         |
-
-### Creating the secret
-Place in the templates directory.
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-secret
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-type: Opaque
-stringData:
-```
-
-## Install
-
-```helm upgrade -i --create-namespace -n navidrome navidrome -f values.yaml ./```
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| app.gid | int | `1001` | Runtime group |
+| app.image.repository | string | `"ghcr.io/navidrome/navidrome"` |  |
+| app.image.tag | string | `"0.58.0"` |  |
+| app.name | string | `"navidrome"` | App name |
+| app.replicaCount | int | `1` |  |
+| app.resources.limits.memory | string | `"512Mi"` |  |
+| app.resources.requests.cpu | string | `"500m"` |  |
+| app.resources.requests.memory | string | `"256Mi"` |  |
+| app.uid | int | `1001` | Runtime user |
+| config.reverseProxyWhitelist | string | `nil` |  |
+| config.smbPassword | string | `nil` |  |
+| config.smbUser | string | `nil` |  |
+| ingress.baseUrl | string | `nil` | FQDN for the application |
+| middleware.whitelist.ip | string | `nil` |  |
+| service.port | int | `4533` | App port |
+| storage.existingPvcName | string | `nil` |  |
+| storage.smb.url | string | `nil` |  |

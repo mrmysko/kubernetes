@@ -1,22 +1,19 @@
-# Omni-tools
+# Omnitools
 
-Deploys [omni-tools](https://github.com/iib0011/omni-tools).
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5](https://img.shields.io/badge/AppVersion-0.5-informational?style=flat-square)
 
-## Prerequisites
+A Helm chart for OmniTools
 
-- [csi-driver-smb](https://github.com/kubernetes-csi/csi-driver-smb)
-- [MariaDB operator](https://github.com/mariadb-operator/mariadb-operator)
-- [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
-- Helm >= 3.10
+## Values
 
-## Configuration
-
-### Values
-|Parameter                  |Description                |Default  |Required|
-|---                        |---                        |:---:    |:---:|
-|service.port               |Service port               |
-|ingress.baseUrl            |Traefik ingress URL        |
-
-## Install
-
-```helm upgrade -i --create-namespace -n omnitools omnitools -f values.yaml ./```
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| app.image.repository | string | `"iib0011/omni-tools"` | App image |
+| app.image.tag | string | `"0.6.0"` | Image version |
+| app.name | string | `"omnitools"` |  |
+| app.replicaCount | int | `1` | Number of pods |
+| app.resources.limits.memory | string | `"1Gi"` |  |
+| app.resources.requests.cpu | string | `"250m"` |  |
+| app.resources.requests.memory | string | `"128Mi"` |  |
+| ingress.baseUrl | string | `nil` | FQDN for the application |
+| service.port | int | `80` | App port |

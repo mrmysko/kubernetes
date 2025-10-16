@@ -1,6 +1,6 @@
 apiVersion: v2
-name: bookstack
-description: A Helm chart for BookStack
+name: Bookstack
+description: A Helm chart for BookStack. The database is handled by a clustered MariaDB deployment.
 type: application
 version: 0.3.0
 appVersion: "25.2"

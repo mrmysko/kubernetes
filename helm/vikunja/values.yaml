@@ -1,13 +1,20 @@
-appName: vikunja
 app:
+  # -- App name
+  name: vikunja
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: vikunja/vikunja
+    # -- App version
     tag: 1.0.0-rc2
+    # -- Image pull policy
     pullPolicy: IfNotPresent
 
+  # -- Runtime user
   uid: 1000
+  # -- Runtime group
   gid: 1000
 
   resources:
@@ -18,21 +25,34 @@ app:
       memory: "512Mi"
 
 database:
+  # -- Kind of database
   type:
+  # -- Database url
   host:
+  # -- Database deployment name
   instanceName:
+  # -- Database namespace
   namespace:
+  # -- Database name
   name:
+  # -- Database username
   username:
+  # -- Database password
   password:
 
 service:
+  # -- App port
   port: 3456
 
 ingress:
+  # -- FQDN for application
   baseUrl:
 
 config:
   oidc:
+    # -- URL to OIDC endpoint
     url:
-    secret:
+    # -- App client ID
+    clientID:
+    # -- App client secret
+    clientSecret:

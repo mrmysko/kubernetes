@@ -60,7 +60,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.storage.config.size }}
 {{- if .Values.storage.config.existingPvcName }}
   volumeName: {{ .Values.storage.config.existingPvcName }}
 {{- end }}

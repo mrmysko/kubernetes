@@ -1,13 +1,20 @@
-appName: technitium
 app:
+  # -- App name
+  name: technitium
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: technitium/dns-server
+    # -- App version
     tag: latest
+    # -- Image pull policy
     pullPolicy: Always
 
+  # -- Runtime user
   uid: 1001
+  # -- Runtime group
   gid: 1001
 
   resources:
@@ -18,11 +25,15 @@ app:
       memory: "512Mi"
 
 service:
+  # -- App port
   port: 5380
 
 ingress:
+  # -- FQDN for application
   baseUrl:
 
 config:
+  # -- Root domain
   dnsServerDomain:
+  # -- Admin password
   dnsServerAdminPassword:

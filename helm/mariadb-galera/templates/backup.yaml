@@ -9,7 +9,7 @@ metadata:
 spec:
   mariaDbRef:
     name: {{ .Release.Name }}
-  maxRetention: 1440h # 60 days
+  maxRetention: 720h # 30 days
   compression: gzip
   storage:
     s3:

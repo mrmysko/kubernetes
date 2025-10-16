@@ -31,9 +31,13 @@ database:
   host:
   instanceName:
   namespace:
+  # -- Database port
   port: 3306
+  # -- Database name
   name:
+  # -- Database user
   username:
+  # -- Database password
   password:
 
 service:
@@ -43,11 +47,11 @@ ingress:
   enabled: true
   baseUrl:
 
-# App specific config
 config:
   appKey:
 
   oidc:
+    # -- OIDC name
     name:
     clientId:
     clientSecret:

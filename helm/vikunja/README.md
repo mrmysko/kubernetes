@@ -1,14 +1,32 @@
-# RomM
+# Vikunja
 
-Deploys [Vikunja](https://github.com/go-vikunja/vikunja).
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-rc2](https://img.shields.io/badge/AppVersion-1.0.0--rc2-informational?style=flat-square)
 
-## Prerequisites
+A Helm chart for Vikunja. The database is handled by a clustered MariaDB deployment.
 
-- [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
-- Helm >= 3.10
+## Values
 
-## Configuration
-
-## Install
-
-```helm upgrade -i --create-namespace -n vikunja vikunja -f values.yaml ./```
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| app.gid | int | `1000` | Runtime group |
+| app.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
+| app.image.repository | string | `"vikunja/vikunja"` | App image |
+| app.image.tag | string | `"1.0.0-rc2"` | App version |
+| app.name | string | `"vikunja"` | App name |
+| app.replicaCount | int | `1` | Number of pods |
+| app.resources.limits.memory | string | `"512Mi"` |  |
+| app.resources.requests.cpu | string | `"250m"` |  |
+| app.resources.requests.memory | string | `"256Mi"` |  |
+| app.uid | int | `1000` | Runtime user |
+| config.oidc.clientID | string | `nil` | App client ID |
+| config.oidc.clientSecret | string | `nil` | App client secret |
+| config.oidc.url | string | `nil` | URL to OIDC endpoint |
+| database.host | string | `nil` | Database url |
+| database.instanceName | string | `nil` | Database deployment name |
+| database.name | string | `nil` | Database name |
+| database.namespace | string | `nil` | Database namespace |
+| database.password | string | `nil` | Database password |
+| database.type | string | `nil` | Kind of database |
+| database.username | string | `nil` | Database username |
+| ingress.baseUrl | string | `nil` | FQDN for application |
+| service.port | int | `3456` | App port |

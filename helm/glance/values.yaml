@@ -1,13 +1,20 @@
-appName: glance
 app:
+  # -- App name
+  name: glance
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: glanceapp/glance
+    # -- Image version
     tag: latest
+    # -- Image pull policy
     pullPolicy: Always
 
+  # -- Runtime user
   uid: 1001
+  # -- Runtime group
   gid: 1001
 
   resources:
@@ -18,7 +25,9 @@ app:
       memory: "256Mi"
 
 service:
+  # -- App port
   port: 8080
 
 ingress:
+  # FQDN for the application
   baseUrl:

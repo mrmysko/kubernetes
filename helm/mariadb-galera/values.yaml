@@ -1,17 +1,24 @@
 galera:
-  replicaCount: 2
+  # -- Number of replicating database pods
+  replicaCount: 3
 
+  # -- Root password
   rootPassword:
 
 maxScale:
   enabled: true
   metalLB:
+    # -- Loadbalancer IP
     ip:
 
 backup:
   enabled: true
+  # -- Backup cron schedule
   schedule: "0 23 * * *"
 
+  # -- S3 endpoint url
   endpoint:
+  # -- Username
   accessKey:
+  # -- Password
   secretKey:

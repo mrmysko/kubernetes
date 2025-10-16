@@ -1,43 +1,60 @@
-appName: romm
 app:
+  # -- App name
+  name: romm
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: rommapp/romm
-    tag: 4.3.0
+    # -- Image version
+    tag: 4.3.1
 
-  uid: "3005"
-  gid: "3100"
+  # -- Runtime user
+  uid: 3005
+  # -- Runtime group
+  gid: 3100
 
   resources:
     requests:
       cpu: "500m"
       memory: "512Mi"
     limits:
-      memory: "2Gi"
+      memory: "5Gi"
 
 database:
-  type:
+  # -- Kind of database
+  type: mariadb
+  # -- Database URL
   host:
+  # -- Database deployment name
   instanceName:
+  # -- Database namespace
   namespace:
-  port:
+  # -- Database port
+  port: 3306
+  # -- Database name
   name:
+  # -- Database username
   username:
+  # -- Database password
   password:
 
 redis:
+  # -- Number of Redis pods
   replicaCount: 1
 
+  # -- Redis password
   password:
+  # -- Redis port
   port: 6379
 
   resources:
     requests:
       cpu: "250m"
-      memory: "64Mi"
+      memory: "128Mi"
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
 
 storage:
   games:
@@ -55,22 +72,30 @@ storage:
     existingPvcName:
 
 service:
+  # App port
   port: 8080
 
 ingress:
+  # FQDN for application
   baseUrl:
 
 config:
   igdb:
+    # -- IGDB client ID
     clientId:
+    # -- IGDB client secret
     clientSecret:
 
+  # -- Steam grid API key
   steamGridApiKey:
   rommAuthSecretKey:
 
   oidc:
+    # -- App client ID
     clientId:
+    # -- App client secret
     clientSecret:
     redirectUri:
     serverApplicationUrl:
+    # -- Path to OIDC certificate
     tlsCaCertFile:

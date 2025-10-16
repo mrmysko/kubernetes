@@ -1,16 +1,6 @@
-# Reverse Proxy
+# reverse-proxy
 
-A deployment for proxying external services with middlewares between.
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1](https://img.shields.io/badge/AppVersion-0.1-informational?style=flat-square)
 
-## Prerequisites
+Basic helm template for proxying external services
 
-- [Traefik](https://doc.traefik.io/traefik/setup/kubernetes/)
-- Helm >= 3.10
-
-## Configuration
-
-### Values
-
-## Install
-
-```helm upgrade -i --create-namespace -n reverse reverse -f values.yaml ./```

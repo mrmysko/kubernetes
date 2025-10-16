@@ -11,4 +11,4 @@ spec:
       targetPort: {{ .Values.service.port }}
       protocol: TCP
   selector:
-    app.kubernetes.io/name: "{{ .Values.appName | default .Chart.Name }}"
+    app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"

@@ -1,17 +1,19 @@
-# MariaDB Galera
+# mariadb-galera
 
-Deploys a MariaDB Galera cluster.
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
-Backups are taken nightly to S3 storage.
+A Helm chart for a MariaDB cluster
 
-## Prerequisites
+## Values
 
-- [Local Path Provisioner](https://github.com/rancher/local-path-provisioner)
-- [MariaDB operator](https://github.com/mariadb-operator/mariadb-operator)
-- Helm >= 3.10
-
-## Configuration
-
-## Install
-
-```helm upgrade -i --create-namespace -n mariadb-galera mariadb-galera -f values.yaml ./```
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| backup.accessKey | string | `nil` | Username |
+| backup.enabled | bool | `true` |  |
+| backup.endpoint | string | `nil` | S3 endpoint url |
+| backup.schedule | string | `"0 23 * * *"` | Backup cron schedule |
+| backup.secretKey | string | `nil` | Password |
+| galera.replicaCount | int | `3` | Number of replicating database pods |
+| galera.rootPassword | string | `nil` | Root password |
+| maxScale.enabled | bool | `true` |  |
+| maxScale.metalLB.ip | string | `nil` | Loadbalancer IP |

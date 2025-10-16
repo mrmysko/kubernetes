@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-redis
+  name: "{{ .Release.Name }}-redis"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: cache
@@ -12,7 +12,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/component: cache
   template:
     metadata:
@@ -21,7 +21,7 @@ spec:
         app.kubernetes.io/component: cache
     spec:
       containers:
-        - name: {{ .Release.Name }}-redis
+        - name: "{{ .Release.Name }}-redis"
           image: 11notes/redis:7.4.5
           imagePullPolicy: {{ .Values.redis.image.pullPolicy | default "IfNotPresent" }}
           args: ["--in-memory"]
@@ -40,7 +40,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-secret
+                  name: "{{ .Release.Name }}-secret"
                   key: REDIS_PASSWORD
           resources:
           {{- toYaml .Values.redis.resources | nindent 12 }}

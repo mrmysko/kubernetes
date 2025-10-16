@@ -26,6 +26,6 @@ spec:
           name: {{ .Release.Name }}-svc
           port: {{ .Values.service.port }}
           scheme: https
-          serversTransport: {{ .Release.Name }}-transport
+          serversTransport: "{{ .Release.Name }}-transport"
           sticky:
             cookie: {}

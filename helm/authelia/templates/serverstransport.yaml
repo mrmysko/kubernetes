@@ -5,5 +5,7 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  serverName: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
-  insecureSkipVerify: true
+  serverName: "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
+  insecureSkipVerify: false
+  rootCAs:
+    - secret: invis-external-bundle
