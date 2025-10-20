@@ -5,7 +5,9 @@ app:
   replicaCount: 2
 
   image:
+    # -- App image
     repository: authelia/authelia
+    # -- Image version
     tag: 4.39
 
   # -- Runtime user
@@ -23,12 +25,19 @@ app:
 database:
   # -- Kind of database
   type:
+  # -- FQDN to database
   host:
+  # -- Database deployment name
   instanceName:
+  # -- Database namespace
   namespace:
+  # -- Database port
   port: 3306
+  # -- Database name
   name:
+  # -- Database username
   username:
+  # -- Database password
   password:
 
 redis:
@@ -59,10 +68,11 @@ service:
   port: 9091
 
 ingress:
-  # -- FQDN for application
+  # -- FQDN to application
   baseUrl:
 
 config:
+  # -- Directory to mount secret files in
   secretsDir: /secrets
   jwtSecret:
   sessionSecret:

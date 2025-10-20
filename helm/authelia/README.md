@@ -9,8 +9,8 @@ A Helm chart for Authelia. The database is handled by a clustered MariaDB deploy
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | app.gid | int | `1001` | Runtime group |
-| app.image.repository | string | `"authelia/authelia"` |  |
-| app.image.tag | float | `4.39` |  |
+| app.image.repository | string | `"authelia/authelia"` | App image |
+| app.image.tag | float | `4.39` | Image version |
 | app.name | string | `"authelia"` | App name |
 | app.replicaCount | int | `2` | Number of pods |
 | app.resources.limits.memory | string | `"256Mi"` |  |
@@ -26,18 +26,18 @@ A Helm chart for Authelia. The database is handled by a clustered MariaDB deploy
 | config.ldap.url | string | `nil` | LDAP URL |
 | config.ldap.userFilter | string | `nil` | LDAP user filter |
 | config.oidcKey | string | `""` | PEM-formatted key |
-| config.secretsDir | string | `"/secrets"` |  |
+| config.secretsDir | string | `"/secrets"` | Directory to mount secret files in |
 | config.sessionSecret | string | `nil` |  |
 | config.storageEncryptionKey | string | `nil` |  |
-| database.host | string | `nil` |  |
-| database.instanceName | string | `nil` |  |
-| database.name | string | `nil` |  |
-| database.namespace | string | `nil` |  |
-| database.password | string | `nil` |  |
-| database.port | int | `3306` |  |
+| database.host | string | `nil` | FQDN to database |
+| database.instanceName | string | `nil` | Database deployment name |
+| database.name | string | `nil` | Database name |
+| database.namespace | string | `nil` | Database namespace |
+| database.password | string | `nil` | Database password |
+| database.port | int | `3306` | Database port |
 | database.type | string | `nil` | Kind of database |
-| database.username | string | `nil` |  |
-| ingress.baseUrl | string | `nil` | FQDN for application |
+| database.username | string | `nil` | Database username |
+| ingress.baseUrl | string | `nil` | FQDN to application |
 | redis.image.pullPolicy | string | `nil` | Redis image pull policy |
 | redis.password | string | `nil` | Redis password |
 | redis.port | int | `6379` | Redis port |

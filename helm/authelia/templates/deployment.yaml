@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -14,7 +14,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
+      app.kubernetes.io/name: {{ .Values.app.name | default .Chart.Name }}
       app.kubernetes.io/component: frontend
   template:
     metadata:
