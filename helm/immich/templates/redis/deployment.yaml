@@ -25,6 +25,8 @@ spec:
         - name: {{ .Release.Name }}-redis
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy | default "IfNotPresent" }}
+          args:
+            - "--in-memory"
           ports:
             - containerPort: {{ .Values.redis.port }}
           env:
@@ -35,16 +37,16 @@ spec:
                   key: REDIS_PASSWORD
           resources:
           {{- toYaml .Values.redis.resources | nindent 12 }}
-          #livenessProbe:
-          #  exec:
-          #    command: ["/usr/local/bin/redis-cli", "-a", "{{ .Values.redis.password }}", "ping"]
-          #  initialDelaySeconds: 15
-          #  periodSeconds: 10
-          #readinessProbe:
-          #  exec:
-          #    command: ["/usr/local/bin/redis-cli", "-a", "{{ .Values.redis.password }}", "ping"]
-          #  initialDelaySeconds: 15
-          #  periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -54,10 +56,3 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-          volumeMounts:
-            - name: {{ .Release.Name }}-redis-data
-              mountPath: /data
-      volumes:
-        - name: {{ .Release.Name }}-redis-data
-          persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-redis-data

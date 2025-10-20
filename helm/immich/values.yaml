@@ -47,7 +47,6 @@ redis:
   password:
   # -- Redis port
   port: 6379
-  existingPvcName:
 
 database:
   # -- Database URL
@@ -63,6 +62,7 @@ database:
 
 storage:
   smb:
+    # -- Samba share URL
     url:
 
 service:

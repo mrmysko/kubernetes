@@ -38,4 +38,4 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 | redis.resources.requests.memory | string | `"64Mi"` |  |
 | redis.user | string | `"default"` | Redis username |
 | service.port | int | `2283` | App port |
-| storage.smb.url | string | `nil` |  |
+| storage.smb.url | string | `nil` | Samba share URL |
