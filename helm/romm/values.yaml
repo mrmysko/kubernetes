@@ -44,6 +44,10 @@ redis:
   # -- Number of Redis pods
   replicaCount: 1
 
+  image:
+    repository: 11notes/redis
+    tag: 7.4.5
+
   # -- Redis password
   password:
   # -- Redis port
