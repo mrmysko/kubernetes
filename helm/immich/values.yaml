@@ -64,6 +64,11 @@ storage:
   smb:
     # -- Samba share URL
     url:
+    share:
+    # -- Samba username
+    username:
+    # -- Samba password
+    password:
 
 service:
   # -- App port
@@ -76,8 +81,3 @@ ingress:
 config:
   machineLearning:
     url:
-
-  # -- Samba username
-  smbUser:
-  # -- Samba password
-  smbPassword:

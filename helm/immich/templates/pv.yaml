@@ -25,7 +25,7 @@ spec:
     driver: smb.csi.k8s.io
     volumeHandle: "{{ .Release.Name }}-smb-share-01"
     volumeAttributes:
-      source: "{{ .Values.storage.smb.url }}"
+      source: "//{{ .Values.storage.smb.url }}/{{ .Values.storage.smb.share }}"
     nodeStageSecretRef:
       name: "{{ .Release.Name }}-smb-credentials"
       namespace: kube-system
