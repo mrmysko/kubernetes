@@ -61,10 +61,11 @@ redis:
       memory: "512Mi"
 
 storage:
-  games:
+  smb:
+    url:
+    share:
     username:
     password:
-    smbUrl:
   assets:
     size:
     existingPvcName:

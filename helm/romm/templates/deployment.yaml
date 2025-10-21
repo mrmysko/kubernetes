@@ -39,6 +39,28 @@ spec:
               value: "{{ .Values.database.username }}"
             - name: DB_PASSWORD
               value: "{{ .Values.database.password }}"
+        - name: wait-for-samba
+          image: alpine:3.20
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk add --no-cache samba-client > /dev/null
+              echo "Waiting for SMB share "//${SMB_URL}/${SMB_SHARE}"..."
+              until smbclient -L "//${SMB_URL}" -U "${SMB_USER}%${SMB_PASS}" -m SMB3 >/dev/null 2>&1; do
+                echo "Samba share not ready yet, retrying..."
+                sleep 5
+              done
+              echo "Samba share is available."
+          env:
+            - name: SMB_URL
+              value: "{{ .Values.storage.smb.url }}"
+            - name: SMB_SHARE
+              value: "{{ .Values.storage.smb.share }}"
+            - name: SMB_USER
+              value: "{{ .Values.storage.smb.username }}"
+            - name: SMB_PASS
+              value: "{{ .Values.storage.smb.password }}"
       containers:
         - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
@@ -66,14 +88,14 @@ spec:
               scheme: HTTP
               path: /api/heartbeat
               port: {{ .Values.service.port }}
-            initialDelaySeconds: 15
+            initialDelaySeconds: 20
             periodSeconds: 10
           readinessProbe:
             httpGet:
               scheme: HTTP
               path: /api/heartbeat
               port: {{ .Values.service.port }}
-            initialDelaySeconds: 15
+            initialDelaySeconds: 20
             periodSeconds: 10
           volumeMounts:
             - name: {{ .Release.Name }}-assets
