@@ -24,13 +24,21 @@ app:
       memory: "512Mi"
 
 database:
+  # -- Kind of database
   type:
+  # -- FQDN to database
   host:
+  # -- Database deployment name
   instanceName:
+  # -- Database namespace
   namespace:
+  # -- Database port
   port: 3306
+  # -- Database name
   name:
+  # -- Database username
   username:
+  # -- Database password
   password:
 
 storage:
@@ -44,10 +52,18 @@ service:
   port: 8080
 
 ingress:
+  # -- FQDN to application
   baseUrl:
 
 config:
+  # -- IPs allowed to proxy to app
   trustedProxy:
 
   oidc:
-    providerMetadataUrl:
+    # -- OIDC endpoint url, including discovery
+    url:
+    # -- OIDC client ID
+    clientId:
+    # -- OIDC client secret
+    clientSecret:
+    cryptoKey:

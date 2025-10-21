@@ -18,17 +18,20 @@ A Helm chart for FreshRSS. The database is handled by a clustered MariaDB deploy
 | app.resources.requests.cpu | string | `"250m"` |  |
 | app.resources.requests.memory | string | `"128Mi"` |  |
 | app.uid | int | `33` | Runtime user |
-| config.oidc.providerMetadataUrl | string | `nil` |  |
-| config.trustedProxy | string | `nil` |  |
-| database.host | string | `nil` |  |
-| database.instanceName | string | `nil` |  |
-| database.name | string | `nil` |  |
-| database.namespace | string | `nil` |  |
-| database.password | string | `nil` |  |
-| database.port | int | `3306` |  |
-| database.type | string | `nil` |  |
-| database.username | string | `nil` |  |
-| ingress.baseUrl | string | `nil` |  |
+| config.oidc.clientId | string | `nil` | OIDC client ID |
+| config.oidc.clientSecret | string | `nil` | OIDC client secret |
+| config.oidc.cryptoKey | string | `nil` |  |
+| config.oidc.url | string | `nil` | OIDC endpoint url, including discovery |
+| config.trustedProxy | string | `nil` | IPs allowed to proxy to app |
+| database.host | string | `nil` | FQDN to database |
+| database.instanceName | string | `nil` | Database deployment name |
+| database.name | string | `nil` | Database name |
+| database.namespace | string | `nil` | Database namespace |
+| database.password | string | `nil` | Database password |
+| database.port | int | `3306` | Database port |
+| database.type | string | `nil` | Kind of database |
+| database.username | string | `nil` | Database username |
+| ingress.baseUrl | string | `nil` | FQDN to application |
 | service.port | int | `8080` | App port |
 | storage.data.existingPvcName | string | `nil` |  |
 | storage.extensions.existingPvcName | string | `nil` |  |
