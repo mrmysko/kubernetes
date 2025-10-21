@@ -12,7 +12,7 @@ spec:
     name: "{{ .Values.database.instanceName }}"
     namespace: "{{ .Values.database.namespace }}"
   passwordSecretKeyRef:
-    name: {{ .Release.Name }}-secret
+    name: "{{ .Release.Name }}-secret"
     key: DB_PASSWORD
   maxUserConnections: 20
   host: "%"

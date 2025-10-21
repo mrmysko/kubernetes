@@ -18,6 +18,6 @@ data:
   {{- end }}
   OIDC_DISPLAY_NAME_CLAIMS: "{{ .Values.config.oidc.displayNameClaims }}"
   OIDC_END_SESSION_ENDPOINT: "{{ .Values.config.oidc.endSessionEndpoint }}"
-  OIDC_ISSUER: "{{ .Values.config.oidc.issuer }}"
+  OIDC_ISSUER: "{{ .Values.config.oidc.url }}"
   OIDC_NAME: "{{ .Values.config.oidc.name }}"
   OIDC_ISSUER_DISCOVER: "true"

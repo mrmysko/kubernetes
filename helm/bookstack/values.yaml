@@ -1,11 +1,15 @@
-appName: bookstack
-
 app:
+  # -- App name
+  name: bookstack
+  # -- Number of pods
   replicaCount: 1
 
   image:
+    # -- App image
     repository: solidnerd/bookstack
+    # -- Image version
     tag: 25.2
+    # -- Image pull policy
     pullPolicy: IfNotPresent
 
   resources:
@@ -28,8 +32,11 @@ storage:
 database:
   enabled: true
 
+  # -- FQDN to database
   host:
+  # -- Database deployment name
   instanceName:
+  # -- Database namespace
   namespace:
   # -- Database port
   port: 3306
@@ -41,10 +48,12 @@ database:
   password:
 
 service:
+  # -- App port
   port: 8080
 
 ingress:
   enabled: true
+  # -- FQDN to application
   baseUrl:
 
 config:
@@ -53,8 +62,12 @@ config:
   oidc:
     # -- OIDC name
     name:
+    # -- OIDC endpoint URL
+    url:
+    # -- App client ID
     clientId:
+    # -- App client secret
     clientSecret:
+    # -- Logout URL
     endSessionEndpoint:
-    issuer:
     displayNameClaims:

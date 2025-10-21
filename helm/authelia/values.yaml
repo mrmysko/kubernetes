@@ -45,8 +45,8 @@ redis:
   replicaCount: 1
 
   image:
-    # -- Redis image pull policy
-    pullPolicy:
+    repository: 11notes/redis
+    tag: 7.4.5
 
   # -- Redis port
   port: 6379
