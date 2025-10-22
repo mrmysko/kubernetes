@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -14,14 +14,14 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.appName | default .Chart.Name }}
+      app.kubernetes.io/name: {{ .Values.app.name | default .Chart.Name }}
   template:
     metadata:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
-      serviceAccountName: {{ .Release.Name }}
+      serviceAccountName: "{{ .Release.Name }}"
       automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
@@ -32,51 +32,50 @@ spec:
         - name: init-chown
           image: busybox:1.36
           command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /data"]
-          securityContext:
-            allowPrivilegeEscalation: false
-            seccompProfile:
-              type: RuntimeDefault
           volumeMounts:
-            - name: {{ .Release.Name }}-persistence
+            - name: "{{ .Release.Name }}-persistence"
               mountPath: /data
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
-          imagePullPolicy: Always
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
-              value: {{ .Values.ingress.baseUrl }}
+              value: "{{ .Values.ingress.baseUrl }}"
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          livenessProbe:
+          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
+          readinessProbe:
+          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
           securityContext:
+            allowPrivilegeEscalation: false
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
-            allowPrivilegeEscalation: false
             capabilities:
               drop:
                 - ALL
             runAsNonRoot: true
           volumeMounts:
-            - name: {{ .Release.Name }}-config
+            - name: "{{ .Release.Name }}-config"
               mountPath: /app/config/
             - name: logs
               mountPath: /app/config/logs
-            - name: {{ .Release.Name }}-persistence
+            - name: "{{ .Release.Name }}-persistence"
               mountPath: /app/public/images
       volumes:
-        - name: {{ .Release.Name }}-persistence
+        - name: "{{ .Release.Name }}-persistence"
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-pvc
-        - name: {{ .Release.Name }}-config
+            claimName: "{{ .Release.Name }}-pvc"
+        - name: "{{ .Release.Name }}-config"
           configMap:
-            name: {{ .Release.Name }}-config
+            name: "{{ .Release.Name }}-config"
         - name: logs
           emptyDir: {}

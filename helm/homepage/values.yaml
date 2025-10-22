@@ -22,6 +22,22 @@ app:
     limits:
       memory: "512Mi"
 
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /favicon-16x16.png
+      port: 3000
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /favicon-16x16.png
+      port: 3000
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
 service:
   # -- App port
   port: 3000
@@ -29,5 +45,3 @@ service:
 ingress:
   # -- FQDN for the application
   baseUrl:
-
-config:
