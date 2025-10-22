@@ -17,6 +17,22 @@ app:
   # -- Runtime group
   gid: 1001
 
+  livenessProbe:
+    httpGet:
+      scheme: HTTPS
+      path: /liveness
+      port: 443
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTPS
+      path: /readiness
+      port: 443
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
 database:
   # -- Database url
   host:
@@ -30,7 +46,7 @@ database:
   password:
 
 env:
-  # -- FQDN for application, with scheme
+  # -- FQDN to application, with scheme
   baseUrl:
 
   oidc:
