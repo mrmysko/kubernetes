@@ -35,17 +35,11 @@ spec:
                   name: {{ .Release.Name }}-secret
                   key: REDIS_PASSWORD
           resources:
-          {{- toYaml .Values.redis.resources | nindent 12 }}
+          {{- toYaml ( .Values.redis.resources | default dict ) | nindent 12 }}
           livenessProbe:
-            exec:
-              command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml ( .Values.redis.livenessProbe | default dict ) | nindent 12 }}
           readinessProbe:
-            exec:
-              command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
-            initialDelaySeconds: 5
-            periodSeconds: 10
+          {{- toYaml ( .Values.redis.readinessProbe | default dict ) | nindent 12 }}
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000

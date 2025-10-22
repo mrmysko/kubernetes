@@ -14,7 +14,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.app.name | default .Chart.Name }}
+      app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"
       app.kubernetes.io/component: frontend
   template:
     metadata:
@@ -40,7 +40,7 @@ spec:
             - name: DB_PASSWORD
               value: "{{ .Values.database.password }}"
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           command:
@@ -48,7 +48,6 @@ spec:
           args:
             - "--config=/config/configuration.yml"
             - "--config=/config/configuration.clients.yml"
-          imagePullPolicy: Always
           ports:
             - containerPort: {{ .Values.service.port }}
           securityContext:
@@ -62,42 +61,32 @@ spec:
               type: RuntimeDefault
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-env
+                name: "{{ .Release.Name }}-env"
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
-            httpGet:
-              scheme: HTTPS
-              path: /api/health
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
           readinessProbe:
-            httpGet:
-              scheme: HTTPS
-              path: /api/health
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
           volumeMounts:
-            - name: {{ .Release.Name }}-config
+            - name: "{{ .Release.Name }}-config"
               mountPath: /config
-            - name: {{ .Release.Name }}-cert
+            - name: "{{ .Release.Name }}-cert"
               mountPath: /tmp/certs
               readOnly: true
-            - name: {{ .Release.Name }}-secret
-              mountPath: {{ .Values.config.secretsDir }}
+            - name: "{{ .Release.Name }}-secret"
+              mountPath: "{{ .Values.config.secretsDir }}"
               readOnly: true
       volumes:
-        - name: {{ .Release.Name }}-config
+        - name: "{{ .Release.Name }}-config"
           configMap:
-            name: {{ .Release.Name }}-config
-        - name: {{ .Release.Name }}-cert
+            name: "{{ .Release.Name }}-config"
+        - name: "{{ .Release.Name }}-cert"
           secret:
-            secretName: {{ .Release.Name }}-server-cert
-        - name: {{ .Release.Name }}-secret
+            secretName: "{{ .Release.Name }}-server-cert"
+        - name: "{{ .Release.Name }}-secret"
           secret:
-            secretName: {{ .Release.Name }}-secret
+            secretName: "{{ .Release.Name }}-secret"
       enableServiceLinks: false

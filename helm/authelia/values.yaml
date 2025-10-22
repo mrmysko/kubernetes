@@ -63,6 +63,18 @@ redis:
     limits:
       memory: "256Mi"
 
+  livenessProbe:
+    exec:
+      command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    exec:
+      command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
 service:
   # -- App port
   port: 9091
