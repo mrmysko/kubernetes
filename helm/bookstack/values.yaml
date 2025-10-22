@@ -19,11 +19,20 @@ app:
     limits:
       memory: "256Mi"
 
-  healthCheck:
-    enabled: true
-    scheme: HTTP
-    path: /status
-    initialDelay: 10
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /status
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /status
+      port: 8080
+    initialDelaySeconds: 10
     periodSeconds: 10
 
 storage:

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -11,8 +11,8 @@ spec:
   replicas: {{ .Values.app.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.app.name | default .Chart.Name }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -39,7 +39,7 @@ spec:
               value: "{{ .Values.database.password }}"
       {{- end }}
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
@@ -53,29 +53,17 @@ spec:
               type: RuntimeDefault
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
-          {{- if .Values.app.healthCheck.enabled }}
           livenessProbe:
-            httpGet:
-              scheme: {{ .Values.app.healthCheck.scheme }}
-              path: {{ .Values.app.healthCheck.path }}
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: {{ .Values.app.healthCheck.initialDelay }}
-            periodSeconds: {{ .Values.app.healthCheck.periodSeconds }}
+          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
           readinessProbe:
-            httpGet:
-              scheme: {{ .Values.app.healthCheck.scheme }}
-              path: {{ .Values.app.healthCheck.path }}
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: {{ .Values.app.healthCheck.initialDelay }}
-            periodSeconds: {{ .Values.app.healthCheck.periodSeconds }}
-          {{- end }}
+          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-config
+                name: "{{ .Release.Name }}-config"
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
           volumeMounts:
-            - name: {{ .Release.Name }}-storage
+            - name: "{{ .Release.Name }}-storage"
               mountPath: /var/www/bookstack/storage/uploads
               subPath: uploads
             {{- if (.Values.database.enabled) }}
@@ -92,6 +80,6 @@ spec:
               - key: ca.crt
                 path: ca.crt
         {{- end }}
-        - name: {{ .Release.Name }}-storage
+        - name: "{{ .Release.Name }}-storage"
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-pvc
+            claimName: "{{ .Release.Name }}-pvc"
