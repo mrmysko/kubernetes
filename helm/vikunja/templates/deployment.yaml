@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -14,7 +14,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/component: frontend
   template:
     metadata:
@@ -23,18 +23,22 @@ spec:
         app.kubernetes.io/component: frontend
     spec:
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: {{ .Values.service.port }}
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
             - configMapRef:
-                name: {{ .Release.Name }}-env
+                name: "{{ .Release.Name }}-env"
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          livenessProbe:
+          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
+          readinessProbe:
+          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
@@ -51,7 +55,7 @@ spec:
       volumes:
         - name: configmap
           configMap:
-            name: {{ .Release.Name }}-config
+            name: "{{ .Release.Name }}-config"
             items:
               - key: config.yml
                 path: config.yml
