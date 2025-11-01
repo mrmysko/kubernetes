@@ -43,19 +43,9 @@ spec:
           resources:
           {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
           livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
           readinessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}

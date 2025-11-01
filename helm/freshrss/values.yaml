@@ -23,6 +23,22 @@ app:
     limits:
       memory: "512Mi"
 
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/greader.php
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/greader.php
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
 database:
   # -- Kind of database
   type:

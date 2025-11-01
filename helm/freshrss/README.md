@@ -12,7 +12,17 @@ A Helm chart for FreshRSS. The database is handled by a clustered MariaDB deploy
 | app.image.pullPolicy | string | `"Always"` | Image pull policy |
 | app.image.repository | string | `"ghcr.io/mrmysko/docker-compost/789548356823"` | App image |
 | app.image.tag | string | `"latest"` | Image version |
+| app.livenessProbe.httpGet.path | string | `"/api/greader.php"` |  |
+| app.livenessProbe.httpGet.port | int | `8080` |  |
+| app.livenessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| app.livenessProbe.initialDelaySeconds | int | `10` |  |
+| app.livenessProbe.periodSeconds | int | `10` |  |
 | app.name | string | `"freshrss"` |  |
+| app.readinessProbe.httpGet.path | string | `"/api/greader.php"` |  |
+| app.readinessProbe.httpGet.port | int | `8080` |  |
+| app.readinessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| app.readinessProbe.initialDelaySeconds | int | `10` |  |
+| app.readinessProbe.periodSeconds | int | `10` |  |
 | app.replicaCount | int | `2` | Number of pods |
 | app.resources.limits.memory | string | `"512Mi"` |  |
 | app.resources.requests.cpu | string | `"250m"` |  |
