@@ -12,3 +12,18 @@ spec:
       protocol: TCP
   selector:
     app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "nextflux-svc"
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.nextflux.port }}
+      targetPort: {{ .Values.nextflux.port }}
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"

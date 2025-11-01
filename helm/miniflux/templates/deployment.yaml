@@ -20,6 +20,22 @@ spec:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: postgres:17-alpine
+        command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h {{ .Values.database.host }} -p 5432 -U "{{ .Values.database.username }}"; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 2
+          done
+          echo "PostgreSQL is ready!"
+        securityContext:
+          capabilities:
+            drop: ["ALL"]
+          allowPrivilegeEscalation: false
       containers:
         - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
@@ -50,6 +66,15 @@ spec:
             - name: "certs"
               mountPath: "/etc/cert"
               readOnly: true
+        - name: "{{ .Release.Name }}-nextflux"
+          image: electh/nextflux:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.nextflux.port }}
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: "certs"
           secret:

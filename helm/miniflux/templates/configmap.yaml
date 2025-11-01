@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
-  LOG_LEVEL: "debug"
+  LOG_LEVEL: "info"
   BASE_URL: "{{ .Values.env.baseUrl }}"
   CERT_FILE: "/etc/cert/tls.crt"
   KEY_FILE: "/etc/cert/tls.key"
