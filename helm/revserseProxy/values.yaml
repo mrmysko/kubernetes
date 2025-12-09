@@ -2,17 +2,11 @@
 
 # external:
 #   url:
-#   ip:
+
 # services:
 #   service1:
 #     port:
 #     scheme:
-#     homepage:
-#       enabled:
-#       description:
-#       icon:
-#       group:
-#       weight:
 #     middleware:
 #       auth:
 #     external:
@@ -20,12 +14,6 @@
 #   service2:
 #     port:
 #     scheme:
-#     homepage:
-#       enabled:
-#       description:
-#       icon:
-#       group:
-#       weight:
 #     middleware:
 #       auth:
 #     external:
