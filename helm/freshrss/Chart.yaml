@@ -1,6 +1,0 @@
-apiVersion: v2
-name: FreshRSS
-description: A Helm chart for FreshRSS. The database is handled by a clustered MariaDB deployment.
-type: application
-version: 0.2.0
-appVersion: "latest"
