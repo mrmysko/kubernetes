@@ -94,6 +94,15 @@ config:
   # -- PEM-formatted key
   oidcKey: |
 
+  notifier:
+    smtp:
+      address:
+      username:
+      sender:
+      startupCheckAddress:
+      tls:
+        serverName:
+
   ldap:
     # -- LDAP URL
     url:

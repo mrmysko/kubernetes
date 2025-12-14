@@ -8,7 +8,7 @@ metadata:
 data:
   AUTHELIA_DEFAULT_2FA_METHOD: "totp"
   AUTHELIA_THEME: "auto"
-  AUTHELIA_NOTIFIER_FILESYSTEM_FILENAME: /tmp/notifications.txt
+  #AUTHELIA_NOTIFIER_FILESYSTEM_FILENAME: /tmp/notifications.txt
   AUTHELIA_NTP_ADDRESS: "udp://pool.ntp.org:123"
   X_AUTHELIA_CONFIG_FILTERS: "template"
 
@@ -21,6 +21,13 @@ data:
   AUTHELIA_LOG_FORMAT: "text"
   AUTHELIA_LOG_KEEP_STDOUT: "true"
   AUTHELIA_LOG_FILE_PATH: "/tmp/authelia.log"
+
+  AUTHELIA_NOTIFIER_SMTP_ADDRESS: "{{ .Values.config.notifier.smtp.address }}"
+  AUTHELIA_NOTIFIER_SMTP_USERNAME: "{{ .Values.config.notifier.smtp.username }}"
+  AUTHELIA_NOTIFIER_SMTP_SENDER: "{{ .Values.config.notifier.smtp.sender }}"
+  AUTHELIA_NOTIFIER_SMTP_STARTUP_CHECK_ADDRESS: "{{ .Values.config.notifier.smtp.startupCheckAddress }}"
+  AUTHELIA_NOTIFIER_SMTP_TLS_SERVER_NAME: "{{ .Values.config.notifier.smtp.tls.serverName }}"
+  AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE: "{{ .Values.config.secretsDir }}/LDAP_PASSWORD"
 
   AUTHELIA_ACCESS_CONTROL_DEFAULT_POLICY: "deny"
   AUTHELIA_PASSWORD_POLICY_ZXCVBN_ENABLED: "true"

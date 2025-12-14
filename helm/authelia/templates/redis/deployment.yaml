@@ -34,12 +34,18 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-secret
                   key: REDIS_PASSWORD
+          {{- if .Values.redis.resources }}
           resources:
-          {{- toYaml ( .Values.redis.resources | default dict ) | nindent 12 }}
+          {{- toYaml .Values.redis.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.redis.livenessProbe }}
           livenessProbe:
-          {{- toYaml ( .Values.redis.livenessProbe | default dict ) | nindent 12 }}
+          {{- toYaml .Values.redis.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.redis.readinessProbe }}
           readinessProbe:
-          {{- toYaml ( .Values.redis.readinessProbe | default dict ) | nindent 12 }}
+          {{- toYaml .Values.redis.readinessProbe | nindent 12 }}
+          {{- end }}
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
