@@ -1,0 +1,21 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Grant
+metadata:
+  name: "{{ .Release.Name }}-user-grant"
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  mariaDbRef:
+    name: "{{ .Values.database.instanceName }}"
+    namespace: "{{ .Values.database.namespace }}"
+  privileges:
+    - "ALL"
+  database: "{{ .Values.database.name }}"
+  table: "*"
+  username: "{{ .Values.database.username }}"
+  host: "%"
+  grantOption: false
+  cleanupPolicy: Delete
+  requeueInterval: 30s
+  retryInterval: 5s

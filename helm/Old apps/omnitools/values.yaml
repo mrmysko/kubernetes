@@ -1,0 +1,26 @@
+app:
+  # -- App name
+  name: omnitools
+  # -- Number of pods
+  replicaCount: 1
+
+  image:
+    # -- App image
+    repository: iib0011/omni-tools
+    # -- Image version
+    tag: 0.6.0
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "128Mi"
+    limits:
+      memory: "1Gi"
+
+service:
+  # -- App port
+  port: 80
+
+ingress:
+  # -- FQDN for the application
+  baseUrl:

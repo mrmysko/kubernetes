@@ -1,0 +1,85 @@
+app:
+  name: freshrss
+  # -- Number of pods
+  replicaCount: 2
+
+  image:
+    # -- App image
+    repository: ghcr.io/mrmysko/docker-compost/789548356823
+    # -- Image version
+    tag: latest
+    # -- Image pull policy
+    pullPolicy: Always
+
+  # -- Runtime user
+  uid: 33
+  # -- Runtime group
+  gid: 33
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "128Mi"
+    limits:
+      memory: "512Mi"
+
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/greader.php
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/greader.php
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+database:
+  # -- Kind of database
+  type:
+  # -- FQDN to database
+  host:
+  # -- Database deployment name
+  instanceName:
+  # -- Database namespace
+  namespace:
+  # -- Database port
+  port: 3306
+  # -- Database name
+  name:
+  # -- Database username
+  username:
+  # -- Database password
+  password:
+
+storage:
+  data:
+    existingPvcName:
+  extensions:
+    existingPvcName:
+
+service:
+  # -- App port
+  port: 8080
+
+ingress:
+  # -- FQDN to application
+  baseUrl:
+
+config:
+  # -- IPs allowed to proxy to app
+  trustedProxy:
+
+  oidc:
+    # -- OIDC endpoint url, including discovery
+    url:
+    # -- OIDC client ID
+    clientId:
+    # -- OIDC client secret
+    clientSecret:
+    cryptoKey:
