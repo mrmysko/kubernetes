@@ -17,12 +17,12 @@ A Helm chart for Grafana. The database is handled by a clustered MariaDB deploym
 | config.datasource.vm.url | string | `nil` |  |
 | config.datasource.vm.version | string | `"0.18.2"` |  |
 | config.oidc.clientSecret | string | `nil` | App client secret |
-| config.oidc.issuerUrl | string | `nil` |  |
-| database.host | string | `nil` |  |
-| database.instanceName | string | `nil` |  |
+| config.oidc.url | string | `nil` | OIDC endpoint URL |
+| database.host | string | `nil` | FQDN to database |
+| database.instanceName | string | `nil` | Database deployment name |
 | database.name | string | `nil` | Database name |
-| database.namespace | string | `nil` |  |
-| database.password | string | `nil` |  |
+| database.namespace | string | `nil` | Database namespace |
+| database.password | string | `nil` | Database password |
 | database.port | int | `3306` | Database port |
 | database.type | string | `"mysql"` | Kind of database |
 | database.username | string | `nil` | Database username |

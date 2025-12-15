@@ -25,6 +25,23 @@ spec:
   folder: "Imports"
   datasources:
     - inputName: "DS__VICTORIAMETRICS-PROD-ALL"
-      datasourceName: "VictoriaMetrics"
+      datasourceName: "VictoriaMetrics-Cluster"
   grafanaCom:
     id: 15661
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: kubernetes-cluster
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  folder: "Kubernetes"
+  datasources:
+    - inputName: "DS__VICTORIAMETRICS-PROD-ALL"
+      datasourceName: "VictoriaMetrics-Cluster"
+  json: |
+{{ .Files.Get "json/kubernetes.json" | indent 4 }}

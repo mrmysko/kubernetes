@@ -1,12 +1,18 @@
 app:
   # -- App name
   name: grafana
+  image:
+    repository: grafana/grafana
+    tag: 12.1.0
 
 database:
   # -- Kind of database
   type: mysql
+  # -- FQDN to database
   host:
+  # -- Database deployment name
   instanceName:
+  # -- Database namespace
   namespace:
   # -- Database port
   port: 3306
@@ -14,6 +20,7 @@ database:
   name:
   # -- Database username
   username:
+  # -- Database password
   password:
 
 service:
@@ -24,19 +31,34 @@ ingress:
   # FQDN to the application
   baseUrl:
 
+smtp:
+  enabled:
+  host:
+  user:
+  password:
+  fromAddress:
+
 config:
   oidc:
-    issuerUrl:
+    # -- OIDC endpoint URL
+    url:
     # -- App client secret
     clientSecret:
 
   datasource:
     tlsSkipVerify: true
+    vmkube:
+      pluginName: victoriametrics-metrics-datasource
+      version: 0.19.5
+      url:
     vm:
-      name: victoriametrics-metrics-datasource
-      version: 0.18.2
+      pluginName: victoriametrics-metrics-datasource
+      version: 0.19.5
       url:
     vl:
-      name: victoriametrics-logs-datasource
-      version: 0.19.2
+      pluginName: victoriametrics-logs-datasource
+      version: 0.21.1
       url:
+
+  contactpoint:
+    mailAddress:

@@ -1,0 +1,21 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaContactPoint
+metadata:
+  name: "{{ .Release.Name }}-contactpoint"
+spec:
+  name: SMTP
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  # Editing ContactPoints in the UI is disabled by default
+  editable: true # editable is immutable and can only be set at creation
+  receivers:
+    - type: email
+      settings:
+        subject: Grafana Alert
+      valuesFrom:
+        - targetPath: addresses
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-contactpoint-secret"
+              key: alert-mails

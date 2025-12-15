@@ -10,42 +10,66 @@ metadata:
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
+  version: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
   config:
     global:
-      app_mode: "development"
+      app_mode: production
     log:
-      mode: "console"
+      mode: console
+    analytics:
+      enabled: "false"
+      reporting_enabled: "false"
+      feedback_links_enabled: "false"
     server:
-      root_url: https://{{ .Values.ingress.baseUrl }}
+      root_url: {{ printf "https://%s" .Values.ingress.baseUrl | quote }}
       enable_gzip: "true"
+    {{- with .Values.smtp }}
+    {{- if .enabled }}
+    smtp:
+      enabled: {{ .enabled | quote }}
+      host: {{ .host | quote }}
+      user: {{ .user | quote }}
+      password: {{ .password | quote }}
+      from_address: {{ .fromAddress | quote }}
+      skip_verify: "true"
+    {{- end }}
+    {{- end }}
+    {{- with .Values.database }}
     database:
-      type: "{{ .Values.database.type }}"
-      url: "mysql://{{ .Values.database.username }}:${MYSQL_PASSWORD}@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.name }}"
+      type: {{ .type | quote }}
+      host: {{ .host | quote }}
+      name: {{ .name | quote }}
+      user: {{ .username | quote }}
+      password: {{ .password | quote }}
       ca_cert_path: /tmp/certs/ca.crt
-      server_cert_name: "{{ .Values.database.host }}"
+      server_cert_name: {{ .host | quote }}
       ssl_mode: "true"
+      ssl_sni: "0"
+    {{- end }}
     auth:
       disable_login_form: "true"
     auth.generic_oauth:
       enabled: "true"
+      auto_login: "true"
       name: OAuth
       icon: signin
       client_id: "${OIDC_CLIENT_ID}"
-      # This is bad, fix it...
-      client_secret: "{{ .Values.config.oidc.clientSecret }}"
+      client_secret: "${OIDC_CLIENT_SECRET}"
       scopes: openid,email,profile,groups
       empty_scopes: "false"
-      auth_url: https://{{ .Values.config.oidc.issuerUrl }}/api/oidc/authorization
-      token_url: https://{{ .Values.config.oidc.issuerUrl }}/api/oidc/token
-      api_url: https://{{ .Values.config.oidc.issuerUrl }}/api/oidc/userinfo
+      auth_url: {{ printf "https://%s/api/oidc/authorization" .Values.config.oidc.url | quote }}
+      token_url: {{ printf "https://%s/api/oidc/token" .Values.config.oidc.url | quote }}
+      api_url: {{ printf "https://%s/api/oidc/userinfo" .Values.config.oidc.url | quote }}
       login_attribute_path: preferred_username
       groups_attribute_path: groups
       name_attribute_path: name
       use_pkce: "true"
       role_attribute_path: contains(groups[*], 'service-admins') && 'GrafanaAdmin'
       allow_assign_grafana_admin: "true"
-      signout_redirect_url: https://{{ .Values.config.oidc.issuerUrl }}/logout
+      signout_redirect_url: {{ printf "https://%s/logout" .Values.config.oidc.url | quote }}
       skip_org_role_sync: "false"
+    security:
+      cookie_secure: "true"
   deployment:
     spec:
       template:
@@ -54,21 +78,21 @@ spec:
             - name: grafana
               envFrom:
                 - secretRef:
-                    name: "{{ .Release.Name }}-secret"
+                    name: {{ printf "%s-secret" .Release.Name | quote }}
               livenessProbe:
-                  httpGet:
-                    scheme: HTTP
-                    path: /api/health
-                    port: {{ .Values.service.port }}
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
+                httpGet:
+                  scheme: HTTP
+                  path: /api/health
+                  port: {{ .Values.service.port }}
+                initialDelaySeconds: 10
+                periodSeconds: 10
               readinessProbe:
-                  httpGet:
-                    scheme: HTTP
-                    path: /api/health
-                    port: {{ .Values.service.port }}
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
+                httpGet:
+                  scheme: HTTP
+                  path: /api/health
+                  port: {{ .Values.service.port }}
+                initialDelaySeconds: 10
+                periodSeconds: 10
               securityContext:
                 runAsNonRoot: true
                 allowPrivilegeEscalation: false
@@ -77,10 +101,10 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
               volumeMounts:
-                - name: "invis-external-bundle"
+                - name: invis-external-bundle
                   mountPath: /tmp/certs
                   readOnly: true
           volumes:
-            - name: "invis-external-bundle"
+            - name: invis-external-bundle
               secret:
-                secretName: "invis-external-bundle"
+                secretName: invis-external-bundle
