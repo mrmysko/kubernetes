@@ -16,10 +16,6 @@ spec:
       number: 1
     shared_preload_libraries:
       - "vchord.so"
-    #extensions:
-    #  - name: hstore
-    #    image:
-    #      reference: styriadigital/postgres_hstore
 
   bootstrap:
     initdb:
