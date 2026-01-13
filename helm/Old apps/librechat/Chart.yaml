@@ -1,6 +1,6 @@
 apiVersion: v2
-name: librechat-stack
-description: A Helm chart for Librechat, with extra manifests for redis and traefik
+name: Librechat
+description: A Helm chart for Librechat.
 type: application
 version: 0.2.0
 appVersion: "v0.8.0-rc1"

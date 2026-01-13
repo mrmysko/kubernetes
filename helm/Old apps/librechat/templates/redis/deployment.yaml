@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-redis
+  name: "{{ .Release.Name }}-redis"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: cache
 spec:
   revisionHistoryLimit: 3
-  replicas: 1
+  replicas: {{ .Values.redis.replicaCount | default 1 }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/component: cache
   template:
     metadata:
@@ -24,15 +24,32 @@ spec:
         - name: librechat-redis
           image: 11notes/redis:7.4.5
           imagePullPolicy: "IfNotPresent"
-          args: ["--in-memory"]
+          args: 
+            - "--in-memory"
+          ports:
+            - containerPort: 6379
           env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: librechat-secret
                   key: REDIS_PASSWORD
-          ports:
-            - containerPort: 6379
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              memory: "256Mi"
+          livenessProbe:
+            exec:
+              command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -42,9 +59,3 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-          resources:
-            requests:
-              cpu: "250m"
-              memory: "64Mi"
-            limits:
-              memory: "256Mi"
