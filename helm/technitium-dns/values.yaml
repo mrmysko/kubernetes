@@ -8,7 +8,7 @@ app:
     # -- App image
     repository: technitium/dns-server
     # -- App version
-    tag: latest
+    tag: 14.3.0
     # -- Image pull policy
     pullPolicy: Always
 
@@ -23,6 +23,27 @@ app:
       memory: "256Mi"
     limits:
       memory: "512Mi"
+
+  livenessProbe:
+    exec:
+      command:
+        [
+          "sh",
+          "-c",
+          "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1",
+        ]
+    initialDelaySeconds: 5
+    periodSeconds: 20
+  readinessProbe:
+    exec:
+      command:
+        [
+          "sh",
+          "-c",
+          "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1",
+        ]
+    initialDelaySeconds: 5
+    periodSeconds: 10
 
 service:
   # -- App port

@@ -14,7 +14,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/component: frontend
   template:
     metadata:
@@ -67,22 +67,18 @@ spec:
           env:
             - name: ND_CONFIGFILE
               value: /data/navidrome.toml
+          {{- if .Values.app.resources }}
           resources:
-          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.livenessProbe }}
           livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /ping
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.readinessProbe }}
           readinessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /ping
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- end }}
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}

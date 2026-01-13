@@ -15,7 +15,7 @@ spec:
     s3:
       bucket: mariadb
       prefix: mariadb
-      endpoint: {{ .Values.backup.endpoint }}
+      endpoint: "{{ .Values.backup.endpoint }}"
       region:  us-east-1
       accessKeyIdSecretKeyRef:
         name: {{ .Release.Name }}-s3-credentials

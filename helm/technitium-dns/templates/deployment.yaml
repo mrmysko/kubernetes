@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -14,7 +14,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -30,31 +30,31 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
-            - name: {{ .Release.Name }}-config
+            - name: "{{ .Release.Name }}-config"
               mountPath: /data
       containers:
-        - name: {{ .Release.Name }}
+        - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: {{ .Values.service.port }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-env
+                name: "{{ .Release.Name }}-env"
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: "{{ .Release.Name }}-secret"
+          {{- if .Values.app.resources }}
           resources:
-          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.livenessProbe }}
           livenessProbe:
-            exec:
-              command: ["sh", "-c", "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1"]
-            initialDelaySeconds: 5
-            periodSeconds: 20
+          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.readinessProbe }}
           readinessProbe:
-            exec:
-              command: ["sh", "-c", "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1"]
-            initialDelaySeconds: 5
-            periodSeconds: 10
+          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- end }}
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
@@ -65,9 +65,9 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
-            - name: {{ .Release.Name }}-config
+            - name: "{{ .Release.Name }}-config"
               mountPath: /etc/dns
       volumes:
-        - name: {{ .Release.Name }}-config
+        - name: "{{ .Release.Name }}-config"
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-config
+            claimName: "{{ .Release.Name }}-config"

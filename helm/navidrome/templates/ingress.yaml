@@ -22,14 +22,14 @@ spec:
     - kind: Rule
       match: Host(`{{ .Values.ingress.baseUrl }}`) && PathPrefix(`/rest`) && ClientIP(`{{ .Values.middleware.whitelist.ip }}`)
       services:
-        - name: {{ .Release.Name }}-svc
+        - name: "{{ .Release.Name }}-svc"
           port: {{ .Values.service.port }}
 
     - kind: Rule
       match: Host(`{{ .Values.ingress.baseUrl }}`)
       services:
         - kind: Service
-          name: {{ .Release.Name }}-svc
+          name: "{{ .Release.Name }}-svc"
           port: {{ .Values.service.port }}
       middlewares:
         - name: "authelia-forward-auth"

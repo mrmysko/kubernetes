@@ -1,12 +1,12 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  replicas: {{ .Values.galera.replicaCount | default 3 }}
+  replicas: {{ .Values.app.replicaCount | default 3 }}
 
   service:
     type: ClusterIP
@@ -24,13 +24,13 @@ spec:
       kind: ClusterIssuer
 
   maxScaleRef:
-    name: {{ .Release.Name }}-maxscale
+    name: "{{ .Release.Name }}-maxscale"
 
   galera:
     enabled: true
     primary:
       podIndex: 0
-      automaticFailover: true
+      autoFailover: true
     agent:
       kubernetesAuth:
         enabled: true
@@ -51,7 +51,7 @@ spec:
       drop: ["ALL"]
 
   rootPasswordSecretKeyRef:
-    name: {{ .Release.Name }}-secret
+    name: "{{ .Release.Name }}-secret"
     key: ROOT_PASSWORD
 
   myCnf: |

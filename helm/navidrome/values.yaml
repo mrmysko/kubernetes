@@ -8,7 +8,7 @@ app:
     # -- App image
     repository: ghcr.io/navidrome/navidrome
     # -- Image version
-    tag: 0.58.0
+    tag: 0.59.0
 
   # -- Runtime user
   uid: 1001
@@ -21,6 +21,22 @@ app:
       memory: "256Mi"
     limits:
       memory: "512Mi"
+
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /ping
+      port: 4533
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /ping
+      port: 4533
+    initialDelaySeconds: 10
+    periodSeconds: 10
 
 service:
   # -- App port

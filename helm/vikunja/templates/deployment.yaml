@@ -33,12 +33,18 @@ spec:
                 name: "{{ .Release.Name }}-secret"
             - configMapRef:
                 name: "{{ .Release.Name }}-env"
+          {{- if .Values.app.resources }}
           resources:
-          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.livenessProbe }}
           livenessProbe:
-          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.readinessProbe }}
           readinessProbe:
-          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- end }}
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}

@@ -71,5 +71,5 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
-        metallb.universe.tf/loadBalancerIPs: "{{ .Values.maxScale.metalLB.ip }}"
+        metallb.io/loadBalancerIPs: "{{ .Values.maxScale.metalLB.ip }}"
 {{- end }}

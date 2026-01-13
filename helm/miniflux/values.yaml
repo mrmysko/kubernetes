@@ -64,7 +64,3 @@ env:
 service:
   # -- App port
   port: 8080
-
-nextflux:
-  url:
-  port: 3000
