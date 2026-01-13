@@ -11,7 +11,7 @@ PV_NAME=$1
 # Confirm the action with the user
 echo "This will remove the claimRef from PV '$PV_NAME' to make it available."
 read -p "Are you sure you want to continue? (y/n) " -n 1 -r
-echo # Move to a new line
+echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Reclaiming PV $PV_NAME..."

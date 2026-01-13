@@ -1,0 +1,26 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Restore
+metadata:
+  name: mariadb-restore
+  namespace: mariadb-galera
+spec:
+  mariaDbRef:
+    name: mariadb-galera
+    namespace: mariadb-galera
+  targetRecoveryTime: 2025-11-02T01:00:00Z
+  s3:
+    bucket: mariadb
+    prefix: mariadb
+    endpoint: "scale-01.internal.invis.space:9000"
+    region: us-east-1
+    accessKeyIdSecretKeyRef:
+      name: "mariadb-galera-s3-credentials"
+      key: ACCESS_KEY
+    secretAccessKeySecretKeyRef:
+      name: "mariadb-galera-s3-credentials"
+      key: SECRET_KEY
+    tls:
+      enabled: true
+      caSecretKeyRef:
+        name: invis-external-bundle
+        key: ca.crt

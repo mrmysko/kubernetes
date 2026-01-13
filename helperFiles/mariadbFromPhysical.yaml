@@ -1,0 +1,37 @@
+# Then dump with
+# kubectl -n mariadb-galera exec -i mariadb-from-physicalbackup-0 -- mariadb-dump -u root -p <database> > db.sql
+
+# Restore with
+# kubectl -n mariadb-galera exec -it mariadb-galera-0 -- mariadb -u root --skip-ssl -p<pass> <database> < db.sql
+
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: mariadb-from-physicalbackup
+  namespace: mariadb-galera
+spec:
+  rootPasswordSecretKeyRef:
+    name: "mariadb-galera-secret"
+    key: ROOT_PASSWORD
+
+  storage:
+    size: 3Gi
+
+  bootstrapFrom:
+    targetRecoveryTime: 2025-11-16T01:00:00Z
+    s3:
+      bucket: mariadb
+      prefix: mariadb
+      endpoint: "scale-01.internal.invis.space:9000"
+      accessKeyIdSecretKeyRef:
+        name: "mariadb-galera-s3-credentials"
+        key: ACCESS_KEY
+      secretAccessKeySecretKeyRef:
+        name: "mariadb-galera-s3-credentials"
+        key: SECRET_KEY
+      tls:
+        enabled: true
+        caSecretKeyRef:
+          name: invis-external-bundle
+          key: ca.crt
+    backupContentType: Physical
