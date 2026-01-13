@@ -1,20 +1,21 @@
-# Home kubernetes cluster
+# Kubernetes home cluster
 
-Manifest files for my kubernetes cluster.
+A monorepo containing manifest files for my kubernetes cluster.
 
-![cluster image](img/cluster.png)
+<img src="img/kube-logo.png" width="200" />
 
-### Todo
+## Notes about upgrading
 
-## Resources/controllers:
+Note to self: Before upgrading Kubernetes or components, make sure the following are compatible with new versions
 
-- MariaDB operator
-- SMB CSI
-- Cert-manager
 - Metallb
-- Traefik
-- Flannel
+- Cilium
 - Longhorn
-- VMAgent
-- Trust-manager
-- Local path provisioner
+- Cert-manager
+- SMB CSI
+- CNPG
+- VictoriaMetrics Operator
+- Grafana Operator
+- MariaDB Operator
+- kube-state-metrics
+- metrics-server

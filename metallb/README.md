@@ -4,7 +4,7 @@ Deploys [MetalLB - Load Balancer for Kubernetes](https://github.com/metallb/meta
 
 ## Installation
 
-```kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml```
+```kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.3/config/manifests/metallb-native.yaml```
 
 This will install:
 - MetalLB controller
