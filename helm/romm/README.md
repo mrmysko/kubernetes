@@ -11,7 +11,17 @@ A helm template for RomM. The database is handled by a clustered MariaDB deploym
 | app.gid | int | `3100` | Runtime group |
 | app.image.repository | string | `"rommapp/romm"` | App image |
 | app.image.tag | string | `"4.3.1"` | Image version |
+| app.livenessProbe.httpGet.path | string | `"/api/heartbeat"` |  |
+| app.livenessProbe.httpGet.port | int | `8080` |  |
+| app.livenessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| app.livenessProbe.initialDelaySeconds | int | `20` |  |
+| app.livenessProbe.periodSeconds | int | `10` |  |
 | app.name | string | `"romm"` | App name |
+| app.readinessProbe.httpGet.path | string | `"/api/heartbeat"` |  |
+| app.readinessProbe.httpGet.port | int | `8080` |  |
+| app.readinessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| app.readinessProbe.initialDelaySeconds | int | `30` |  |
+| app.readinessProbe.periodSeconds | int | `10` |  |
 | app.replicaCount | int | `1` | Number of pods |
 | app.resources.limits.memory | string | `"5Gi"` |  |
 | app.resources.requests.cpu | string | `"500m"` |  |
@@ -35,6 +45,8 @@ A helm template for RomM. The database is handled by a clustered MariaDB deploym
 | database.type | string | `"mariadb"` | Kind of database |
 | database.username | string | `nil` | Database username |
 | ingress.baseUrl | string | `nil` |  |
+| redis.image.repository | string | `"11notes/redis"` |  |
+| redis.image.tag | string | `"7.4.5"` |  |
 | redis.password | string | `nil` | Redis password |
 | redis.port | int | `6379` | Redis port |
 | redis.replicaCount | int | `1` | Number of Redis pods |
@@ -46,8 +58,9 @@ A helm template for RomM. The database is handled by a clustered MariaDB deploym
 | storage.assets.size | string | `nil` |  |
 | storage.config.existingPvcName | string | `nil` |  |
 | storage.config.size | string | `nil` |  |
-| storage.games.password | string | `nil` |  |
-| storage.games.smbUrl | string | `nil` |  |
-| storage.games.username | string | `nil` |  |
 | storage.resources.existingPvcName | string | `nil` |  |
 | storage.resources.size | string | `nil` |  |
+| storage.smb.password | string | `nil` |  |
+| storage.smb.share | string | `nil` |  |
+| storage.smb.url | string | `nil` |  |
+| storage.smb.username | string | `nil` |  |

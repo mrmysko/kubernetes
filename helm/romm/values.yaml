@@ -8,7 +8,7 @@ app:
     # -- App image
     repository: rommapp/romm
     # -- Image version
-    tag: 4.3.1
+    tag: 4.5.0
 
   # -- Runtime user
   uid: 3005
@@ -21,6 +21,22 @@ app:
       memory: "512Mi"
     limits:
       memory: "5Gi"
+
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/heartbeat
+      port: 8080
+    initialDelaySeconds: 20
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/heartbeat
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
 
 database:
   # -- Kind of database
