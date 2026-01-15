@@ -43,6 +43,21 @@ spec:
               value: "{{ .Values.storage.smb.username }}"
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
+        - name: wait-for-postgres
+          image: postgres:17-alpine
+          command:
+          - sh
+          - -c
+          - |
+            until pg_isready -h {{ .Values.database.host }} -p 5432 -U "{{ .Values.database.username }}"; do
+              echo "Waiting for PostgreSQL to be ready..."
+              sleep 2
+            done
+            echo "PostgreSQL is ready!"
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+            allowPrivilegeEscalation: false
       containers:
         - name: "{{ .Release.Name }}-server"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
@@ -63,22 +78,18 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
+          {{- if .Values.app.resources }}
           resources:
-          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.livenessProbe }}
           livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /api/server/ping
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 20
-            periodSeconds: 10
+          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.readinessProbe }}
           readinessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /api/server/ping
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 20
-            periodSeconds: 10
+          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: library
               mountPath: /data

@@ -24,6 +24,22 @@ app:
     limits:
       memory: "2Gi"
 
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/server/ping
+      port: 2283
+    initialDelaySeconds: 20
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /api/server/ping
+      port: 2283
+    initialDelaySeconds: 20
+    periodSeconds: 10
+
 redis:
   # -- Number of redis pods
   replicaCount: 1

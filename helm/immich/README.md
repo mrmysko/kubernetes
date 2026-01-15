@@ -12,22 +12,29 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 | app.image.pullPolicy | string | `"Always"` | Image pull policy |
 | app.image.repository | string | `"ghcr.io/immich-app/immich-server"` | App image |
 | app.image.tag | string | `"release"` | Image version |
+| app.livenessProbe.httpGet.path | string | `"/api/server/ping"` |  |
+| app.livenessProbe.httpGet.port | int | `2283` |  |
+| app.livenessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| app.livenessProbe.initialDelaySeconds | int | `20` |  |
+| app.livenessProbe.periodSeconds | int | `10` |  |
 | app.name | string | `"immich"` | App name |
+| app.readinessProbe.httpGet.path | string | `"/api/server/ping"` |  |
+| app.readinessProbe.httpGet.port | int | `2283` |  |
+| app.readinessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| app.readinessProbe.initialDelaySeconds | int | `20` |  |
+| app.readinessProbe.periodSeconds | int | `10` |  |
 | app.replicaCount | int | `1` | Number of pods |
 | app.resources.limits.memory | string | `"2Gi"` |  |
 | app.resources.requests.cpu | string | `"500m"` |  |
 | app.resources.requests.memory | string | `"512Mi"` |  |
 | app.uid | string | `nil` | Runtime user |
 | config.machineLearning.url | string | `nil` |  |
-| config.smbPassword | string | `nil` | Samba password |
-| config.smbUser | string | `nil` | Samba username |
 | database.host | string | `nil` | Database URL |
 | database.name | string | `nil` | Database name |
 | database.namespace | string | `nil` | Database namespace |
 | database.password | string | `nil` | Database password |
 | database.username | string | `nil` | Database username |
 | ingress.baseUrl | string | `nil` | FQDN for the application |
-| redis.existingPvcName | string | `nil` |  |
 | redis.image.repository | string | `"11notes/redis"` | Redis image |
 | redis.image.tag | string | `"7.4.5"` | Redis image version |
 | redis.password | string | `nil` | Redis password |
@@ -38,4 +45,7 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 | redis.resources.requests.memory | string | `"64Mi"` |  |
 | redis.user | string | `"default"` | Redis username |
 | service.port | int | `2283` | App port |
+| storage.smb.password | string | `nil` | Samba password |
+| storage.smb.share | string | `nil` |  |
 | storage.smb.url | string | `nil` | Samba share URL |
+| storage.smb.username | string | `nil` | Samba username |
