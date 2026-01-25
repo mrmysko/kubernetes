@@ -1,9 +1,9 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "{{ .Release.Name }}-server-cert"
+  name: {{ print .Release.Name "-server-cert" | quote }}
 spec:
-  secretName: "{{ .Release.Name }}-server-cert"
+  secretName: {{ print .Release.Name "-server-cert" | quote }}
   usages:
     - server auth
   dnsNames:

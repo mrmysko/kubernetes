@@ -12,6 +12,12 @@ database:
   immich:
     username:
     password:
+  miniflux:
+    username:
+    password:
+  openwebui:
+    username:
+    password:
 
 backup:
   enabled: true

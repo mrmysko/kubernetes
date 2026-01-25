@@ -1,12 +1,12 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: "{{ .Release.Name }}-pooler-rw"
+  name: {{ print .Release.Name "-pooler-rw" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
   cluster:
-    name: "{{ .Release.Name }}-cluster"
+    name: {{ print .Release.Name "-cluster" | quote }}
   instances: 3
   type: rw
   pgbouncer:

@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: "{{ .Release.Name }}-cluster"
+  name: {{ print .Release.Name "-cluster" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
@@ -17,14 +17,9 @@ spec:
     shared_preload_libraries:
       - "vchord.so"
 
-  bootstrap:
-    initdb:
-      postInitSQL:
-        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
-
   certificates:
-    serverTLSSecret: "{{ .Release.Name }}-server-cert"
-    serverCASecret: "{{ .Release.Name }}-server-cert"
+    serverTLSSecret: {{ print .Release.Name "-server-cert" | quote }}
+    serverCASecret: {{ print .Release.Name "-server-cert" | quote }}
 
   managed:
     roles:
@@ -35,6 +30,7 @@ spec:
       superuser: false
       passwordSecret:
         name: "{{ .Values.database.immich.username }}-credentials"
+
     - name: "{{ .Values.database.miniflux.username }}"
       ensure: present
       comment: Miniflux
@@ -42,6 +38,22 @@ spec:
       superuser: false
       passwordSecret:
         name: "{{ .Values.database.miniflux.username }}-credentials"
+
+    - name: "{{ .Values.database.openwebui.username }}"
+      ensure: present
+      comment: "Open WebUI"
+      login: true
+      superuser: false
+      passwordSecret:
+        name: "{{ .Values.database.openwebui.username }}-credentials"
+        
+    - name: "{{ .Values.database.openwebui.vector.username }}"
+      ensure: present
+      comment: "Open WebUI Vector"
+      login: true
+      superuser: false
+      passwordSecret:
+        name: "{{ .Values.database.openwebui.vector.username }}-credentials"
 
   storage:
     storageClass: local-storage
@@ -52,5 +64,5 @@ spec:
   - name: barman-cloud.cloudnative-pg.io
     isWALArchiver: true
     parameters:
-      barmanObjectName: "{{ .Release.Name }}-backup-storage"
+      barmanObjectName: {{ print .Release.Name "-backup-storage" | quote }}
   {{- end }}
