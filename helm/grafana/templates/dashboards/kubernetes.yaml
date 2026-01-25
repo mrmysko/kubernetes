@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-cluster
+  name: "kubernetes-cluster"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:

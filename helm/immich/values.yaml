@@ -43,26 +43,12 @@ app:
 redis:
   # -- Number of redis pods
   replicaCount: 1
-
-  image:
-    # -- Redis image
-    repository: 11notes/redis
-    # -- Redis image version
-    tag: 7.4.5
-
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "64Mi"
-    limits:
-      memory: "256Mi"
-
+  # -- Redis port
+  port: 6379
   # -- Redis username
   user: default
   # -- Redis password
   password:
-  # -- Redis port
-  port: 6379
 
 database:
   # -- Database URL

@@ -1,6 +1,9 @@
 dependencies:
 - name: common-labels
-  repository: file://../common-labels
+  repository: file://../library/common-labels
   version: 0.1.0
-digest: sha256:214b577afff230feb8dbe369bbad137294f318b8d0b3b1dd12e6492abe80117c
-generated: "2026-01-25T07:41:47.209792965Z"
+- name: default-svc
+  repository: file://../library/default-svc
+  version: 0.1.0
+digest: sha256:ec821ccd507adc33a7b52fb5ee54dc4cfb7533f4806424ea917c80233290dce2
+generated: "2026-01-25T20:04:02.745070933Z"

@@ -4,7 +4,12 @@ description: A Helm chart for Glance
 type: application
 version: 0.2.0
 appVersion: "v0.8.4"
+
 dependencies:
   - name: common-labels
     version: 0.1.0
-    repository: "file://../common-labels"
+    repository: "file://../library/common-labels"
+
+  - name: default-svc
+    version: 0.1.0
+    repository: "file://../library/default-svc"

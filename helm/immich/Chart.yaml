@@ -10,6 +10,10 @@ dependencies:
     version: 0.1.0
     repository: "file://../library/common-labels"
 
+  - name: default-svc
+    version: 0.1.0
+    repository: "file://../library/default-svc"
+
   - name: cnpg-database
     version: 0.1.0
     repository: "file://../library/cnpg-database"

@@ -84,8 +84,8 @@ data:
   AUTHELIA_SESSION_SECRET_FILE: "{{ .Values.config.secretsDir }}/SESSION_SECRET"
 
   AUTHELIA_SESSION_REDIS_HOST: {{ include "redis.fullname" $redis | quote }}
-  AUTHELIA_SESSION_REDIS_PORT: "{{ .Values.redisDb.port }}"
-  AUTHELIA_SESSION_REDIS_USERNAME: "{{ .Values.redisDb.username }}"
+  AUTHELIA_SESSION_REDIS_PORT: "{{ .Values.redis.port }}"
+  AUTHELIA_SESSION_REDIS_USERNAME: "{{ .Values.redis.username }}"
   AUTHELIA_SESSION_REDIS_PASSWORD_FILE: "{{ .Values.config.secretsDir }}/REDIS_PASSWORD"
 
   AUTHELIA_STORAGE_MYSQL_ADDRESS: "tcp://{{ .Values.database.host }}:{{ .Values.database.port }}"

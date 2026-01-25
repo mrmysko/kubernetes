@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: victoriametrics-single-node
+  name: "victoriametrics-single-node"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -15,7 +15,7 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-cluster-monitoring-via-prometheus
+  name: "kubernetes-cluster-monitoring-via-prometheus"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:

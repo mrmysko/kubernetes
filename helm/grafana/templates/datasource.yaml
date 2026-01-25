@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: victoriametrics-internal
+  name: "victoriametrics-internal"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -24,7 +24,7 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: victoriametrics-cluster
+  name: "victoriametrics-cluster"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -45,7 +45,7 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: victorialogs
+  name: "victorialogs"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:

@@ -8,14 +8,18 @@ appVersion: "0.1"
 dependencies:
   - name: common-labels
     version: 0.1.0
-    repository: "file://../common-labels"
+    repository: "file://../library/common-labels"
+
+  - name: default-svc
+    version: 0.1.0
+    repository: "file://../library/default-svc"
 
   - name: cnpg-database
     version: 0.1.0
-    repository: "file://../cnpg-database"
+    repository: "file://../library/cnpg-database"
     alias: mainDb
 
   - name: cnpg-database
     version: 0.1.0
-    repository: "file://../cnpg-database"
+    repository: "file://../library/cnpg-database"
     alias: vectorDb

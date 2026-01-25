@@ -11,6 +11,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-{{- with .Values.storage.data.volumeName }}
-  volumeName: {{ . | quote }}
+{{- with .Values.storage.data }}
+  volumeName: {{ .volumeName | quote }}
 {{- end }}

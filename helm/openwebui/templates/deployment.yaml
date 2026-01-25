@@ -1,3 +1,7 @@
+{{ include "default-svc.service" . }}
+---
+{{ include "default-svc.ingress" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +25,7 @@ spec:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
-        
+
     spec:
       securityContext:
         fsGroup: {{ .Values.app.gid }}

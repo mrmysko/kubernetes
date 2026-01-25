@@ -1,12 +1,15 @@
+{{ include "default-svc.service" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}"
+  name: {{ .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
+
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .Values.app.replicas | default 1 }}
@@ -20,40 +23,48 @@ spec:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
+
     spec:
-      serviceAccountName: "{{ .Release.Name }}"
+      serviceAccountName: {{ .Release.Name | quote }}
       automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+
       containers:
-        - name: "{{ .Release.Name }}"
+        - name: {{ .Release.Name | quote }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: "{{ .Values.ingress.baseUrl }}"
           envFrom:
             - secretRef:
-                name: "{{ .Release.Name }}-secret"
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
-          {{- if .Values.app.resources }}
+                name: {{ print .Release.Name "-secret" | quote }}
+
+          {{- with .Values.app.resources }}
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.livenessProbe }}
+
+          {{- with .Values.app.livenessProbe }}
           livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.readinessProbe }}
+
+          {{- with .Values.app.readinessProbe }}
           readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
+
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: {{ .Values.app.uid }}
@@ -62,14 +73,16 @@ spec:
               drop:
                 - ALL
             runAsNonRoot: true
+
           volumeMounts:
-            - name: "{{ .Release.Name }}-config"
+            - name: {{ print .Release.Name "-config" | quote }}
               mountPath: /app/config/
             - name: logs
               mountPath: /app/config/logs
+
       volumes:
-        - name: "{{ .Release.Name }}-config"
+        - name: {{ print .Release.Name "-config" | quote }}
           configMap:
-            name: "{{ .Release.Name }}-config"
+            name: {{ print .Release.Name "-config" | quote }}
         - name: logs
           emptyDir: {}

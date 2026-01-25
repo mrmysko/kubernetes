@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaContactPoint
 metadata:
-  name: "{{ .Release.Name }}-contactpoint"
+  name: {{ print .Release.Name "-contactpoint" | quote }}
 spec:
   name: SMTP
   instanceSelector:
@@ -17,5 +17,5 @@ spec:
         - targetPath: addresses
           valueFrom:
             secretKeyRef:
-              name: "{{ .Release.Name }}-contactpoint-secret"
+              name: {{ print .Release.Name "-contactpoint-secret" | quote }}
               key: alert-mails

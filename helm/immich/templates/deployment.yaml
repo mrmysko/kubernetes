@@ -1,3 +1,7 @@
+{{ include "default-svc.service" . }}
+---
+{{ include "default-svc.ingress" . }}
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
