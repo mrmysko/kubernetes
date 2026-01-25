@@ -97,8 +97,6 @@
             - glanceapp/glance
             - immich-app/immich
             - navidrome/navidrome
-            - radarr/radarr
-            - sonarr/sonarr
             - gethomepage/homepage
             - music-assistant/server
             - authelia/authelia
@@ -107,6 +105,12 @@
             - iib0011/omni-tools
             - smallstep/certificates
             - miniflux/v2
+            - keycloak/keycloak
+            # 11Notes
+            - 11notes/docker-prowlarr
+            - 11notes/docker-sonarr
+            - 11notes/docker-radarr
+            - 11notes/docker-qbittorrent
             # Kube-adjacent
             - helm/helm
             - kubernetes/kubernetes
@@ -115,13 +119,13 @@
             - longhorn/longhorn
             - cert-manager/cert-manager
             - kubernetes-csi/csi-driver-smb
-            - flannel-io/flannel
             - cloudnative-pg/plugin-barman-cloud
             - cert-manager/trust-manager
+            - stakater/Reloader
+            - cilium/cilium
             # Operators
             - VictoriaMetrics/operator
             - grafana/grafana-operator
             - mongodb/mongodb-kubernetes
-            - grafana/grafana-operator
             - cloudnative-pg/cloudnative-pg
             - mariadb-operator/mariadb-operator

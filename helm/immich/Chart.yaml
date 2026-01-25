@@ -4,3 +4,7 @@ description: A Helm chart for Immich. Connecting to a clustered CNPG postgres da
 type: application
 version: 0.3.0
 appVersion: "v2.0.0"
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../common-labels"

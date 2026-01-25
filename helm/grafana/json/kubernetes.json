@@ -18,7 +18,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 19,
+    "id": 28,
     "links": [],
     "panels": [
         {
@@ -1004,7 +1004,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "Status"
+                            "options": "Phase"
                         },
                         "properties": [
                             {
@@ -1022,13 +1022,40 @@
                             {
                                 "id": "custom.width",
                                 "value": 76
+                            },
+                            {
+                                "id": "thresholds",
+                                "value": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": 0
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 3
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 7
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "custom.cellOptions",
+                                "value": {
+                                    "mode": "basic",
+                                    "type": "color-background"
+                                }
                             }
                         ]
                     },
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "Status"
+                            "options": "Phase"
                         },
                         "properties": [
                             {
@@ -1047,6 +1074,10 @@
                                             "Running": {
                                                 "color": "green",
                                                 "index": 0
+                                            },
+                                            "Unknown": {
+                                                "color": "red",
+                                                "index": 3
                                             }
                                         },
                                         "type": "value"
@@ -1082,22 +1113,6 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "Net"
-                        },
-                        "properties": [
-                            {
-                                "id": "unit",
-                                "value": "bps"
-                            },
-                            {
-                                "id": "custom.width",
-                                "value": 113
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
                             "options": "CPU (Mi)"
                         },
                         "properties": [
@@ -1115,7 +1130,7 @@
                         "properties": [
                             {
                                 "id": "unit",
-                                "value": "s"
+                                "value": "dtdurations"
                             },
                             {
                                 "id": "custom.width",
@@ -1146,6 +1161,94 @@
                                 "value": 129
                             }
                         ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Reason"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 198
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "ContainerCannotRun": {
+                                                "color": "red",
+                                                "index": 11
+                                            },
+                                            "ContainerCreating": {
+                                                "color": "yellow",
+                                                "index": 6
+                                            },
+                                            "CrashLoopBackOff": {
+                                                "color": "red",
+                                                "index": 0
+                                            },
+                                            "CreateContainerConfigError": {
+                                                "color": "red",
+                                                "index": 4
+                                            },
+                                            "DeadlineExceeded": {
+                                                "color": "red",
+                                                "index": 9
+                                            },
+                                            "ErrImagePull": {
+                                                "color": "red",
+                                                "index": 3
+                                            },
+                                            "Evicted": {
+                                                "color": "red",
+                                                "index": 12
+                                            },
+                                            "ImagePullBackOff": {
+                                                "color": "red",
+                                                "index": 2
+                                            },
+                                            "OOMKilled": {
+                                                "color": "red",
+                                                "index": 8
+                                            },
+                                            "PodInitializing": {
+                                                "color": "yellow",
+                                                "index": 7
+                                            },
+                                            "RunContainerError": {
+                                                "color": "red",
+                                                "index": 5
+                                            },
+                                            "StartError": {
+                                                "color": "red",
+                                                "index": 10
+                                            }
+                                        },
+                                        "type": "value"
+                                    },
+                                    {
+                                        "options": {
+                                            "match": "null",
+                                            "result": {
+                                                "color": "transparent",
+                                                "index": 1
+                                            }
+                                        },
+                                        "type": "special"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "custom.cellOptions",
+                                "value": {
+                                    "applyToRow": false,
+                                    "mode": "basic",
+                                    "type": "color-background"
+                                }
+                            }
+                        ]
                     }
                 ]
             },
@@ -1159,16 +1262,21 @@
             "options": {
                 "cellHeight": "sm",
                 "footer": {
-                    "countRows": false,
+                    "countRows": true,
                     "fields": "",
                     "reducer": [
-                        "sum"
+                        "count"
                     ],
-                    "show": false
+                    "show": true
                 },
                 "frameIndex": 3,
                 "showHeader": true,
-                "sortBy": []
+                "sortBy": [
+                    {
+                        "desc": false,
+                        "displayName": "Reason"
+                    }
+                ]
             },
             "pluginVersion": "12.1.0",
             "targets": [
@@ -1238,21 +1346,6 @@
                     },
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "sum by (namespace, pod) (\r\n  (rate(container_network_receive_bytes_total{interface!=\"lo\"}[5m])\r\n   +\r\n   rate(container_network_transmit_bytes_total{interface!=\"lo\"}[5m])\r\n  ) * 8\r\n)\r\n",
-                    "format": "table",
-                    "hide": false,
-                    "instant": true,
-                    "legendFormat": "__auto",
-                    "range": false,
-                    "refId": "Network"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "2c353fec-8554-4622-a0bf-7c9109aaeb4f"
-                    },
-                    "editorMode": "code",
-                    "exemplar": false,
                     "expr": "time() - kube_pod_start_time{namespace=~\"$namespace\"}",
                     "format": "table",
                     "hide": false,
@@ -1268,13 +1361,28 @@
                     },
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "sum by(namespace, pod, node, pod_ip) (kube_pod_info{namespace=~\"$namespace\", node=~\"$nodes\"})",
+                    "expr": "sum by(namespace, pod, node, pod_ip) (kube_pod_info{namespace=~\"$namespace\", node=~\"$nodes\"}) ",
                     "format": "table",
                     "hide": false,
                     "instant": true,
                     "legendFormat": "__auto",
                     "range": false,
                     "refId": "IP/Node"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "2c353fec-8554-4622-a0bf-7c9109aaeb4f"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "(\r\n  kube_pod_container_status_waiting_reason{\r\n    namespace=~\"$namespace\",\r\n    reason!~\"ContainerCreating\"\r\n  }\r\n  or\r\n  kube_pod_container_status_terminated_reason{\r\n    namespace=~\"$namespace\",\r\n    reason!=\"Completed\"\r\n  }\r\n)\r\n* on (namespace, pod)\r\ngroup_left(node)\r\nkube_pod_info{node=~\"$nodes\"}\r\n",
+                    "format": "table",
+                    "hide": false,
+                    "instant": true,
+                    "legendFormat": "__auto",
+                    "range": false,
+                    "refId": "Reason"
                 }
             ],
             "title": "Pod Status",
@@ -1283,7 +1391,7 @@
                     "id": "joinByField",
                     "options": {
                         "byField": "pod",
-                        "mode": "inner"
+                        "mode": "outerTabular"
                     }
                 },
                 {
@@ -1297,25 +1405,34 @@
                             "Time 5": true,
                             "Time 6": true,
                             "Time 7": true,
+                            "Time 8": true,
                             "Value #A": true,
                             "Value #IP/Node": true,
+                            "Value #Reason": true,
                             "Value #Status": true,
                             "__name__": true,
+                            "container": true,
                             "instance": true,
                             "instance 1": true,
                             "instance 2": true,
+                            "instance 3": true,
                             "job": true,
                             "job 1": true,
                             "job 2": true,
+                            "job 3": true,
                             "namespace 2": true,
                             "namespace 3": true,
                             "namespace 4": true,
                             "namespace 5": true,
                             "namespace 6": true,
                             "namespace 7": true,
+                            "namespace 8": true,
+                            "node 1": true,
+                            "node 2": true,
                             "uid": true,
                             "uid 1": true,
-                            "uid 2": true
+                            "uid 2": true,
+                            "uid 3": true
                         },
                         "includeByName": {},
                         "indexByName": {
@@ -1326,6 +1443,8 @@
                             "Time 5": 19,
                             "Time 6": 24,
                             "Time 7": 29,
+                            "Time 8": 33,
+                            "Value #A": 40,
                             "Value #CPU": 6,
                             "Value #IP/Node": 31,
                             "Value #Memory": 7,
@@ -1334,23 +1453,30 @@
                             "Value #Status": 14,
                             "Value #Uptime": 5,
                             "__name__": 11,
+                            "container": 34,
                             "instance 1": 21,
                             "instance 2": 25,
+                            "instance 3": 35,
                             "job 1": 22,
                             "job 2": 26,
-                            "namespace 1": 1,
+                            "job 3": 36,
+                            "namespace 1": 0,
                             "namespace 2": 13,
                             "namespace 3": 16,
                             "namespace 4": 18,
                             "namespace 5": 20,
                             "namespace 6": 27,
                             "namespace 7": 30,
-                            "node": 0,
-                            "phase": 3,
-                            "pod": 2,
+                            "namespace 8": 37,
+                            "node 1": 32,
+                            "node 2": 38,
+                            "phase": 2,
+                            "pod": 1,
                             "pod_ip": 9,
+                            "reason": 3,
                             "uid 1": 23,
-                            "uid 2": 28
+                            "uid 2": 28,
+                            "uid 3": 39
                         },
                         "renameByName": {
                             "Time 1": "",
@@ -1363,9 +1489,10 @@
                             "Value #Uptime": "Uptime",
                             "namespace 1": "Namespace",
                             "node": "Node",
-                            "phase": "Status",
+                            "phase": "Phase",
                             "pod": "Pod",
-                            "pod_ip": "IP"
+                            "pod_ip": "IP",
+                            "reason": "Reason"
                         }
                     }
                 },
@@ -1375,10 +1502,26 @@
                         "fields": {},
                         "sort": [
                             {
-                                "desc": true,
-                                "field": "Status"
+                                "desc": false,
+                                "field": "Reason"
                             }
                         ]
+                    }
+                },
+                {
+                    "id": "filterByValue",
+                    "options": {
+                        "filters": [
+                            {
+                                "config": {
+                                    "id": "isNull",
+                                    "options": {}
+                                },
+                                "fieldName": "Namespace"
+                            }
+                        ],
+                        "match": "all",
+                        "type": "exclude"
                     }
                 }
             ],
@@ -1988,12 +2131,12 @@
         ]
     },
     "time": {
-        "from": "now-3h",
+        "from": "now-1h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Kubernetes Cluster",
     "uid": "c75156f7-6139-4e23-b95f-39fc6bb7503d",
-    "version": 108
+    "version": 3
 }

@@ -51,12 +51,18 @@ spec:
               drop: ["ALL"]
             seccompProfile:
               type: RuntimeDefault
+          {{- if .Values.app.resources }}
           resources:
-          {{- toYaml ( .Values.app.resources | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.livenessProbe }}
           livenessProbe:
-          {{- toYaml ( .Values.app.livenessProbe | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.readinessProbe }}
           readinessProbe:
-          {{- toYaml ( .Values.app.readinessProbe | default dict ) | nindent 12 }}
+          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: "{{ .Release.Name }}-config"

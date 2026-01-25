@@ -4,3 +4,7 @@ description: A helm chart for Miniflux RSS-reader. Connecting to a clustered CNP
 type: application
 version: 0.1.0
 appVersion: "2"
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../common-labels"

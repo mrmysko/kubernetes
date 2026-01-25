@@ -4,3 +4,7 @@ description: A Helm chart for Technitium
 type: application
 version: 0.2.0
 appVersion: "13.6.0"
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../common-labels"

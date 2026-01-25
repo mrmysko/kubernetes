@@ -53,8 +53,6 @@
                   url: ${UNIFI_URL}
                 - title: Tele2 Gateway
                   url: ${GATEWAY_URL}
-                - title: HP iLO
-                  url: ${ILO_URL}
 
     - size: full
       widgets:
