@@ -1,0 +1,20 @@
+{{- define "cnpg-database.fullname" -}}
+{{ printf "%s-%s-%s" .Release.Name .Chart.Name .Values.name | lower | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ include "cnpg-database.fullname" . }}
+  namespace: {{ .Values.namespace | quote }}
+  labels:
+  {{- include "common.labels" . | nindent 4 }}
+spec:
+  name: {{ required "cnpg-database.name is required" .Values.name | quote }}
+  owner: {{ required "cnpg-database.owner is required" .Values.owner | quote }}
+  cluster:
+    name: {{ required "cnpg-database.clusterName is required" .Values.clusterName | quote }}
+  {{- with .Values.extensions }}
+  extensions:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}

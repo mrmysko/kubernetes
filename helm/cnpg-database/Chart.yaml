@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cnpg-database
+description: A library for a default postgres database
+type: application
+version: 0.1.0
+appVersion: "1.0"
