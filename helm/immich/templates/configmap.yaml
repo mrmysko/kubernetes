@@ -1,16 +1,20 @@
+{{- $redis := dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis -}}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ .Release.Name }}-env"
+  name: {{ print .Release.Name "-env" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 data:
   TZ: "Europe/Stockholm"
-  DB_DATABASE_NAME: "{{ .Values.database.name }}"
-  DB_HOSTNAME: "{{ .Values.database.host }}"
-  DB_USERNAME: "{{ .Values.database.username }}"
+  DB_DATABASE_NAME: {{ .Values.mainDb.name | quote }}
+  DB_HOSTNAME: {{ .Values.mainDb.host | quote }}
+  DB_USERNAME: {{ .Values.mainDb.owner | quote }}
   IMMICH_MACHINE_LEARNING_URL: "{{ .Values.config.machineLearning.url }}"
-  REDIS_HOSTNAME: "{{ .Release.Name }}-redis.{{ .Release.Namespace }}.svc.cluster.local"
+  REDIS_HOSTNAME: {{ include "redis.fullname" $redis | quote }}
   REDIS_PORT: "{{ .Values.redis.port }}"
   REDIS_USERNAME: "{{ .Values.redis.user }}"
   DISABLE_REVERSE_GEOCODING: "false"

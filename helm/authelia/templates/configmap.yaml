@@ -1,14 +1,17 @@
 ---
+{{- $redis := dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis -}}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env
+  name: {{ print .Release.Name "-env" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 data:
   AUTHELIA_DEFAULT_2FA_METHOD: "totp"
   AUTHELIA_THEME: "auto"
-  #AUTHELIA_NOTIFIER_FILESYSTEM_FILENAME: /tmp/notifications.txt
   AUTHELIA_NTP_ADDRESS: "udp://pool.ntp.org:123"
   X_AUTHELIA_CONFIG_FILTERS: "template"
 
@@ -80,11 +83,10 @@ data:
   AUTHELIA_SESSION_REMEMBER_ME: "14 days"
   AUTHELIA_SESSION_SECRET_FILE: "{{ .Values.config.secretsDir }}/SESSION_SECRET"
 
-  AUTHELIA_SESSION_REDIS_HOST: "{{ .Release.Name }}-redis"
-  AUTHELIA_SESSION_REDIS_PORT: "{{ .Values.redis.port }}"
-  AUTHELIA_SESSION_REDIS_USERNAME: "{{ .Values.redis.username }}"
+  AUTHELIA_SESSION_REDIS_HOST: {{ include "redis.fullname" $redis | quote }}
+  AUTHELIA_SESSION_REDIS_PORT: "{{ .Values.redisDb.port }}"
+  AUTHELIA_SESSION_REDIS_USERNAME: "{{ .Values.redisDb.username }}"
   AUTHELIA_SESSION_REDIS_PASSWORD_FILE: "{{ .Values.config.secretsDir }}/REDIS_PASSWORD"
-  #AUTHELIA_SESSION_REDIS_TLS_MINIMUM_VERSION: "TLS1.2"
 
   AUTHELIA_STORAGE_MYSQL_ADDRESS: "tcp://{{ .Values.database.host }}:{{ .Values.database.port }}"
   AUTHELIA_STORAGE_MYSQL_USERNAME: "{{ .Values.database.username }}"
@@ -108,6 +110,8 @@ metadata:
   name: {{ .Release.Name }}-config
   labels:
     {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 data: # Place config files into files directory
 {{- range $path, $bytes := .Files.Glob "files/*.yml" }}
   {{ base $path }}: |-

@@ -43,11 +43,6 @@ database:
 redis:
   # -- Number of redis pods
   replicaCount: 1
-
-  image:
-    repository: 11notes/redis
-    tag: 7.4.5
-
   # -- Redis port
   port: 6379
 
@@ -116,3 +111,9 @@ config:
     userFilter:
     # -- LDAP group filter
     groupFilter:
+
+  traefik:
+    namespace:
+
+  forwardAuth:
+    address:

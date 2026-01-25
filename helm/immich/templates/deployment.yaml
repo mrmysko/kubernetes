@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: "{{ .Release.Name }}-server"
+  name: {{ print .Release.Name "-server" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -12,7 +12,7 @@ spec:
   replicas: {{ .Values.app.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
       app.kubernetes.io/component: frontend
   template:
     metadata:
@@ -43,13 +43,14 @@ spec:
               value: "{{ .Values.storage.smb.username }}"
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
+
         - name: wait-for-postgres
           image: postgres:17-alpine
           command:
           - sh
           - -c
           - |
-            until pg_isready -h {{ .Values.database.host }} -p 5432 -U "{{ .Values.database.username }}"; do
+            until pg_isready -h {{ .Values.mainDb.host }} -p 5432 -U "{{ .Values.mainDb.owner }}"; do
               echo "Waiting for PostgreSQL to be ready..."
               sleep 2
             done
@@ -58,17 +59,19 @@ spec:
             capabilities:
               drop: ["ALL"]
             allowPrivilegeEscalation: false
+
       containers:
-        - name: "{{ .Release.Name }}-server"
+        - name: {{ print .Release.Name "-server" | quote }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-env
+                name: {{ print .Release.Name "-env" | quote }}
                 optional: false
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: {{ print .Release.Name "-secret" | quote }}
                 optional: false
+
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: {{ .Values.app.uid }}
@@ -78,22 +81,27 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-          {{- if .Values.app.resources }}
+
+          {{- with .Values.app.resources }}
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.livenessProbe }}
+
+          {{- with .Values.app.livenessProbe }}
           livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.readinessProbe }}
+
+          {{- with .Values.app.readinessProbe }}
           readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
+
           volumeMounts:
             - name: library
               mountPath: /data
+
       volumes:
         - name: library
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-upload-pvc
+            claimName: {{ print .Release.Name "-upload-pvc" | quote }}

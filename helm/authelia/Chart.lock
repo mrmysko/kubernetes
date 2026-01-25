@@ -1,0 +1,9 @@
+dependencies:
+- name: common-labels
+  repository: file://../library/common-labels
+  version: 0.1.0
+- name: redis
+  repository: file://../library/redis
+  version: 0.1.0
+digest: sha256:fb2151ae8f7cea582d1373de1965083bca6b2d3cf26407285e40d210fd48d2f1
+generated: "2026-01-25T18:08:10.484230245Z"
