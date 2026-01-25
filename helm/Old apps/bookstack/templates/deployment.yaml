@@ -7,17 +7,20 @@ metadata:
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
+    
 spec:
   replicas: {{ .Values.app.replicaCount | default 1 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
+
   template:
     metadata:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
+
     spec:
       {{- if .Values.database.enabled }}
       initContainers:
@@ -38,12 +41,15 @@ spec:
             - name: DB_PASSWORD
               value: "{{ .Values.database.password }}"
       {{- end }}
+
       containers:
         - name: "{{ .Release.Name }}"
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+
           ports:
             - containerPort: {{ .Values.service.port }}
+
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
@@ -51,23 +57,28 @@ spec:
               drop: ["ALL"]
             seccompProfile:
               type: RuntimeDefault
-          {{- if .Values.app.resources }}
-          resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
-          {{- end }}
-          {{- if .Values.app.livenessProbe }}
-          livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
-          {{- end }}
-          {{- if .Values.app.readinessProbe }}
-          readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
-          {{- end }}
+
           envFrom:
             - configMapRef:
                 name: "{{ .Release.Name }}-config"
             - secretRef:
                 name: "{{ .Release.Name }}-secret"
+
+          {{- with .Values.app.resources }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.app.livenessProbe }}
+          livenessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.app.readinessProbe }}
+          readinessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
           volumeMounts:
             - name: "{{ .Release.Name }}-storage"
               mountPath: /var/www/bookstack/storage/uploads
@@ -77,6 +88,7 @@ spec:
               mountPath: /tmp/ca.crt
               subPath: ca.crt
             {{- end }}
+
       volumes:
         {{- if (.Values.database.enabled) }}
         - name: invis-external-bundle
@@ -86,6 +98,6 @@ spec:
               - key: ca.crt
                 path: ca.crt
         {{- end }}
-        - name: "{{ .Release.Name }}-storage"
+        - name: {{ print .Release.Name "-storage" | quote }}
           persistentVolumeClaim:
-            claimName: "{{ .Release.Name }}-pvc"
+            claimName: {{ print .Release.Name "-pvc" | quote }}
