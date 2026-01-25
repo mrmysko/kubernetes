@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ .Release.Name }}-env"
+  name: {{ print .Release.Name "-env" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
@@ -16,7 +16,7 @@ data:
   CLEANUP_ARCHIVE_READ_DAYS: "30"
   CLEANUP_ARCHIVE_UNREAD_DAYS: "60"
 
-  DATABASE_URL: "host={{ .Values.database.host }} dbname={{ .Values.database.name }} user={{ .Values.database.username }} password={{ .Values.database.password }}"
+  DATABASE_URL: "host={{ .Values.mainDb.host }} port={{ .Values.mainDb.port }} dbname={{ .Values.mainDb.name }} user={{ .Values.mainDb.owner }} password={{ .Values.mainDb.password }}"
   RUN_MIGRATIONS: "1"
 
   OAUTH2_CLIENT_ID: "{{ .Values.env.oidc.clientID }}"
