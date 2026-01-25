@@ -5,8 +5,11 @@ dependencies:
 - name: default-svc
   repository: file://../library/default-svc
   version: 0.1.0
+- name: mariadb
+  repository: file://../library/mariadb
+  version: 0.1.0
 - name: redis
   repository: file://../library/redis
   version: 0.1.0
-digest: sha256:6fbf9af469f3f1a4bfc86ed354481696caf8e099ee01d812940d2ac215ab6257
-generated: "2026-01-25T19:43:04.729061631Z"
+digest: sha256:165ba750bdd1015fd92280fadeb362eeb1686b71443c0880666c6ae28a9ebff1
+generated: "2026-01-25T21:45:37.885178849Z"

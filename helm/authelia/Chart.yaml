@@ -14,6 +14,11 @@ dependencies:
     version: 0.1.0
     repository: "file://../library/default-svc"
 
+  - name: mariadb
+    version: 0.1.0
+    repository: "file://../library/mariadb"
+    alias: database
+
   - name: redis
     version: 0.1.0
     repository: "file://../library/redis"

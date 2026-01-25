@@ -5,5 +5,8 @@ dependencies:
 - name: default-svc
   repository: file://../library/default-svc
   version: 0.1.0
-digest: sha256:ec821ccd507adc33a7b52fb5ee54dc4cfb7533f4806424ea917c80233290dce2
-generated: "2026-01-25T19:52:06.695606429Z"
+- name: mariadb
+  repository: file://../library/mariadb
+  version: 0.1.0
+digest: sha256:d6d358243bb90cc59c2827e989022e68d560d033330a6df6afb8cd830a6d4f3e
+generated: "2026-01-25T21:39:37.125221441Z"

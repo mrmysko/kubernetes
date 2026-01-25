@@ -39,6 +39,7 @@ database:
   username:
   # -- Database password
   password:
+  passwordKey:
 
 service:
   # -- App port

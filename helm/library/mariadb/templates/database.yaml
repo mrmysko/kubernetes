@@ -1,15 +1,15 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: Database
 metadata:
-  name: "{{ .Release.Name }}-db"
+  name: {{ printf "%s-db" (include "mariadb.fullname" .) | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  name: {{ .Values.database.name }}
+  name: "{{ .Values.name }}"
   mariaDbRef:
-    name: {{ .Values.database.instanceName }}
-    namespace: {{ .Values.database.namespace }}
+    name: "{{ .Values.instanceName }}"
+    namespace: "{{ .Values.namespace }}"
   characterSet: utf8mb4
   collate: utf8mb4_unicode_ci
   cleanupPolicy: Skip
