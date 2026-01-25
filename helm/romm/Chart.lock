@@ -1,6 +1,12 @@
 dependencies:
 - name: common-labels
-  repository: file://../common-labels
+  repository: file://../library/common-labels
   version: 0.1.0
-digest: sha256:214b577afff230feb8dbe369bbad137294f318b8d0b3b1dd12e6492abe80117c
-generated: "2026-01-25T07:42:42.679727916Z"
+- name: default-svc
+  repository: file://../library/default-svc
+  version: 0.1.0
+- name: redis
+  repository: file://../library/redis
+  version: 0.1.0
+digest: sha256:6fbf9af469f3f1a4bfc86ed354481696caf8e099ee01d812940d2ac215ab6257
+generated: "2026-01-25T19:43:04.729061631Z"

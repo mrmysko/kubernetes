@@ -1,7 +1,9 @@
+{{- $redis := dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis -}}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env
+  name: {{ print .Release.Name "-env" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
@@ -18,7 +20,7 @@ data:
   OIDC_REDIRECT_URI: "{{ .Values.config.oidc.redirectUri }}"
   OIDC_SERVER_APPLICATION_URL: "{{ .Values.config.oidc.serverApplicationUrl }}"
   OIDC_TLS_CACERTFILE: "{{ .Values.config.oidc.tlsCaCertFile }}"
-  REDIS_HOST: "{{ .Release.Name }}-redis"
+  REDIS_HOST: {{ include "redis.fullname" $redis | quote }}
   REDIS_PORT: "{{ .Values.redis.port }}"
   ROMM_BASE_URL: "https://{{ .Values.ingress.baseUrl }}"
   ROMM_DB_DRIVER: "{{ .Values.database.type }}"

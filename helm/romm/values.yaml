@@ -99,6 +99,7 @@ service:
 ingress:
   # FQDN for application
   baseUrl:
+  annotations:
 
 config:
   igdb:

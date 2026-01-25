@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "{{ .Release.Name }}-games"
+  name: {{ print .Release.Name "-games" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -11,13 +11,13 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  volumeName: "{{ .Release.Name }}-games"
+  volumeName: {{ print .Release.Name "-games" | quote }}
   storageClassName: ""
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "{{ .Release.Name }}-assets"
+  name: {{ print .Release.Name "-assets" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -27,14 +27,14 @@ spec:
   resources:
     requests:
       storage: {{ .Values.storage.assets.size }}
-{{- if .Values.storage.assets.existingPvcName }}
-  volumeName: "{{ .Values.storage.assets.existingPvcName }}"
+{{- with .Values.storage.assets }}
+  volumeName: {{ .volumeName | quote }}
 {{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-resources
+  name: {{ print .Release.Name "-resources" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -44,14 +44,14 @@ spec:
   resources:
     requests:
       storage: {{ .Values.storage.resources.size }}
-{{- if .Values.storage.resources.existingPvcName }}
-  volumeName: "{{ .Values.storage.resources.existingPvcName }}"
+{{- with .Values.storage.resources }}
+  volumeName: {{ .volumeName | quote }}
 {{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-config
+  name: {{ print .Release.Name "-config" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -61,6 +61,6 @@ spec:
   resources:
     requests:
       storage: {{ .Values.storage.config.size }}
-{{- if .Values.storage.config.existingPvcName }}
-  volumeName: "{{ .Values.storage.config.existingPvcName }}"
+{{- with .Values.storage.config }}
+  volumeName: {{ .volumeName | quote }}
 {{- end }}

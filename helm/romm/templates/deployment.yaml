@@ -1,7 +1,11 @@
+{{ include "default-svc.service" . }}
+---
+{{ include "default-svc.ingress" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}"
+  name: {{ .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -39,6 +43,7 @@ spec:
               value: "{{ .Values.database.username }}"
             - name: DB_PASSWORD
               value: "{{ .Values.database.password }}"
+
         - name: wait-for-samba
           image: alpine:3.20
           command:
@@ -62,7 +67,7 @@ spec:
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
       containers:
-        - name: "{{ .Release.Name }}"
+        - name: {{ .Release.Name | quote }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
@@ -78,9 +83,9 @@ spec:
               type: RuntimeDefault
           envFrom:
             - configMapRef:
-                name: "{{ .Release.Name }}-env"
+                name: {{ print .Release.Name "-env" | quote }}
             - secretRef:
-                name: "{{ .Release.Name }}-secret"
+                name: {{ print .Release.Name "-secret" | quote }}
           {{- if .Values.app.resources }}
           resources:
           {{- toYaml .Values.app.resources | nindent 12 }}

@@ -4,7 +4,12 @@ description: A Helm chart for Vikunja. The database is handled by a clustered Ma
 type: application
 version: 0.3.0
 appVersion: "1.0.0-rc2"
+
 dependencies:
   - name: common-labels
     version: 0.1.0
-    repository: "file://../common-labels"
+    repository: "file://../library/common-labels"
+
+  - name: default-svc
+    version: 0.1.0
+    repository: "file://../library/default-svc"

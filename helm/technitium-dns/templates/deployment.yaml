@@ -1,12 +1,15 @@
+{{ include "default-svc.ingress" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}"
+  name: {{ .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
+
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .Values.app.replicaCount | default 1 }}
@@ -20,41 +23,40 @@ spec:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
+
     spec:
-      initContainers:
-        - name: init-chown
-          image: busybox:1.36
-          command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /data"]
-          securityContext:
-            allowPrivilegeEscalation: false
-            seccompProfile:
-              type: RuntimeDefault
-          volumeMounts:
-            - name: "{{ .Release.Name }}-config"
-              mountPath: /data
+      securityContext:
+        fsGroup: {{ .Values.app.gid }}
+
       containers:
-        - name: "{{ .Release.Name }}"
+        - name: {{ .Release.Name | quote }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+
           ports:
             - containerPort: {{ .Values.service.port }}
+
           envFrom:
             - configMapRef:
                 name: "{{ .Release.Name }}-env"
             - secretRef:
                 name: "{{ .Release.Name }}-secret"
-          {{- if .Values.app.resources }}
+
+          {{- with .Values.app.resources }}
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.livenessProbe }}
+
+          {{- with .Values.app.livenessProbe }}
           livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.readinessProbe }}
+
+          {{- with .Values.app.readinessProbe }}
           readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
+
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
@@ -64,9 +66,11 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
+
           volumeMounts:
             - name: "{{ .Release.Name }}-config"
               mountPath: /etc/dns
+
       volumes:
         - name: "{{ .Release.Name }}-config"
           persistentVolumeClaim:

@@ -1,19 +1,15 @@
 # This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+{{- define "default-svc.ingress" -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: "{{ .Release.Name }}-route"
+  name: {{ print .Release.Name "-route" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/name: Technitium
-    gethomepage.dev/description: DNS Server
-    gethomepage.dev/icon: technitium.png
-    gethomepage.dev/href: "https://{{ .Values.ingress.baseUrl }}"
-    gethomepage.dev/pod-selector: "app.kubernetes.io/component=frontend"
-    gethomepage.dev/group: Frontend
-    gethomepage.dev/weight: "5"
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   entryPoints:
     - web
@@ -23,5 +19,6 @@ spec:
       match: Host(`{{ .Values.ingress.baseUrl }}`)
       services:
         - kind: Service
-          name: "{{ .Release.Name }}-svc"
+          name: {{ print .Release.Name "-svc" | quote }}
           port: {{ .Values.service.port }}
+{{- end -}}
