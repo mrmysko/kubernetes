@@ -1,9 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ .Release.Name }}-configmap"
+  name: {{ print .Release.Name "-configmap" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 data:
   navidrome.toml: |
     LogLevel = 'info'

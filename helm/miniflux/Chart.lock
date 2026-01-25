@@ -1,9 +1,12 @@
 dependencies:
 - name: common-labels
-  repository: file://../common-labels
+  repository: file://../library/common-labels
+  version: 0.1.0
+- name: default-svc
+  repository: file://../library/default-svc
   version: 0.1.0
 - name: cnpg-database
-  repository: file://../cnpg-database
+  repository: file://../library/cnpg-database
   version: 0.1.0
-digest: sha256:2feab9f8ddeb788d5d75682c54c3c108fbdcb55f8a54ac28ae2d40410649a8f7
-generated: "2026-01-25T12:40:15.178550129Z"
+digest: sha256:5e65820cb2baeb8b154597b8fdf872506c13e18b7a1aca7403f76710280d63fc
+generated: "2026-01-25T19:57:37.447061225Z"

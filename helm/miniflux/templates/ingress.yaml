@@ -23,7 +23,7 @@ spec:
       match: Host(`{{ .Values.ingress.baseUrl }}`)
       services:
         - kind: Service
-          name: "{{ .Release.Name }}-svc"
+          name: {{ print .Release.Name "-svc" | quote }}
           port: {{ .Values.service.port }}
           serversTransport: {{ print .Release.Name "-transport" | quote }}
           scheme: https

@@ -1,7 +1,9 @@
+{{ include "default-svc.service" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}"
+  name: {{ .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
@@ -14,7 +16,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
       app.kubernetes.io/component: frontend
   template:
     metadata:
@@ -25,16 +27,21 @@ spec:
       initContainers:
         - name: init-chown
           image: busybox:1.36
+
           command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /data"]
+
           securityContext:
             allowPrivilegeEscalation: false
             seccompProfile:
               type: RuntimeDefault
+
           volumeMounts:
             - name: config-pvc
               mountPath: /data
+
         - name: wait-for-samba
           image: alpine:3.20
+
           command:
             - /bin/sh
             - -c
@@ -46,6 +53,7 @@ spec:
                 sleep 5
               done
               echo "Samba share is available."
+
           env:
             - name: SMB_URL
               value: "{{ .Values.storage.smb.url }}"
@@ -55,30 +63,36 @@ spec:
               value: "{{ .Values.storage.smb.username }}"
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
+
       containers:
-        - name: "{{ .Release.Name }}"
+        - name: {{ .Release.Name | quote }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
           imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: {{ .Values.service.port }}
+
           envFrom:
             - secretRef:
-                name: "{{ .Release.Name }}-secret"
+                name: {{ print .Release.Name "-secret" | quote }}
           env:
             - name: ND_CONFIGFILE
               value: /data/navidrome.toml
-          {{- if .Values.app.resources }}
+
+          {{- with .Values.app.resources }}
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.livenessProbe }}
+
+          {{- with .Values.app.livenessProbe }}
           livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.app.readinessProbe }}
+
+          {{- with .Values.app.readinessProbe }}
           readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
+
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
@@ -88,6 +102,7 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
+
           volumeMounts:
             - name: config-pvc
               mountPath: /data
@@ -95,24 +110,25 @@ spec:
               mountPath: /data/navidrome.toml
               subPath: navidrome.toml
               readOnly: true
-            - name: "{{ .Release.Name }}-cache"
+            - name: {{ print .Release.Name "-cache" | quote }}
               mountPath: /data/cache
-            - name: "{{ .Release.Name }}-music"
+            - name: {{ print .Release.Name "-music" | quote }}
               mountPath: /music
               readOnly: true
+
       volumes:
         - name: config-pvc
           persistentVolumeClaim:
-            claimName: "{{ .Release.Name }}-config-pvc"
+            claimName: {{ print .Release.Name "-config-pvc" | quote }}
         - name: configmap
           configMap:
-            name: "{{ .Release.Name }}-configmap"
+            name: {{ print .Release.Name "-configmap" | quote }}
             items:
               - key: navidrome.toml
                 path: navidrome.toml
-        - name: "{{ .Release.Name }}-music"
+        - name: {{ print .Release.Name "-music" | quote }}
           persistentVolumeClaim:
-            claimName: "{{ .Release.Name }}-music"
-        - name: "{{ .Release.Name }}-cache"
+            claimName: {{ print .Release.Name "-music" | quote }}
+        - name: {{ print .Release.Name "-cache" | quote }}
           emptyDir:
             medium: Memory

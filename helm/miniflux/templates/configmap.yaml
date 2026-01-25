@@ -4,6 +4,8 @@ metadata:
   name: {{ print .Release.Name "-env" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 data:
   LOG_LEVEL: "info"
   BASE_URL: "https://{{ .Values.ingress.baseUrl}}"

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "{{ .Release.Name }}-music"
+  name: {{ print .Release.Name "-music" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -12,13 +12,13 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  volumeName: "{{ .Release.Name }}-music"
+  volumeName: {{ print .Release.Name "-music" | quote }}
   storageClassName: ""
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "{{ .Release.Name }}-config-pvc"
+  name: {{ print .Release.Name "-config-pvc" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -28,6 +28,6 @@ spec:
   resources:
     requests:
       storage: 4Gi
-{{- if .Values.storage.existingPvcName }}
-  volumeName: "{{ .Values.storage.existingPvcName }}"
+{{- with .Values.storage.config }}
+  volumeName: {{ .volumeName | quote }}
 {{- end }}
