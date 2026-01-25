@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+  annotations:
+    reloader.stakater.com/auto: "true"
+
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.app.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/component: frontend
+
+  template:
+    metadata:
+      labels:
+        {{- include "common.labels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend
+        
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.app.gid }}
+
+      containers:
+        - name: {{ .Release.Name | quote }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+
+          ports:
+            - containerPort: {{ .Values.service.port }}
+
+          envFrom:
+            - configMapRef:
+                name: {{ print .Release.Name "-env" | quote }}
+            - secretRef:
+                name: {{ print .Release.Name "-secret" | quote }}
+
+          {{- with .Values.app.resources }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.app.livenessProbe }}
+          livenessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.app.readinessProbe }}
+          readinessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          securityContext:
+            runAsUser: {{ .Values.app.uid }}
+            runAsGroup: {{ .Values.app.gid }}
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+
+          volumeMounts:
+            - name: "data"
+              mountPath: "/app/backend/data"
+            - name: static
+              mountPath: "/app/backend/open_webui/static"
+
+      volumes:
+        - name: "data"
+          persistentVolumeClaim:
+            claimName: {{ print .Release.Name "-data" | quote }}
+        - name: static
+          emptyDir: {}

@@ -1,6 +1,21 @@
 apiVersion: v2
-name: owui
-description: A Helm chart for OpenWebUI
+name: openwebui
+description: A Helm chart for Open WebUI
 type: application
 version: 0.1.0
 appVersion: "0.1"
+
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../common-labels"
+
+  - name: cnpg-database
+    version: 0.1.0
+    repository: "file://../cnpg-database"
+    alias: mainDb
+
+  - name: cnpg-database
+    version: 0.1.0
+    repository: "file://../cnpg-database"
+    alias: vectorDb

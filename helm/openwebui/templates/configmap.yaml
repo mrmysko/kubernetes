@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ print .Release.Name "-env" | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+data:
+  ENABLE_PERSISTENT_CONFIG: "False"
+  ENABLE_OAUTH_PERSISTENT_CONFIG: "False"
+  ENABLE_LOGIN_FORM: "False"
+  ENABLE_SIGNUP: "False"
+  ENABLE_OAUTH_SIGNUP: "True"
+
+  WEBUI_URL: {{ print "https://" .Values.ingress.baseUrl | quote }}
+  PORT: {{ .Values.service.port | quote }}
+
+  DATABASE_TYPE: postgresql
+  DATABASE_HOST: {{ .Values.mainDb.host | quote }}
+  DATABASE_PORT: {{ .Values.mainDb.port | quote }}
+  DATABASE_NAME: {{ .Values.mainDb.name | quote }}
+  DATABASE_USER: {{ .Values.mainDb.owner | quote }}
+
+  VECTOR_DB: "pgvector"
+  PGVECTOR_CREATE_EXTENSION: "False"
+
+  OPENID_PROVIDER_URL: {{ .Values.config.oidc.url | quote }}
+  OAUTH_SCOPES: "openid email profile"
+  OPENID_REDIRECT_URI: {{ .Values.config.oidc.redirectUrl | quote }}
+  OAUTH_CODE_CHALLENGE_METHOD: "S256"
+  ENABLE_OAUTH_GROUP_CREATION: "True"

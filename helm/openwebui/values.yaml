@@ -1,0 +1,58 @@
+app:
+  name: openwebui
+  image:
+    repository: ghcr.io/open-webui/open-webui
+    tag: v0.7.2
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  uid: 1001
+  gid: 1001
+
+mainDb:
+  host:
+  port: 5432
+  name:
+
+  namespace:
+  clusterName:
+  owner:
+  password:
+
+vectorDb:
+  host:
+  port: 5432
+  name:
+
+  namespace:
+  clusterName:
+  owner:
+  password:
+
+  extensions:
+    - name: vector
+      ensure: present
+
+service:
+  port: 3000
+
+ingress:
+  baseUrl:
+
+storage:
+  data:
+    volumeName:
+
+config:
+  webUI:
+    admin:
+      name:
+      password:
+    secretKey:
+
+  oidc:
+    url:
+    redirectUrl:
+    clientId:
+    clientSecret:
