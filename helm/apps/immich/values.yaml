@@ -29,7 +29,7 @@ app:
       scheme: HTTP
       path: /api/server/ping
       port: 2283
-    initialDelaySeconds: 20
+    initialDelaySeconds: 15
     periodSeconds: 10
 
   readinessProbe:
@@ -37,8 +37,8 @@ app:
       scheme: HTTP
       path: /api/server/ping
       port: 2283
-    initialDelaySeconds: 20
-    periodSeconds: 10
+    initialDelaySeconds: 5
+    periodSeconds: 5
 
 redis:
   # -- Number of redis pods

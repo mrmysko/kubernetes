@@ -1,4 +1,4 @@
-{{ include "default-svc.service" . }}
+{{ include "baseResources.service" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,21 +24,9 @@ spec:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
+      securityContext:
+        fsGroup: {{ .Values.app.gid }}
       initContainers:
-        - name: init-chown
-          image: busybox:1.36
-
-          command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /data"]
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            seccompProfile:
-              type: RuntimeDefault
-
-          volumeMounts:
-            - name: config-pvc
-              mountPath: /data
-
         - name: wait-for-samba
           image: alpine:3.20
 
@@ -64,10 +52,14 @@ spec:
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
 
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+
       containers:
-        - name: {{ .Release.Name | quote }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
           ports:
             - containerPort: {{ .Values.service.port }}
 

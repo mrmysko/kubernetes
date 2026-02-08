@@ -27,7 +27,7 @@ app:
       scheme: HTTP
       path: /ping
       port: 4533
-    initialDelaySeconds: 10
+    initialDelaySeconds: 15
     periodSeconds: 10
 
   readinessProbe:
@@ -35,8 +35,8 @@ app:
       scheme: HTTP
       path: /ping
       port: 4533
-    initialDelaySeconds: 10
-    periodSeconds: 10
+    initialDelaySeconds: 2
+    periodSeconds: 5
 
 service:
   # -- App port

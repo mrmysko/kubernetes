@@ -1,6 +1,6 @@
-{{ include "default-svc.service" . }}
+{{ include "baseResources.service" . }}
 ---
-{{ include "default-svc.ingress" . }}
+{{ include "baseResources.ingress" . }}
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -48,6 +48,12 @@ spec:
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
 
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+
         - name: wait-for-postgres
           image: postgres:17-alpine
           command:
@@ -65,9 +71,8 @@ spec:
             allowPrivilegeEscalation: false
 
       containers:
-        - name: {{ print .Release.Name "-server" | quote }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
-          imagePullPolicy: Always
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+
           envFrom:
             - configMapRef:
                 name: {{ print .Release.Name "-env" | quote }}
