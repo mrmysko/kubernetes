@@ -15,5 +15,5 @@ invis-wildcard-cert.yaml
 gitignore/
 
 # Authelia
-helm/authelia/files/configuration.clients.yml
-helm/authelia/files/configuration.yml
+helm/apps/authelia/files/configuration.clients.yml
+helm/apps/authelia/files/configuration.yml
