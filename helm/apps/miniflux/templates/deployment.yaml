@@ -26,23 +26,7 @@ spec:
 
     spec:
       initContainers:
-      - name: wait-for-postgres
-        image: postgres:17-alpine
-
-        command:
-        - sh
-        - -c
-        - |
-          until pg_isready -h {{ .Values.mainDb.host }} -p 5432 -U "{{ .Values.mainDb.owner }}"; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 2
-          done
-          echo "PostgreSQL is ready!"
-
-        securityContext:
-          capabilities:
-            drop: ["ALL"]
-          allowPrivilegeEscalation: false
+        - {{ include "baseResources.waitForPostgres" . | nindent 10 }}
 
       containers:
         - {{ include "baseResources.baseContainer" . | nindent 10 }}

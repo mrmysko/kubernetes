@@ -27,24 +27,10 @@ spec:
         app.kubernetes.io/component: frontend
 
     spec:
-      initContainers:
-        - name: wait-for-mariadb
-          image: mariadb:11
-          command: 
-            - sh
-            - -c
-            - >
-              until mariadb-admin ping -h "${DB_HOST}" -u"${DB_USER}" -p"${DB_PASSWORD}" -s;
-              do echo "Waiting for MariaDB..."; sleep 3;
-              done
+      enableServiceLinks: false
 
-          env:
-            - name: DB_HOST
-              value: "{{ .Values.database.host }}"
-            - name: DB_USER
-              value: "{{ .Values.database.username }}"
-            - name: DB_PASSWORD
-              value: "{{ .Values.database.password }}"
+      initContainers:
+        - {{ include "baseResources.waitForMariadb" . | nindent 10 }}
 
       containers:
         - {{ include "baseResources.baseContainer" . | nindent 10 }}
@@ -108,4 +94,3 @@ spec:
         - name: "{{ .Release.Name }}-secret"
           secret:
             secretName: "{{ .Release.Name }}-secret"
-      enableServiceLinks: false

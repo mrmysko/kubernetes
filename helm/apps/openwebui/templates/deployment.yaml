@@ -9,12 +9,13 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
-  annotations:
-    reloader.stakater.com/auto: "true"
 
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .Values.app.replicaCount | default 1 }}
+  strategy:
+    type: Recreate
+
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name | quote }}

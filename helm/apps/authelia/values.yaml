@@ -22,6 +22,22 @@ app:
     limits:
       memory: "256Mi"
 
+  livenessProbe:
+    httpGet:
+      scheme: HTTPS
+      path: /api/health
+      port: 9091
+    initialDelaySeconds: 15
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTPS
+      path: /api/health
+      port: 9091
+    initialDelaySeconds: 2
+    periodSeconds: 5
+
 database:
   # -- Kind of database
   type:

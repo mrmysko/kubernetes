@@ -32,8 +32,9 @@ app:
           "-c",
           "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1",
         ]
-    initialDelaySeconds: 5
-    periodSeconds: 20
+    initialDelaySeconds: 15
+    periodSeconds: 10
+
   readinessProbe:
     exec:
       command:
@@ -43,7 +44,7 @@ app:
           "dig +short +retry=0 +norecurse @127.0.0.1 localhost | grep 127.0.0.1",
         ]
     initialDelaySeconds: 5
-    periodSeconds: 10
+    periodSeconds: 2
 
 service:
   # -- App port

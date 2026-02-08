@@ -3,7 +3,7 @@ name: Authelia
 description: A Helm chart for Authelia. The database is handled by a clustered MariaDB deployment.
 type: application
 version: 0.3.0
-appVersion: "4.39"
+appVersion: "4.39.15"
 
 dependencies:
   - name: common-labels

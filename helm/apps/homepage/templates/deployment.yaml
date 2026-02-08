@@ -29,9 +29,6 @@ spec:
       automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
-      securityContext:
-        seccompProfile:
-          type: RuntimeDefault
 
       containers:
         - {{ include "baseResources.baseContainer" . | nindent 10 }}
@@ -68,9 +65,10 @@ spec:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
             capabilities:
-              drop:
-                - ALL
+              drop: ["ALL"]
             runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
 
           volumeMounts:
             - name: {{ print .Release.Name "-config" | quote }}

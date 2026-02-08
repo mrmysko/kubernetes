@@ -24,6 +24,22 @@ app:
     limits:
       memory: "512Mi"
 
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /favico.ico
+      port: 3456
+    initialDelaySeconds: 15
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /favico.ico
+      port: 3456
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
 database:
   # -- Kind of database
   type:

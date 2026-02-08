@@ -21,21 +21,10 @@ spec:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
-        
+
     spec:
-      initContainers:
-        - name: init-chown
-          image: busybox:1.36
-          command: ["sh", "-c", "chown -R {{ .Values.app.uid }}:{{ .Values.app.gid }} /app/assets"]
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            seccompProfile:
-              type: RuntimeDefault
-
-          volumeMounts:
-            - name: {{ .Release.Name }}-assets
-              mountPath: /app/assets
+      securityContext:
+        fsGroup: {{ .Values.app.gid }}
 
       containers:
         - {{ include "baseResources.baseContainer" . | nindent 10 }}
