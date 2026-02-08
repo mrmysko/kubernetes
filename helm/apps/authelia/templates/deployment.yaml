@@ -1,4 +1,4 @@
-{{ include "default-svc.service" . }}
+{{ include "baseResources.service" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,9 +47,7 @@ spec:
               value: "{{ .Values.database.password }}"
 
       containers:
-        - name: "{{ .Release.Name }}"
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
 
           command:
             - authelia
@@ -58,6 +56,7 @@ spec:
             - "--config=/config/configuration.clients.yml"
           ports:
             - containerPort: {{ .Values.service.port }}
+            
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}

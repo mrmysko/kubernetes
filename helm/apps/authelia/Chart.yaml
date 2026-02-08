@@ -8,17 +8,17 @@ appVersion: "4.39"
 dependencies:
   - name: common-labels
     version: 0.1.0
-    repository: "file://../library/common-labels"
+    repository: "file://../../library/common-labels"
 
-  - name: default-svc
+  - name: baseResources
     version: 0.1.0
-    repository: "file://../library/default-svc"
+    repository: "file://../../library/baseResources"
 
   - name: mariadb
     version: 0.1.0
-    repository: "file://../library/mariadb"
+    repository: "file://../../library/mariadb"
     alias: database
 
   - name: redis
     version: 0.1.0
-    repository: "file://../library/redis"
+    repository: "file://../../library/redis"
