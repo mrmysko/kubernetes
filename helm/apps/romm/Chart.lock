@@ -1,0 +1,15 @@
+dependencies:
+- name: common-labels
+  repository: file://../../library/common-labels
+  version: 0.1.0
+- name: baseResources
+  repository: file://../../library/baseResources
+  version: 0.1.0
+- name: mariadb
+  repository: file://../../library/mariadb
+  version: 0.1.0
+- name: redis
+  repository: file://../../library/redis
+  version: 0.1.0
+digest: sha256:b2bbef96900da2235b4cece9a19563d0f6752a9d5e40ff7220994f08280e217b
+generated: "2026-02-08T19:50:37.35743921+01:00"

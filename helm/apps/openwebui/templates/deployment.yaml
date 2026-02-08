@@ -1,6 +1,6 @@
-{{ include "default-svc.service" . }}
+{{ include "baseResources.service" . }}
 ---
-{{ include "default-svc.ingress" . }}
+{{ include "baseResources.ingress" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,9 +31,7 @@ spec:
         fsGroup: {{ .Values.app.gid }}
 
       containers:
-        - name: {{ .Release.Name | quote }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
 
           ports:
             - containerPort: {{ .Values.service.port }}

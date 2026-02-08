@@ -1,0 +1,15 @@
+dependencies:
+- name: common-labels
+  repository: file://../../library/common-labels
+  version: 0.1.0
+- name: baseResources
+  repository: file://../../library/baseResources
+  version: 0.1.0
+- name: cnpg-database
+  repository: file://../../library/cnpg-database
+  version: 0.1.0
+- name: cnpg-database
+  repository: file://../../library/cnpg-database
+  version: 0.1.0
+digest: sha256:7ef8e0642c3941917e0e8ca36ad252080ce9bb8571222135f43423880d4db216
+generated: "2026-02-08T19:54:47.050246663+01:00"

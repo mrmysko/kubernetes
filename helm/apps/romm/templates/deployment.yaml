@@ -1,6 +1,6 @@
-{{ include "default-svc.service" . }}
+{{ include "baseResources.service" . }}
 ---
-{{ include "default-svc.ingress" . }}
+{{ include "baseResources.ingress" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -26,6 +26,8 @@ spec:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
+      enableServiceLinks: false
+      
       initContainers:
         - name: wait-for-mariadb
           image: mariadb:11
@@ -57,6 +59,7 @@ spec:
                 sleep 5
               done
               echo "Samba share is available."
+
           env:
             - name: SMB_URL
               value: "{{ .Values.storage.smb.url }}"
@@ -66,12 +69,19 @@ spec:
               value: "{{ .Values.storage.smb.username }}"
             - name: SMB_PASS
               value: "{{ .Values.storage.smb.password }}"
+
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+
       containers:
-        - name: {{ .Release.Name | quote }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+
           ports:
             - containerPort: {{ .Values.service.port }}
+
           securityContext:
             runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
@@ -81,23 +91,28 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
+
           envFrom:
             - configMapRef:
                 name: {{ print .Release.Name "-env" | quote }}
             - secretRef:
                 name: {{ print .Release.Name "-secret" | quote }}
+
           {{- if .Values.app.resources }}
           resources:
           {{- toYaml .Values.app.resources | nindent 12 }}
           {{- end }}
+
           {{- if .Values.app.livenessProbe }}
           livenessProbe:
           {{- toYaml .Values.app.livenessProbe | nindent 12 }}
           {{- end }}
+
           {{- if .Values.app.readinessProbe }}
           readinessProbe:
           {{- toYaml .Values.app.readinessProbe | nindent 12 }}
           {{- end }}
+
           volumeMounts:
             - name: {{ .Release.Name }}-assets
               mountPath: /romm/assets
@@ -110,6 +125,7 @@ spec:
             - name: authelia-fullchain
               mountPath: "{{ .Values.config.oidc.tlsCaCertFile }}"
               subPath: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
+
       volumes:
         - name: {{ .Release.Name }}-assets
           persistentVolumeClaim:
@@ -129,4 +145,3 @@ spec:
             items:
               - key: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
                 path: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
-      enableServiceLinks: false
