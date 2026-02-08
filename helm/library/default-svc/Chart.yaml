@@ -1,5 +1,0 @@
-apiVersion: v2
-name: default-svc
-description: Default service and accompanying ingressRoute
-type: library
-version: 0.1.0

@@ -1,4 +1,4 @@
-{{- define "default-svc.service" -}}
+{{- define "baseResources.service" -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/component: {{ .Values.component | default "frontend" | quote }}

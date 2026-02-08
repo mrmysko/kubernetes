@@ -3,13 +3,13 @@ name: Homepage
 description: A Helm chart for Homepage
 type: application
 version: 0.2.0
-appVersion: "v1.4"
+appVersion: "v1.9.0"
 
 dependencies:
   - name: common-labels
     version: 0.1.0
-    repository: "file://../library/common-labels"
+    repository: "file://../../library/common-labels"
 
-  - name: default-svc
+  - name: baseResources
     version: 0.1.0
-    repository: "file://../library/default-svc"
+    repository: "file://../../library/baseResources"

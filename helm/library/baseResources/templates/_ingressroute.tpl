@@ -1,11 +1,15 @@
 # This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+{{- define "baseResources.ingress" -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: {{ print .Release.Name "-route" | quote }}
   labels:
-    app.kubernetes.io/name: {{ .Values.app.name | default .Chart.Name }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "common.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   entryPoints:
     - web
@@ -15,8 +19,6 @@ spec:
       match: Host(`{{ .Values.ingress.baseUrl }}`)
       services:
         - kind: Service
-          name: "{{ .Release.Name }}-svc"
+          name: {{ print .Release.Name "-svc" | quote }}
           port: {{ .Values.service.port }}
-      middlewares:
-        - name: "authelia-forward-auth"
-          namespace: traefik
+{{- end -}}

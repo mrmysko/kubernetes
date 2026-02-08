@@ -1,4 +1,4 @@
-{{ include "default-svc.service" . }}
+{{ include "baseResources.service" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,9 +34,7 @@ spec:
           type: RuntimeDefault
 
       containers:
-        - name: {{ .Release.Name | quote }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
 
           ports:
             - name: http
