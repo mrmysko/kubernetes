@@ -63,7 +63,7 @@ storage:
 
 config:
   # -- Allowed proxy IPs
-  reverseProxyWhitelist:
+  trustedSources:
 
   lastFM:
     apiKey:

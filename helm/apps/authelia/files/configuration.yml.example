@@ -52,7 +52,7 @@ session:
 
 regulation:
   ## The number of failed login attempts before user is banned. Set it to 0 to disable regulation.
-  max_retries: 0
+  max_retries: 5
   find_time: "5 minutes"
   ban_time: "2 hours"
 

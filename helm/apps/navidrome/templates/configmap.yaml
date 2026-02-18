@@ -11,8 +11,8 @@ data:
     LogLevel = 'info'
     EnableInsightsCollector = 'false'
     BaseUrl = 'https://{{ .Values.ingress.baseUrl }}'
-    ReverseProxyWhitelist = '{{ .Values.config.reverseProxyWhitelist }}'
-    ReverseProxyUserHeader = 'Remote-User'
+    ExtAuth.TrustedSources = '{{ .Values.config.trustedSources }}'
+    ExtAuth.UserHeader = 'Remote-User'
 
     LastFM.Enabled = 'true'
     Deezer.Enabled = 'true'
@@ -20,6 +20,7 @@ data:
     Agents = 'deezer,lastfm'
     LastFM.Language = 'en'
 
+    EnableTranscodingCancellation = 'true'
     EnableCoverAnimation = 'true'
     EnableSharing = 'false'
     DefaultTheme = 'nord'

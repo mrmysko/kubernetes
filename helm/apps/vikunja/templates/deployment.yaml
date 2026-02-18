@@ -29,6 +29,7 @@ spec:
         app.kubernetes.io/component: frontend
 
     spec:
+      automountServiceAccountToken: false
       containers:
         - {{ include "baseResources.baseContainer" . | nindent 10 }}
 

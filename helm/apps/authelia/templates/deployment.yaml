@@ -27,6 +27,7 @@ spec:
         app.kubernetes.io/component: frontend
 
     spec:
+      automountServiceAccountToken: false
       enableServiceLinks: false
 
       initContainers:

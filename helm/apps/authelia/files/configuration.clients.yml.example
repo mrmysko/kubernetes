@@ -1,5 +1,14 @@
 identity_providers:
   oidc:
+
+    authorization_policies:
+      privileged_access:
+        default_policy: 'deny'
+        rules:
+          - policy: 'two_factor'
+            subject: 
+              - group:admins
+
     clients:
       - client_id: "client1"
         client_name: "Client"

@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
+    
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .Values.app.replicaCount | default 1 }}
@@ -20,12 +21,15 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: frontend
+
   template:
     metadata:
       labels:
         {{- include "common.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
+
     spec:
+      automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
         fsGroup: {{ .Values.app.gid }}
