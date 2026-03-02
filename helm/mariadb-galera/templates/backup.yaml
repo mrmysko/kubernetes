@@ -2,7 +2,7 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: PhysicalBackup
 metadata:
-  name: {{ .Release.Name }}-backup
+  name: {{ print .Release.Name "-backup" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: backup

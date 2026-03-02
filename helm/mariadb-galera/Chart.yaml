@@ -4,3 +4,8 @@ description: A Helm chart for a MariaDB cluster
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
+
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../library/common-labels"

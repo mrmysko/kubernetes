@@ -2,7 +2,7 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MaxScale
 metadata:
-  name: {{ .Release.Name }}-maxscale
+  name: {{ print .Release.Name "-maxscale" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -24,6 +24,7 @@ spec:
         protocol: MariaDBProtocol
         params:
           connection_metadata: "tx_isolation=auto"
+
     - name: rconn-master-router
       router: readconnroute
       params:
@@ -32,6 +33,7 @@ spec:
         master_accept_reads: "true"
       listener:
         port: 3307
+        
     - name: rconn-slave-router
       router: readconnroute
       params:
@@ -50,9 +52,9 @@ spec:
   tls:
     enabled: true
     serverCASecretRef:
-      name: {{ .Release.Name }}-ca-bundle
+      name: {{ print .Release.Name "-ca-bundle" | quote }}
     serverCertSecretRef:
-      name: {{ .Release.Name }}-client-cert
+      name: {{ print .Release.Name "-client-cert" | quote }}
     adminCertIssuerRef:
       name: cluster-ca
       kind: ClusterIssuer
@@ -71,5 +73,7 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
-        metallb.io/loadBalancerIPs: "{{ .Values.maxScale.metalLB.ip }}"
+        io.cilium/lb-ipam-ips: "{{ .Values.maxScale.metalLB.ip }}"
+      labels:
+        cilium.lb: "true"
 {{- end }}
