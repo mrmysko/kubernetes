@@ -18,4 +18,4 @@ readinessProbe:
   exec:
     command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
   initialDelaySeconds: 5
-  periodSeconds: 10
+  periodSeconds: 2

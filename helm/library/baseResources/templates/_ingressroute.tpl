@@ -21,4 +21,9 @@ spec:
         - kind: Service
           name: {{ print .Release.Name "-svc" | quote }}
           port: {{ .Values.service.port }}
+      {{- if .Values.ingress.forwardAuth }}
+      middlewares:
+        - name: authelia-forward-auth
+          namespace: traefik
+      {{- end }}
 {{- end -}}
