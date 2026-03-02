@@ -4,14 +4,12 @@ metadata:
   name: local-path-storage
   labels:
     pod-security.kubernetes.io/enforce: privileged
-
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: local-path-provisioner-service-account
   namespace: local-path-storage
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -22,7 +20,6 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -42,7 +39,6 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch"]
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -57,7 +53,6 @@ subjects:
   - kind: ServiceAccount
     name: local-path-provisioner-service-account
     namespace: local-path-storage
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -71,7 +66,6 @@ subjects:
   - kind: ServiceAccount
     name: local-path-provisioner-service-account
     namespace: local-path-storage
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -113,7 +107,6 @@ spec:
         - name: config-volume
           configMap:
             name: local-path-config
-
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -127,7 +120,6 @@ allowedTopologies:
       - key: storage/local-storage
         values:
           - "true"
-
 ---
 kind: ConfigMap
 apiVersion: v1
