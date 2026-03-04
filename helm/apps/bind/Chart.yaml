@@ -1,0 +1,15 @@
+apiVersion: v2
+name: BIND
+description: A Helm chart for recursive BIND-servers
+type: application
+version: 0.2.0
+appVersion: "9.20"
+
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../../library/common-labels"
+
+  - name: baseResources
+    version: 0.1.0
+    repository: "file://../../library/baseResources"

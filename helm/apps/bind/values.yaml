@@ -1,0 +1,45 @@
+app:
+  # -- App name
+  name: bind
+  # -- Number of pods
+  replicaCount: 2
+
+  image:
+    # -- App image
+    repository: technitium/dns-server
+    # -- App version
+    tag: 
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+
+  readinessProbe:
+    exec:
+      command:
+        - /bin/sh
+        - -c
+        - dig @127.0.0.1 . NS +norecurse > /dev/null || exit 1
+    initialDelaySeconds: 2
+    periodSeconds: 5
+
+  livenessProbe:
+    exec:
+      command:
+        - /bin/sh
+        - -c
+        - dig @127.0.0.1 . NS +norecurse > /dev/null || exit 1
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 3
+
+zone:
+  name: "example.com"
+  type: forward
+  mode: only
+  forwarders:
+    - 127.0.0.1
+
+acls:
+  this_server:
+    - 127.0.0.1/32
+  example_net:
+    - 100.100.100.0/24

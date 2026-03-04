@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+  annotations:
+    reloader.stakater.com/auto: "true"
+
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.app.replicaCount | default 1 }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        {{- include "common.labels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend
+
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 53
+
+      containers:
+        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+
+          command:
+            - named
+          args:
+            - "-g"
+            - "-c"
+            - "/etc/bind/named2.conf"
+            - "-4"
+
+          ports:
+            - name: dns-udp
+              containerPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 53
+              protocol: TCP
+
+          {{- with .Values.app.resources }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.app.livenessProbe }}
+          livenessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.app.readinessProbe }}
+          readinessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+
+          volumeMounts:
+            - name: named
+              mountPath: /etc/bind/named2.conf
+              subPath: named2.conf
+            - name: cache
+              mountPath: /var/cache/bind
+            - name: run
+              mountPath: /run/named
+
+      volumes:
+        - name: named
+          configMap:
+            name: {{ print .Release.Name "-config" | quote }}
+            items:
+              - key: named.conf
+                path: named2.conf
+        - name: cache
+          emptyDir:
+            medium: Memory
+        - name: run
+          emptyDir:
+            medium: Memory

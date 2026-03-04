@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ print .Release.Name "-config" | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
+data:
+  named.conf: |
+    http local {
+      endpoints { "/dns-query"; };
+    };
+
+    options {
+      directory "/var/cache/bind";
+
+      forwarders {
+        1.1.1.1;
+        8.8.8.8;
+      };
+
+      forward first;
+
+      recursion yes;
+      allow-query { home_net; vpn; k8s_pods; };
+      allow-recursion { home_net; vpn; k8s_pods; };
+      deny-answer-addresses { this_server; };
+
+      dnssec-validation auto;
+      empty-zones-enable yes;
+
+      version "not currently available";
+    };
+
+    zone "{{ .Values.zone.name }}" {
+      type {{ .Values.zone.type | default "forward" }};
+      forward {{ .Values.zone.mode | default "only" }};
+      forwarders {
+    {{- range .Values.zone.forwarders }}
+        {{ . }};
+    {{- end }}
+      };
+    };
+
+    acl this_server {
+    {{- range .Values.acls.this_server }}
+      {{ . }};
+    {{- end }}
+    };
+
+    acl home_net {
+    {{- range .Values.acls.home_net }}
+      {{ . }};
+    {{- end }}
+    };
+
+    acl vpn {
+    {{- range .Values.acls.vpn }}
+      {{ . }};
+    {{- end }}
+    };
+
+    acl k8s_pods {
+    {{- range .Values.acls.k8s_pods }}
+      {{ . }};
+    {{- end }}
+    };
