@@ -113,11 +113,6 @@
                             url: https://[[HOMEPAGE_VAR_INTERNAL_URL]]:[[HOMEPAGE_VAR_SONARR_PORT]]
                             key: [[HOMEPAGE_VAR_SONARR_API]]
                             fields: []
-          - Huntarr:
-                    icon: huntarr.png
-                    href: [[HOMEPAGE_VAR_HUNTARR]]
-                    description: Fetch Media Upgrades
-                    siteMonitor: [[HOMEPAGE_VAR_HUNTARR]]
           - Prowlarr:
                     icon: prowlarr.png
                     href: [[HOMEPAGE_VAR_PROWLARR]]
