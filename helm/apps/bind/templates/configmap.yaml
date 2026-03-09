@@ -24,6 +24,7 @@ data:
 
       recursion yes;
       allow-query { home_net; vpn; k8s_pods; };
+      allow-query-cache { localhost; home_net; vpn; k8s_pods; };
       allow-recursion { home_net; vpn; k8s_pods; };
       deny-answer-addresses { this_server; };
 
@@ -33,15 +34,15 @@ data:
       version "not currently available";
     };
 
-    zone "{{ .Values.zone.name }}" {
-      type {{ .Values.zone.type | default "forward" }};
-      forward {{ .Values.zone.mode | default "only" }};
+    {{- range .Values.zones.zones }}
+    zone "{{ . }}" {
+      type forward;
+      forward only;
       forwarders {
-    {{- range .Values.zone.forwarders }}
-        {{ . }};
-    {{- end }}
+        {{ $.Values.zones.forwarder }};
       };
     };
+    {{- end }}
 
     acl this_server {
     {{- range .Values.acls.this_server }}

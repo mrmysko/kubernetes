@@ -31,12 +31,11 @@ app:
     periodSeconds: 10
     timeoutSeconds: 3
 
-zone:
-  name: "example.com"
-  type: forward
-  mode: only
-  forwarders:
-    - 127.0.0.1
+zones:
+  forwarder: 100.100.100.100
+  zones:
+    - example.com
+    - 100.100.100.in-addr.arpa
 
 acls:
   this_server:
