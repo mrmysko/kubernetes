@@ -1,4 +1,5 @@
-- name: Local
+- name: Home
+
   columns:
     - size: small
       widgets:

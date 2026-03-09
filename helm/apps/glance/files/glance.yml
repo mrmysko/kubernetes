@@ -12,7 +12,7 @@ theme:
   primary-color: 220 83 75
   contrast-multiplier: 1.2
 
-  custom-css-file: /assets/user.css
+  #custom-css-file: /assets/user.css
 
   presets:
     catppuccin_macchiato:
@@ -23,6 +23,7 @@ theme:
       negative-color: 351 74 73
 
 pages:
-  - $include: internet.yml
-  - $include: local.yml
-# - $include: test.yml
+  - $include: online.yml
+  #- $include: home.yml
+  - $include: test.yml
+  #- $include: test2.yml
