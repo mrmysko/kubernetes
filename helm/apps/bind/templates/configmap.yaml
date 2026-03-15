@@ -39,7 +39,9 @@ data:
       type forward;
       forward only;
       forwarders {
-        {{ $.Values.zones.forwarder }};
+        {{- range $.Values.zones.forwarders }}
+        {{ . }};
+        {{- end }}
       };
     };
     {{- end }}

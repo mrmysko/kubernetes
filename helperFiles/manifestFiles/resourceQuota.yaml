@@ -1,8 +1,0 @@
-# Limits available resources on namespaces
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: resource-quota
-  namespace:
-spec:
-  hard:

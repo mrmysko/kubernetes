@@ -1,6 +1,0 @@
-apiVersion: v2
-name: VictoriaMetrics
-description: A Helm chart for VictoriaMetrics cluster with backup to S3 storage
-type: application
-version: 0.1.0
-appVersion: "1.0.0"

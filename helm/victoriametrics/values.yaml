@@ -1,9 +1,0 @@
-app:
-  name: victoriametrics
-
-ingress:
-  baseUrl:
-
-graphite:
-  metallb:
-    ip:

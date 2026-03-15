@@ -45,5 +45,6 @@ service:
   port: 8080
 
 ingress:
+  forwardAuth: 
   # FQDN for the application
   baseUrl:

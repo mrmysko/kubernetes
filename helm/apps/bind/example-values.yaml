@@ -32,7 +32,9 @@ app:
     timeoutSeconds: 3
 
 zones:
-  forwarder: 100.100.100.100
+  forwarders: 
+    - 100.100.100.100
+    - 100.100.100.101
   zones:
     - example.com
     - 100.100.100.in-addr.arpa

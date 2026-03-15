@@ -1,9 +1,0 @@
-dependencies:
-- name: common-labels
-  repository: file://../library/common-labels
-  version: 0.1.0
-- name: mariadb
-  repository: file://../library/mariadb
-  version: 0.1.0
-digest: sha256:9c4c6bdef06f03e575ae366cdf8fe908c623cb2f1e8eb7056f11c7ef8f9fe197
-generated: "2026-01-25T21:49:05.507917195Z"

@@ -1,8 +1,0 @@
-# Sets default pod resource limits on namespaces
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: limit-range
-  namespace:
-spec:
-  limits:

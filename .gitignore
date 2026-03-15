@@ -1,6 +1,6 @@
 # Helm secrets and env files
 *.tgz
-*-values.yaml
+values.yaml
 secret.yaml
 *-secret.yaml
 .env
@@ -11,9 +11,4 @@ secret.yaml
 *.crt
 *.key
 *.pem
-invis-wildcard-cert.yaml
 gitignore/
-
-# Authelia
-helm/apps/authelia/files/configuration.clients.yml
-helm/apps/authelia/files/configuration.yml
