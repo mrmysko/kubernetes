@@ -16,6 +16,7 @@ data:
   DISABLE_USERPASS_LOGIN: "true"
   ENABLE_SCHEDULED_RESCAN: "true"
   OIDC_ENABLED: "true"
+  OIDC_AUTOLOGIN: "true"
   OIDC_PROVIDER: "Authelia"
   OIDC_REDIRECT_URI: "{{ .Values.config.oidc.redirectUri }}"
   OIDC_SERVER_APPLICATION_URL: "{{ .Values.config.oidc.serverApplicationUrl }}"

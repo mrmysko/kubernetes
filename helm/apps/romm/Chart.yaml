@@ -3,7 +3,7 @@ name: RomM
 description: A helm template for RomM. The database is handled by a clustered MariaDB deployment.
 type: application
 version: 0.2.0
-appVersion: "4.6.1"
+appVersion: "4.7.0"
 
 dependencies:
   - name: common-labels

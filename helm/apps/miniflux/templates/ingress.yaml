@@ -5,15 +5,6 @@ metadata:
   name: {{ print .Release.Name "-route" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/name: Miniflux
-    gethomepage.dev/description: RSS Reader
-    gethomepage.dev/icon: si-rss
-    gethomepage.dev/href: "https://{{ .Values.ingress.baseUrl }}"
-    gethomepage.dev/pod-selector: "app.kubernetes.io/component=frontend"
-    gethomepage.dev/group: Frontend
-    gethomepage.dev/weight: "5"
 spec:
   entryPoints:
     - web
