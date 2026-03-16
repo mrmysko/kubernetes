@@ -1,0 +1,20 @@
+domain:
+
+external:
+  url:
+
+services:
+  service1:
+    port:
+    scheme:
+    middleware:
+      auth:
+    external:
+      ip:
+  service2:
+    port:
+    scheme:
+    middleware:
+      auth:
+    external:
+      ip:
