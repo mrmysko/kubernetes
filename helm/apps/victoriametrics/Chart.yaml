@@ -1,6 +1,6 @@
 apiVersion: v2
 name: VictoriaMetrics
-description: VictoriaMetrics cluster and some scrape configs
+description: VictoriaMetrics cluster and some scrape configs, relies on the victoriametrics operator.
 type: application
 version: 0.1.0
 appVersion: v1.131.0-cluster
