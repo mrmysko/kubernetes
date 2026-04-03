@@ -68,3 +68,4 @@ config:
   lastFM:
     apiKey:
     apiSecret:
+  logoutUrl:

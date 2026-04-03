@@ -13,6 +13,7 @@ data:
     BaseUrl = 'https://{{ .Values.ingress.baseUrl }}'
     ExtAuth.TrustedSources = '{{ .Values.config.trustedSources }}'
     ExtAuth.UserHeader = 'Remote-User'
+    ExtAuth.LogoutURL = '{{ .Values.config.logoutUrl }}'
 
     LastFM.Enabled = 'true'
     Deezer.Enabled = 'true'
