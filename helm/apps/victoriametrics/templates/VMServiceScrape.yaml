@@ -1,0 +1,104 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: kube-state-metrics
+  namespace: victoriametrics
+spec:
+  namespaceSelector:
+    any: true
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics
+
+  endpoints:
+    - port: http
+      interval: 30s
+      metricRelabelConfigs:
+        - sourceLabels: [exported_namespace]
+          targetLabel: namespace
+
+        - sourceLabels: [exported_pod]
+          targetLabel: pod
+
+        - action: labeldrop
+          regex: "exported_namespace|exported_pod"
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: kubernetes-apiserver
+  namespace: victoriametrics
+spec:
+  namespaceSelector:
+    matchNames:
+      - default
+
+  selector:
+    matchLabels:
+      component: apiserver
+
+  endpoints:
+    - port: https
+      scheme: https
+      interval: 30s
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecureSkipVerify: true
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: annotated-services
+  namespace: victoriametrics
+spec:
+  namespaceSelector:
+    any: true
+
+  selector: {}
+  
+  endpoints:
+    - interval: 30s
+      relabelConfigs:
+        - action: drop
+          sourceLabels: [__meta_kubernetes_pod_container_init]
+          regex: "true"
+
+        - action: keep_if_equal
+          sourceLabels:
+            - __meta_kubernetes_pod_annotation_prometheus_io_port
+            - __meta_kubernetes_pod_container_port_number
+
+        - action: keep
+          sourceLabels:
+            - __meta_kubernetes_service_annotation_prometheus_io_scrape
+          regex: "true"
+
+        - sourceLabels:
+            - __meta_kubernetes_service_annotation_prometheus_io_scheme
+          targetLabel: __scheme__
+
+        - sourceLabels:
+            - __meta_kubernetes_service_annotation_prometheus_io_path
+          targetLabel: __metrics_path__
+
+        - sourceLabels:
+            - __address__
+            - __meta_kubernetes_service_annotation_prometheus_io_port
+          targetLabel: __address__
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: kubernetes_namespace
+
+        - sourceLabels: [__meta_kubernetes_service_name]
+          targetLabel: kubernetes_name
+
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: kubernetes_node
+---

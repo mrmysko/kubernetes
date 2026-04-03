@@ -1,0 +1,11 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: {{ print .Release.Name "-agent" | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  selectAllByDefault: true
+
+  remoteWrite:
+    - url: "{{ .Values.agent.remoteWriteUrl }}"

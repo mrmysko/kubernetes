@@ -91,7 +91,6 @@
             - glanceapp/glance
             - immich-app/immich
             - navidrome/navidrome
-            - gethomepage/homepage
             - music-assistant/server
             - authelia/authelia
             - crowdsecurity/crowdsec

@@ -1,0 +1,110 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMCluster
+metadata:
+  name: {{ .Release.Name | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  replicationFactor: 2
+  clusterVersion: "{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+  retentionPeriod: "1" # Month
+
+  requestsLoadBalancer:
+    enabled: true
+    spec:
+      replicaCount: 2
+
+  vmstorage:
+    replicaCount: 3
+    storageDataPath: "/vm-data"
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "local-storage"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: "app.kubernetes.io/name"
+                operator: In
+                values: ["vmstorage"]
+          topologyKey: "kubernetes.io/hostname"
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        memory: 2048Mi
+
+  vmselect:
+    podMetadata:
+      labels:
+        app.kubernetes.io/component: frontend
+    replicaCount: 2
+    cacheMountPath: "/select-cache"
+    storage:
+      emptyDir:
+        medium: Memory
+        sizeLimit: 1Gi
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: "app.kubernetes.io/name"
+                operator: In
+                values: ["vmselect"]
+          topologyKey: "kubernetes.io/hostname"
+    resources:
+      requests:
+        cpu: 250m
+        memory: 128Mi
+      limits:
+        memory: 1500Mi
+
+  vminsert:
+    replicaCount: 2
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: "app.kubernetes.io/name"
+                operator: In
+                values: ["vminsert"]
+          topologyKey: "kubernetes.io/hostname"
+    # VMInsertInternal port
+    insertPorts:
+      graphitePort: "2003"
+
+    # VMInsert for Graphite
+    serviceSpec:
+      metadata:
+        name: {{ print .Release.Name "-graphite-svc" | quote }}
+        annotations:
+          io.cilium/lb-ipam-ips: "{{ .Values.graphite.metallb.ip }}"
+        labels:
+          cilium.lb: "true"
+      spec:
+        type: LoadBalancer
+        ports:
+          - name: graphite-tcp
+            port: 2003
+            targetPort: 2003
+            protocol: TCP
+          - name: graphite-udp
+            port: 2003
+            targetPort: 2003
+            protocol: UDP
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 128Mi
+      limits:
+        memory: 500Mi

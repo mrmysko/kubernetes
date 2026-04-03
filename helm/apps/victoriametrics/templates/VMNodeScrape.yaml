@@ -1,0 +1,26 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMNodeScrape
+metadata:
+  name: kubernetes-nodes-cadvisor
+  namespace: victoriametrics
+spec:
+  path: /metrics/cadvisor
+
+  relabelConfigs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+
+  metricRelabelConfigs:
+    - action: replace
+      sourceLabels: [pod]
+      targetLabel: pod_name
+    - action: replace
+      sourceLabels: [container]
+      targetLabel: container_name
+
+  scheme: https
+  interval: 10s
+  bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tlsConfig:
+    caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecureSkipVerify: true

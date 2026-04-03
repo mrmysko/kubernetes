@@ -1,0 +1,31 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: kubernetes-pods
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  namespaceSelector:
+    any: true
+  selector: {}
+
+  attach_metadata:
+    namespace: true
+
+  podMetricsEndpoints:
+    - interval: 10s
+      relabelConfigs:
+        - action: drop
+          source_labels:
+            - __meta_kubernetes_pod_container_init
+          regex: "true"
+
+        - action: keep
+          source_labels:
+            - __meta_kubernetes_pod_annotation_prometheus_io_scrape
+          regex: "true"
+
+        - action: keep_if_equal
+          source_labels:
+            - __meta_kubernetes_pod_annotation_prometheus_io_port
+            - __meta_kubernetes_pod_container_port_number
+---
