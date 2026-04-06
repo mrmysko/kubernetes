@@ -14,3 +14,11 @@ spec:
     parameters:
       max_client_conn: "200"
       default_pool_size: "10"
+  serviceTemplate:
+    metadata:
+      annotations:
+        io.cilium/lb-ipam-ips: "{{ .Values.pooler.lb.ip }}"
+      labels:
+        cilium.lb: "true"
+    spec:
+      type: LoadBalancer

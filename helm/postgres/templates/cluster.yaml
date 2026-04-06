@@ -23,37 +23,15 @@ spec:
 
   managed:
     roles:
-    - name: "{{ .Values.database.immich.username }}"
+  {{- range .Values.database.users }}
+    - name: "{{ .name }}"
       ensure: present
-      comment: Immich
-      login: true
-      superuser: false
+      comment: "{{ .comment }}"
+      login: {{ default true .login }}
+      superuser: {{ default false .superuser }}
       passwordSecret:
-        name: "{{ .Values.database.immich.username }}-credentials"
-
-    - name: "{{ .Values.database.miniflux.username }}"
-      ensure: present
-      comment: Miniflux
-      login: true
-      superuser: false
-      passwordSecret:
-        name: "{{ .Values.database.miniflux.username }}-credentials"
-
-    - name: "{{ .Values.database.openwebui.username }}"
-      ensure: present
-      comment: "Open WebUI"
-      login: true
-      superuser: false
-      passwordSecret:
-        name: "{{ .Values.database.openwebui.username }}-credentials"
-        
-    - name: "{{ .Values.database.openwebui.vector.username }}"
-      ensure: present
-      comment: "Open WebUI Vector"
-      login: true
-      superuser: false
-      passwordSecret:
-        name: "{{ .Values.database.openwebui.vector.username }}-credentials"
+        name: "{{ .name }}-credentials"
+  {{- end }}
 
   storage:
     storageClass: local-storage

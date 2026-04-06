@@ -9,15 +9,15 @@ certificate:
   caBundleSecret:
 
 database:
-  immich:
-    username:
-    password:
-  miniflux:
-    username:
-    password:
-  openwebui:
-    username:
-    password:
+  users:
+    - name: immich-user
+      comment: Immich
+    - name: miniflux-user
+      comment: Miniflux
+    - name: openwebui-user
+      comment: Open WebUI
+    - name: openwebui-vector-user
+      comment: Open WebUI Vector
 
 backup:
   enabled: true
