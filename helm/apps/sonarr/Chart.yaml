@@ -1,0 +1,20 @@
+apiVersion: v2
+name: Radarr
+description: A WIP Helm chart for Sonarr
+type: application
+version: 0.2.0
+appVersion: "6"
+
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../../library/common-labels"
+
+  - name: baseResources
+    version: 0.1.0
+    repository: "file://../../library/baseResources"
+
+  - name: cnpg-database
+    version: 0.1.0
+    repository: "file://../../library/cnpg-database"
+    alias: mainDb
