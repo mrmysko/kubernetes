@@ -6,7 +6,7 @@ app:
 
   image:
     # -- App image
-    repository: technitium/dns-server
+    repository: internetsystemsconsortium/bind9
     # -- App version
     tag: 
     # -- Image pull policy

@@ -1,9 +1,9 @@
 apiVersion: v2
 name: RomM
-description: A helm template for RomM. The database is handled by a clustered MariaDB deployment.
+description: A Helm chart for RomM.
 type: application
 version: 0.2.0
-appVersion: "4.7.0"
+appVersion: "4.8.1"
 
 dependencies:
   - name: common-labels

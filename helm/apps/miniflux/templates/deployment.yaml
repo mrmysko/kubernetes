@@ -67,11 +67,11 @@ spec:
             allowPrivilegeEscalation: false
 
           volumeMounts:
-            - name: "certs"
+            - name: certs
               mountPath: "/etc/cert"
               readOnly: true
 
       volumes:
-        - name: "certs"
+        - name: certs
           secret:
             secretName: {{ print .Release.Name "-server-cert" | quote }}

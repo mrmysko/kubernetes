@@ -60,23 +60,21 @@ spec:
           {{- end }}
 
           securityContext:
-            runAsUser: {{ .Values.app.uid }}
             runAsGroup: {{ .Values.app.gid }}
             capabilities:
               drop: ["ALL"]
-            runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
 
           volumeMounts:
-            - name: "data"
+            - name: data
               mountPath: "/app/backend/data"
             - name: static
               mountPath: "/app/backend/open_webui/static"
 
       volumes:
-        - name: "data"
+        - name: data
           persistentVolumeClaim:
             claimName: {{ print .Release.Name "-data" | quote }}
         - name: static

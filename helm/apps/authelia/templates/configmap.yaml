@@ -1,4 +1,3 @@
----
 {{- $redis := dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis -}}
 
 apiVersion: v1

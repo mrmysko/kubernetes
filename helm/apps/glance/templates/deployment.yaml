@@ -64,18 +64,18 @@ spec:
             allowPrivilegeEscalation: false
 
           volumeMounts:
-            - name: {{ .Release.Name }}-assets
+            - name: assets
               mountPath: /app/assets
           {{- range $path, $_ := .Files.Glob "files/*.yml" }}
-            - name: {{ $.Release.Name }}-config
+            - name: config
               mountPath: /app/config/{{ base $path }}
               subPath: {{ base $path }}
           {{- end }}
 
       volumes:
-        - name: {{ .Release.Name }}-assets
+        - name: assets
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-assets
-        - name: {{ .Release.Name }}-config
+        - name: config
           configMap:
             name: {{ .Release.Name }}-config

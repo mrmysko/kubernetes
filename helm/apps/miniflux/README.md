@@ -1,8 +1,16 @@
 # Miniflux
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2](https://img.shields.io/badge/AppVersion-2-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.2.19](https://img.shields.io/badge/AppVersion-2.2.19-informational?style=flat-square)
 
-A helm chart for Miniflux RSS-reader. Connecting to a clustered CNPG postgres database.
+A Helm chart for Miniflux RSS-reader. Connecting to a clustered CNPG postgres database.
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/cnpg-database | mainDb(cnpg-database) | 0.1.0 |
+| file://../../library/common-labels | common-labels | 0.1.0 |
 
 ## Values
 
@@ -25,17 +33,19 @@ A helm chart for Miniflux RSS-reader. Connecting to a clustered CNPG postgres da
 | app.readinessProbe.periodSeconds | int | `10` |  |
 | app.replicaCount | int | `1` | Number of pods |
 | app.uid | int | `1001` | Runtime user |
-| database.host | string | `nil` | Database url |
-| database.name | string | `nil` | Database name |
-| database.namespace | string | `nil` | Database namespace |
-| database.password | string | `nil` | Database password |
-| database.username | string | `nil` | Database user |
 | env.baseUrl | string | `nil` | FQDN to application, with scheme |
 | env.oidc.clientID | string | `nil` | App client ID |
 | env.oidc.clientSecret | string | `nil` | App client secret |
 | env.oidc.endpoint | string | `nil` | URL to OIDC endpoint, without discovery |
 | env.oidc.name | string | `nil` | Name of OIDC application |
 | env.oidc.redirectURL | string | `nil` | App redirect URL |
-| nextflux.port | int | `3000` |  |
-| nextflux.url | string | `nil` |  |
+| mainDb.clusterName | string | `nil` |  |
+| mainDb.extensions[0].ensure | string | `"present"` |  |
+| mainDb.extensions[0].name | string | `"hstore"` |  |
+| mainDb.host | string | `nil` | Database url |
+| mainDb.name | string | `"miniflux"` | Database name |
+| mainDb.namespace | string | `nil` | Database namespace |
+| mainDb.owner | string | `nil` | Database user |
+| mainDb.password | string | `nil` | Database password |
+| mainDb.port | int | `5432` |  |
 | service.port | int | `8080` | App port |

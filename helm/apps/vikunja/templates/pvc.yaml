@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-data" | quote }}
+  name: {{ print .Release.Name "-files" | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -10,7 +10,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 8Gi
-{{- with .Values.storage.data }}
-  volumeName: {{ .existingClaim | quote }}
+      storage: 10Gi
+{{- with .Values.storage.files }}
+  volumeName: {{ .volumeName | quote }}
 {{- end }}

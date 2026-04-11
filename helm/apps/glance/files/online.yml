@@ -98,6 +98,7 @@
             - iib0011/omni-tools
             - smallstep/certificates
             - miniflux/v2
+            - go-vikunja/vikunja
             # 11Notes
             - 11notes/docker-prowlarr
             - 11notes/docker-sonarr

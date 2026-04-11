@@ -40,6 +40,9 @@ app:
     initialDelaySeconds: 10
     periodSeconds: 10
 
+storage:
+  files:
+
 database:
   # -- Kind of database
   type:

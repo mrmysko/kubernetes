@@ -33,17 +33,24 @@ app:
     initialDelaySeconds: 5
     periodSeconds: 10
 
-database:
+mainDb:
   # -- Database url
-  host:
-  # -- Database namespace
-  namespace:
+  host: 
+  port: 5432
   # -- Database name
-  name:
+  name: miniflux
+
+  # -- Database namespace
+  namespace: 
+  clusterName: 
   # -- Database user
-  username:
+  owner: 
   # -- Database password
-  password:
+  password: 
+
+  extensions:
+    - name: hstore
+      ensure: present
 
 env:
   # -- FQDN to application, with scheme

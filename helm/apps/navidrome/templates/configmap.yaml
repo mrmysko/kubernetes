@@ -31,3 +31,4 @@ data:
     Scanner.Enabled = 'true'
     Scanner.WatcherWait = '5s'
     Scanner.ScanOnStartup = 'true'
+    EnableWebPEncoding = 'true'

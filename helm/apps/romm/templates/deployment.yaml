@@ -77,29 +77,29 @@ spec:
           {{- end }}
 
           volumeMounts:
-            - name: {{ .Release.Name }}-assets
+            - name: assets
               mountPath: /romm/assets
-            - name: {{ .Release.Name }}-games
+            - name: games
               mountPath: /romm/library
-            - name: {{ .Release.Name }}-resources
+            - name: resources
               mountPath: /romm/resources
-            - name: {{ .Release.Name }}-config
+            - name: config
               mountPath: /romm/config
             - name: authelia-fullchain
               mountPath: "{{ .Values.config.oidc.tlsCaCertFile }}"
               subPath: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
 
       volumes:
-        - name: {{ .Release.Name }}-assets
+        - name: assets
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-assets
-        - name: {{ .Release.Name }}-games
+        - name: games
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-games
-        - name: {{ .Release.Name }}-resources
+        - name: resources
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-resources
-        - name: {{ .Release.Name }}-config
+        - name: config
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-config
         - name: authelia-fullchain

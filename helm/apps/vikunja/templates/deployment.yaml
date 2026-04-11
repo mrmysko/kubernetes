@@ -30,6 +30,9 @@ spec:
 
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        fsGroup: {{ .Values.app.gid }}
+
       containers:
         - {{ include "baseResources.baseContainer" . | nindent 10 }}
 
@@ -68,14 +71,19 @@ spec:
               type: RuntimeDefault
 
           volumeMounts:
-            - name: configmap
+            - name: config
               mountPath: /app/vikunja/config.yml
               subPath: config.yml
+            - name: files
+              mountPath: /app/vikunja/files
 
       volumes:
-        - name: configmap
+        - name: config
           configMap:
             name: {{ print .Release.Name "-config" | quote }}
             items:
               - key: config.yml
                 path: config.yml
+        - name: files
+          persistentVolumeClaim:
+            claimName: {{ print .Release.Name "-files" | quote }}

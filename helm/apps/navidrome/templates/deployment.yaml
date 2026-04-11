@@ -74,29 +74,29 @@ spec:
           volumeMounts:
             - name: config-pvc
               mountPath: /data
-            - name: configmap
+            - name: config
               mountPath: /data/navidrome.toml
               subPath: navidrome.toml
               readOnly: true
-            - name: {{ print .Release.Name "-cache" | quote }}
-              mountPath: /data/cache
-            - name: {{ print .Release.Name "-music" | quote }}
+            - name: music
               mountPath: /music
               readOnly: true
+            - name: cache
+              mountPath: /data/cache
 
       volumes:
         - name: config-pvc
           persistentVolumeClaim:
             claimName: {{ print .Release.Name "-config-pvc" | quote }}
-        - name: configmap
+        - name: config
           configMap:
             name: {{ print .Release.Name "-configmap" | quote }}
             items:
               - key: navidrome.toml
                 path: navidrome.toml
-        - name: {{ print .Release.Name "-music" | quote }}
+        - name: music
           persistentVolumeClaim:
             claimName: {{ print .Release.Name "-music" | quote }}
-        - name: {{ print .Release.Name "-cache" | quote }}
+        - name: cache
           emptyDir:
             medium: Memory

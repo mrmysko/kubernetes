@@ -76,22 +76,22 @@ spec:
           {{- end }}
 
           volumeMounts:
-            - name: "{{ .Release.Name }}-config"
+            - name: config
               mountPath: /config
-            - name: "{{ .Release.Name }}-cert"
+            - name: certs
               mountPath: /tmp/certs
               readOnly: true
-            - name: "{{ .Release.Name }}-secret"
+            - name: secret
               mountPath: "{{ .Values.config.secretsDir }}"
               readOnly: true
 
       volumes:
-        - name: "{{ .Release.Name }}-config"
+        - name: config
           configMap:
             name: "{{ .Release.Name }}-config"
-        - name: "{{ .Release.Name }}-cert"
+        - name: certs
           secret:
             secretName: "{{ .Release.Name }}-server-cert"
-        - name: "{{ .Release.Name }}-secret"
+        - name: secret
           secret:
             secretName: "{{ .Release.Name }}-secret"

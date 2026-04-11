@@ -5,11 +5,11 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
-  ENABLE_PERSISTENT_CONFIG: "False"
-  ENABLE_OAUTH_PERSISTENT_CONFIG: "False"
-  ENABLE_LOGIN_FORM: "False"
-  ENABLE_SIGNUP: "False"
-  ENABLE_OAUTH_SIGNUP: "True"
+  ENABLE_PERSISTENT_CONFIG: "false"
+  ENABLE_OAUTH_PERSISTENT_CONFIG: "false"
+  ENABLE_LOGIN_FORM: "false"
+  ENABLE_SIGNUP: "false"
+  ENABLE_OAUTH_SIGNUP: "true"
 
   WEBUI_URL: {{ print "https://" .Values.ingress.baseUrl | quote }}
   PORT: {{ .Values.service.port | quote }}
@@ -21,10 +21,13 @@ data:
   DATABASE_USER: {{ .Values.mainDb.owner | quote }}
 
   VECTOR_DB: "pgvector"
-  PGVECTOR_CREATE_EXTENSION: "False"
+  PGVECTOR_CREATE_EXTENSION: "false"
 
   OPENID_PROVIDER_URL: {{ .Values.config.oidc.url | quote }}
+  OPENID_END_SESSION_ENDPOINT: {{ .Values.config.oidc.logoutUrl | quote }}
   OAUTH_SCOPES: "openid email profile"
   OPENID_REDIRECT_URI: {{ .Values.config.oidc.redirectUrl | quote }}
   OAUTH_CODE_CHALLENGE_METHOD: "S256"
-  ENABLE_OAUTH_GROUP_CREATION: "True"
+  ENABLE_OAUTH_GROUP_CREATION: "true"
+  OAUTH_UPDATE_NAME_ON_LOGIN: "true"
+  OAUTH_UPDATE_EMAIL_ON_LOGIN: "true"

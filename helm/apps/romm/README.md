@@ -1,8 +1,17 @@
 # RomM
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4](https://img.shields.io/badge/AppVersion-4-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.8.1](https://img.shields.io/badge/AppVersion-4.8.1-informational?style=flat-square)
 
-A helm template for RomM. The database is handled by a clustered MariaDB deployment.
+A Helm chart for RomM.
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/common-labels | common-labels | 0.1.0 |
+| file://../../library/mariadb | database(mariadb) | 0.1.0 |
+| file://../../library/redis | redis | 0.1.0 |
 
 ## Values
 
@@ -10,7 +19,7 @@ A helm template for RomM. The database is handled by a clustered MariaDB deploym
 |-----|------|---------|-------------|
 | app.gid | int | `3100` | Runtime group |
 | app.image.repository | string | `"rommapp/romm"` | App image |
-| app.image.tag | string | `"4.3.1"` | Image version |
+| app.image.tag | string | `"4.5.0"` | Image version |
 | app.livenessProbe.httpGet.path | string | `"/api/heartbeat"` |  |
 | app.livenessProbe.httpGet.port | int | `8080` |  |
 | app.livenessProbe.httpGet.scheme | string | `"HTTP"` |  |
@@ -44,6 +53,7 @@ A helm template for RomM. The database is handled by a clustered MariaDB deploym
 | database.port | int | `3306` | Database port |
 | database.type | string | `"mariadb"` | Kind of database |
 | database.username | string | `nil` | Database username |
+| ingress.annotations | string | `nil` |  |
 | ingress.baseUrl | string | `nil` |  |
 | redis.image.repository | string | `"11notes/redis"` |  |
 | redis.image.tag | string | `"7.4.5"` |  |
