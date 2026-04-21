@@ -1,14 +1,29 @@
 app:
-  name: victoriametrics
+  name: 
+
+victoriametrics:
+  name: 
   image:
-    tag: 
+    tag: v1.131.0-cluster
 
-ingress:
-  baseUrl:
+  ingress:
+    baseUrl: 
 
-graphite:
-  metallb:
-    ip:
+  graphite:
+    metallb:
+      ip: 
 
-agent:
-  remoteWriteUrl:
+vmagent:
+  remoteWriteUrl: 
+
+blackbox:
+  name: blackbox
+  image:
+    repository: prom/blackbox-exporter
+    tag: master-distroless
+
+  uid: 
+  gid: 
+
+  service:
+    port: 
