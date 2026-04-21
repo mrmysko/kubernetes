@@ -1,29 +1,34 @@
 # This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+{{- $fullname := include "app.fullname" . }}
+
+{{- with .Values.victoriametrics }}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ print .Release.Name "-route" | quote }}
+  name: {{ $fullname }}-vmroute
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
 spec:
   entryPoints:
     - web
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ .Values.ingress.baseUrl }}`) && PathPrefix(`/select`)
+      match: Host(`{{ .ingress.baseUrl }}`) && PathPrefix(`/select`)
       priority: 100
       services:
         - kind: Service
-          name: "vmselect-{{ .Release.Name }}"
+          name: "vmselect-{{ $fullname }}"
           port: 8481
       middlewares:
         - name: "authelia-forward-auth"
           namespace: traefik
 
     - kind: Rule
-      match: Host(`{{ .Values.ingress.baseUrl }}`) && PathPrefix(`/insert`)
+      match: Host(`{{ .ingress.baseUrl }}`) && PathPrefix(`/insert`)
       priority: 90
       services:
-        - name: "vminsert-{{ .Release.Name }}"
+        - kind: Service
+          name: "vminsert-{{ $fullname }}"
           port: 8480
+{{- end }}

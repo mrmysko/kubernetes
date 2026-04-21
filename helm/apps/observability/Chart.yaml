@@ -1,0 +1,15 @@
+apiVersion: v2
+name: Observability
+description: A chart with a VictoriaMetrics cluster, some scrape configs, and blackbox exporter. Requires the victoriametrics operator.
+type: application
+version: 0.1.0
+appVersion: v1.131.0-cluster
+
+dependencies:
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../../library/common-labels"
+
+  - name: baseResources
+    version: 0.2.0
+    repository: "file://../../library/baseResources"

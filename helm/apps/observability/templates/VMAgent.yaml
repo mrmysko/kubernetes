@@ -1,0 +1,15 @@
+{{- $fullname := include "app.fullname" . }}
+
+{{- with .Values.vmagent }}
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: {{ $fullname }}-vmagent
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+spec:
+  selectAllByDefault: true
+
+  remoteWrite:
+    - url: "{{ .remoteWriteUrl }}"
+{{- end }}

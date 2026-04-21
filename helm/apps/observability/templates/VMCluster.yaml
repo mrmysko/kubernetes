@@ -1,12 +1,15 @@
+{{- $fullname := include "app.fullname" . }}
+
+{{- with .Values.victoriametrics }}
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMCluster
 metadata:
-  name: {{ .Release.Name | quote }}
+  name: {{ $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
 spec:
   replicationFactor: 2
-  clusterVersion: "{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+  clusterVersion: "{{ .image.tag }}"
   retentionPeriod: "1" # Month
 
   requestsLoadBalancer:
@@ -15,6 +18,9 @@ spec:
       replicaCount: 2
 
   vmstorage:
+    podMetadata:
+      labels:
+        app.kubernetes.io/component: storage
     replicaCount: 3
     storageDataPath: "/vm-data"
     storage:
@@ -30,9 +36,9 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
         - labelSelector:
             matchExpressions:
-              - key: "app.kubernetes.io/name"
+              - key: "app.kubernetes.io/component"
                 operator: In
-                values: ["vmstorage"]
+                values: ["storage"]
           topologyKey: "kubernetes.io/hostname"
     resources:
       requests:
@@ -56,9 +62,9 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
         - labelSelector:
             matchExpressions:
-              - key: "app.kubernetes.io/name"
+              - key: "app.kubernetes.io/component"
                 operator: In
-                values: ["vmselect"]
+                values: ["frontend"]
           topologyKey: "kubernetes.io/hostname"
     resources:
       requests:
@@ -68,15 +74,18 @@ spec:
         memory: 1500Mi
 
   vminsert:
+    podMetadata:
+      labels:
+        app.kubernetes.io/component: ingestion
     replicaCount: 2
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
         - labelSelector:
             matchExpressions:
-              - key: "app.kubernetes.io/name"
+              - key: "app.kubernetes.io/component"
                 operator: In
-                values: ["vminsert"]
+                values: ["ingestion"]
           topologyKey: "kubernetes.io/hostname"
     # VMInsertInternal port
     insertPorts:
@@ -85,10 +94,11 @@ spec:
     # VMInsert for Graphite
     serviceSpec:
       metadata:
-        name: {{ print .Release.Name "-graphite-svc" | quote }}
+        name: {{ $fullname }}-graphite-svc
         annotations:
-          io.cilium/lb-ipam-ips: "{{ .Values.graphite.metallb.ip }}"
+          io.cilium/lb-ipam-ips: "{{ .graphite.metallb.ip }}"
         labels:
+          {{- include "common.labels" $ | nindent 10 }}
           cilium.lb: "true"
       spec:
         type: LoadBalancer
@@ -108,3 +118,4 @@ spec:
         memory: 128Mi
       limits:
         memory: 500Mi
+{{- end }}

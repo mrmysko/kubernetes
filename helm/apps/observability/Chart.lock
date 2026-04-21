@@ -1,0 +1,9 @@
+dependencies:
+- name: common-labels
+  repository: file://../../library/common-labels
+  version: 0.1.0
+- name: baseResources
+  repository: file://../../library/baseResources
+  version: 0.2.0
+digest: sha256:a59ea771f62a1d6305313be6830806c0830bb8b30accb8e00ef22fd2fb8e9f22
+generated: "2026-04-21T07:49:29.782224675+02:00"

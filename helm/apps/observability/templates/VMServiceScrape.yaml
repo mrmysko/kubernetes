@@ -2,7 +2,7 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMServiceScrape
 metadata:
   name: kube-state-metrics
-  namespace: victoriametrics
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   namespaceSelector:
     any: true
@@ -28,7 +28,7 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMServiceScrape
 metadata:
   name: kubernetes-apiserver
-  namespace: victoriametrics
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   namespaceSelector:
     matchNames:
@@ -51,7 +51,7 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMServiceScrape
 metadata:
   name: annotated-services
-  namespace: victoriametrics
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   namespaceSelector:
     any: true
