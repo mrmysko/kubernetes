@@ -1,7 +1,7 @@
 # This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
-{{- $fullname := include "app.fullname" . }}
-
 {{- with .Values.victoriametrics }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:

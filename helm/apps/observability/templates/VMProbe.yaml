@@ -1,0 +1,20 @@
+{{- range .Values.vmprobe }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMProbe
+metadata:
+    name: {{ $fullname }}
+spec:
+    jobName: {{ .name }}
+    vmProberSpec:
+        url: "{{ include "baseResources.fullname" (dict "root" $ "vals" $.Values.blackbox) }}-svc.{{ $.Release.Namespace }}.svc:{{ $.Values.blackbox.service.port }}"
+    module: {{ .module }}
+    targets:
+        static:
+            targets:
+{{- range .targets }}
+                - {{ . | quote }}
+{{- end }}
+    interval: 10s
+{{- end }}

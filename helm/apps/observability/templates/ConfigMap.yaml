@@ -1,0 +1,39 @@
+{{- with .Values.blackbox }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $fullname }}-config
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
+data:
+  blackbox.yml: |
+    modules:
+      default:
+        prober: http
+        timeout: 5s
+        http:
+          valid_http_versions: []
+          valid_status_codes: []
+          method: GET
+          follow_redirects: true
+          tls_config:
+            insecure_skip_verify: false
+    
+      default_basic_auth:
+        prober: http
+        timeout: 5s
+        http:
+          valid_http_versions: []
+          valid_status_codes: []
+          method: GET
+          follow_redirects: true
+          tls_config:
+            insecure_skip_verify: false
+          basic_auth:
+            username: {{ .auth.user }}
+            password: {{ .auth.password }}
+{{- end }}

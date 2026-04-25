@@ -1,7 +1,9 @@
 # MariaDB
 {{- define "baseResources.waitForMariadb" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
 name: wait-for-mariadb
-image: {{ .Values.database.image | default "mariadb:11" | quote }}
+image: {{ $vals.database.image | default "mariadb:11" | quote }}
 command:
   - sh
   - -c
@@ -11,22 +13,24 @@ command:
     done
 env:
   - name: DB_HOST
-    value: {{ .Values.database.host | quote }}
+    value: {{ $vals.database.host | quote }}
   - name: DB_USER
-    value: {{ .Values.database.username | quote }}
+    value: {{ $vals.database.username | quote }}
   - name: DB_PASSWORD
-    value: {{ .Values.database.password | quote }}
+    value: {{ $vals.database.password | quote }}
 {{- end }}
 ---
 # Postgres
 {{- define "baseResources.waitForPostgres" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
 name: wait-for-postgres
-image: {{ .Values.mainDb.image | default "postgres:17-alpine" | quote }}
+image: {{ $vals.mainDb.image | default "postgres:17-alpine" | quote }}
 command:
   - sh
   - -c
   - |
-    until pg_isready -h {{ .Values.mainDb.host }} -p {{ .Values.mainDb.port | default 5432 }} -U "{{ .Values.mainDb.owner }}"; do
+    until pg_isready -h {{ $vals.mainDb.host }} -p {{ $vals.mainDb.port | default 5432 }} -U "{{ $vals.mainDb.owner }}"; do
       echo "Waiting for PostgreSQL to be ready..."
       sleep 2
     done
@@ -39,6 +43,8 @@ securityContext:
 ---
 # Samba
 {{- define "baseResources.waitForSamba" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
 name: wait-for-samba
 image: alpine:3.20
 command:
@@ -54,14 +60,13 @@ command:
     echo "Samba share is available."
 env:
   - name: SMB_URL
-    value: "{{ .Values.storage.smb.url }}"
+    value: {{ $vals.storage.smb.url | quote }}
   - name: SMB_SHARE
-    value: "{{ .Values.storage.smb.share }}"
+    value: {{ $vals.storage.smb.share | quote }}
   - name: SMB_USER
-    value: "{{ .Values.storage.smb.username }}"
+    value: {{ $vals.storage.smb.username | quote }}
   - name: SMB_PASS
-    value: "{{ .Values.storage.smb.password }}"
-
+    value: {{ $vals.storage.smb.password | quote }}
 securityContext:
   capabilities:
     drop: ["ALL"]

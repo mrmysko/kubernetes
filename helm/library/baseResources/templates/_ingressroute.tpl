@@ -1,12 +1,16 @@
 # This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
 {{- define "baseResources.ingress" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ print .Release.Name "-route" | quote }}
+  name: {{ printf "%s-route" $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+    {{- include "common.labels" $root | nindent 4 }}
+  {{- with $vals.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -16,12 +20,12 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ .Values.ingress.baseUrl }}`)
+      match: Host(`{{ $vals.baseUrl }}`)
       services:
         - kind: Service
-          name: {{ print .Release.Name "-svc" | quote }}
-          port: {{ .Values.service.port }}
-      {{- if .Values.ingress.forwardAuth }}
+          name: {{ $vals.serviceOverride | default (printf "%s-svc" $fullname) }}
+          port: {{ $vals.port }}
+      {{- if $vals.forwardAuth }}
       middlewares:
         - name: authelia-forward-auth
           namespace: traefik

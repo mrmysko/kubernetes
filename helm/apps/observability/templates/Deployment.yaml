@@ -1,32 +1,43 @@
-{{- $fullname := include "app.fullname" . }}
+{{- with .Values.blackbox }}
+{{ include "baseResources.service" (dict "root" $ "vals" .) }}
+{{- end }}
+
+---
+{{- with .Values.blackbox }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $fullname }}-blackbox
+  name: {{ $fullname }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ .component }}
   annotations:
     reloader.stakater.com/auto: "true"
 
-{{- with .Values.blackbox }}
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .replicaCount | default 1 }}
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ $.Release.Name }}
+      app.kubernetes.io/component: {{ .component }}
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ .component }}
 
     spec:
       securityContext:
         fsGroup: {{ .gid }}
 
       containers:
-        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 10 }}
+
+          args:
+            - "--config.file=/etc/blackbox/blackbox.yml"
 
           ports:
             - containerPort: {{ .service.port }}
@@ -55,4 +66,17 @@ spec:
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
+
+          volumeMounts:
+            - name: config
+              mountPath: /etc/blackbox
+              readOnly: true
+
+      volumes:
+        - name: config
+          configMap: 
+            name: {{ $fullname }}-config
+            items:
+              - key: blackbox.yml
+                path: blackbox.yml
 {{- end }}

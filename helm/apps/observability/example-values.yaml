@@ -27,3 +27,24 @@ blackbox:
 
   service:
     port: 
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "50Mi"
+    limits:
+      memory: "100Mi"
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 9115
+    initialDelaySeconds: 10
+    periodSeconds: 15
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 9115
+    initialDelaySeconds: 2
+    periodSeconds: 5

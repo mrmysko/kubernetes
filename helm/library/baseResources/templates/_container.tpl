@@ -1,5 +1,9 @@
 {{- define "baseResources.baseContainer" -}}
-name: {{ .Values.app.name | default .Release.Name | quote }}
-image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+
+name: {{ $fullname }}
+image: "{{ $vals.image.repository }}:{{ $vals.image.tag | default $root.Chart.AppVersion }}"
+imagePullPolicy: {{ $vals.image.pullPolicy | default "IfNotPresent" }}
 {{- end }}

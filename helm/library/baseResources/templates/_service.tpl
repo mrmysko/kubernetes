@@ -1,17 +1,20 @@
 {{- define "baseResources.service" -}}
+{{- $root := .root }}
+{{- $vals := .vals }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ print .Release.Name "-svc" | quote }}
+  name: {{ printf "%s-svc" $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $root | nindent 4 }}
 spec:
-  type: {{ .Values.service.type | default "ClusterIP" }}
+  type: {{ $vals.service.type | default "ClusterIP" }}
   selector:
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    app.kubernetes.io/component: {{ .Values.component | default "frontend" | quote }}
+    app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
+    app.kubernetes.io/component: {{ $vals.component | quote }}
   ports:
-    - protocol: TCP
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
-{{- end -}}
+    - port: {{ $vals.service.port }}
+      targetPort: {{ $vals.service.port }}
+{{- end }}

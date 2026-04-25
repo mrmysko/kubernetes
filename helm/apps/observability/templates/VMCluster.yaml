@@ -1,6 +1,6 @@
-{{- $fullname := include "app.fullname" . }}
-
 {{- with .Values.victoriametrics }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMCluster
 metadata:
@@ -94,7 +94,7 @@ spec:
     # VMInsert for Graphite
     serviceSpec:
       metadata:
-        name: {{ $fullname }}-graphite-svc
+        name: graphite-{{ $fullname }}-svc
         annotations:
           io.cilium/lb-ipam-ips: "{{ .graphite.metallb.ip }}"
         labels:

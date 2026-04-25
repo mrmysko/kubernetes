@@ -1,5 +1,5 @@
 {{- define "redis.fullname" -}}
-{{ printf "%s-%s" .Release.Name .Chart.Name | lower | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" .Release.Name .Chart.Name | lower | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 apiVersion: v1
