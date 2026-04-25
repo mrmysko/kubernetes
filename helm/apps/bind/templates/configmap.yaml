@@ -1,11 +1,15 @@
+{{- with .Values.bind }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ print .Release.Name "-config" | quote }}
+  name: {{ printf "%s-config" $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
+{{- end }}
 data:
   named.conf: |
     http local {

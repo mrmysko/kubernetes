@@ -9,12 +9,24 @@ metadata:
   name: {{ printf "%s-svc" $fullname }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
+    {{- with $vals.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
-  type: {{ $vals.service.type | default "ClusterIP" }}
+  {{- with $vals.service }}
+  type: {{ .type | default "ClusterIP" }}
+  {{- if eq .type "LoadBalancer" }}
+  loadBalancerIP: {{ .loadBalancerIP }}
+  {{- end }}
+  {{- with .externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
   selector:
     app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
     app.kubernetes.io/component: {{ $vals.component | quote }}
+  {{- with .ports }}
   ports:
-    - port: {{ $vals.service.port }}
-      targetPort: {{ $vals.service.port }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
 {{- end }}

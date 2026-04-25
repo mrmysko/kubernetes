@@ -40,7 +40,11 @@ spec:
             - "--config.file=/etc/blackbox/blackbox.yml"
 
           ports:
-            - containerPort: {{ .service.port }}
+            {{- range .service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
 
           {{- if .resources }}
           resources:

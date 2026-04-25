@@ -1,26 +1,35 @@
+{{- with .Values.bind }}
+{{ include "baseResources.service" (dict "root" $ "vals" .) }}
+{{- end }}
+
+---
+{{- with .Values.bind }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name | quote }}
+  name: {{ $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
-    app.kubernetes.io/component: frontend
+    {{- include "common.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ .component }}
   annotations:
     reloader.stakater.com/auto: "true"
 
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.app.replicaCount | default 1 }}
+  replicas: {{ .replicaCount | default 1 }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+      app.kubernetes.io/component: {{ .component }}
   template:
     metadata:
       labels:
-        {{- include "common.labels" . | nindent 8 }}
-        app.kubernetes.io/component: frontend
+        {{- include "common.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ .component }}
 
     spec:
       automountServiceAccountToken: false
@@ -28,7 +37,7 @@ spec:
         fsGroup: 53
 
       containers:
-        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 10 }}
 
           command:
             - named
@@ -39,24 +48,23 @@ spec:
             - "-4"
 
           ports:
-            - name: dns-udp
-              containerPort: 53
-              protocol: UDP
-            - name: dns-tcp
-              containerPort: 53
-              protocol: TCP
+            {{- range .service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
 
-          {{- with .Values.app.resources }}
+          {{- with .resources }}
           resources:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.app.livenessProbe }}
+          {{- with .livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.app.readinessProbe }}
+          {{- with .readinessProbe }}
           readinessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -78,7 +86,7 @@ spec:
       volumes:
         - name: named
           configMap:
-            name: {{ print .Release.Name "-config" | quote }}
+            name: {{ printf "%s-config" $fullname }}
             items:
               - key: named.conf
                 path: named2.conf
@@ -88,3 +96,4 @@ spec:
         - name: run
           emptyDir:
             medium: Memory
+{{- end }}

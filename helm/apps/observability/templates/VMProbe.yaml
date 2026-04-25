@@ -8,7 +8,7 @@ metadata:
 spec:
     jobName: {{ .name }}
     vmProberSpec:
-        url: "{{ include "baseResources.fullname" (dict "root" $ "vals" $.Values.blackbox) }}-svc.{{ $.Release.Namespace }}.svc:{{ $.Values.blackbox.service.port }}"
+        url: "{{ include "baseResources.fullname" (dict "root" $ "vals" $.Values.blackbox) }}-svc.{{ $.Release.Namespace }}.svc:{{ (index $.Values.blackbox.service.ports 0).port }}"
     module: {{ .module }}
     targets:
         static:

@@ -10,7 +10,7 @@ metadata:
   name: {{ printf "%s-route" $fullname }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
-  {{- with $vals.annotations }}
+  {{- with $vals.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -20,12 +20,12 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ $vals.baseUrl }}`)
+      match: Host(`{{ $vals.ingress.baseUrl }}`)
       services:
         - kind: Service
-          name: {{ $vals.serviceOverride | default (printf "%s-svc" $fullname) }}
-          port: {{ $vals.port }}
-      {{- if $vals.forwardAuth }}
+          name: {{ $vals.ingress.serviceOverride | default (printf "%s-svc" $fullname) }}
+          port: {{ $vals.service.port }}
+      {{- if $vals.ingress.forwardAuth }}
       middlewares:
         - name: authelia-forward-auth
           namespace: traefik
