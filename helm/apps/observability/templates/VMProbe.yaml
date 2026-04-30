@@ -6,7 +6,7 @@ kind: VMProbe
 metadata:
     name: {{ $fullname }}
 spec:
-    jobName: {{ .name }}
+    jobName: {{ $.Values.blackbox.name }}
     vmProberSpec:
         url: "{{ include "baseResources.fullname" (dict "root" $ "vals" $.Values.blackbox) }}-svc.{{ $.Release.Namespace }}.svc:{{ (index $.Values.blackbox.service.ports 0).port }}"
     module: {{ .module }}
@@ -17,4 +17,8 @@ spec:
                 - {{ . | quote }}
 {{- end }}
     interval: 10s
+
+    metricRelabelConfigs:
+        - action: labeldrop
+          regex: "^prometheus$"
 {{- end }}

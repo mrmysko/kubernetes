@@ -21,7 +21,8 @@ data:
           method: GET
           follow_redirects: true
           tls_config:
-            insecure_skip_verify: false
+            insecure_skip_verify: true
+            # ca_file: "/data/certs/ca.crt"
     
       default_basic_auth:
         prober: http
@@ -32,7 +33,8 @@ data:
           method: GET
           follow_redirects: true
           tls_config:
-            insecure_skip_verify: false
+            insecure_skip_verify: true
+            # ca_file: "/data/certs/ca.crt"
           basic_auth:
             username: {{ .auth.user }}
             password: {{ .auth.password }}

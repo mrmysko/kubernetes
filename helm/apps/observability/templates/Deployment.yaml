@@ -75,6 +75,9 @@ spec:
             - name: config
               mountPath: /etc/blackbox
               readOnly: true
+            - name: external-ca
+              mountPath: /data/certs
+              readOnly: true
 
       volumes:
         - name: config
@@ -83,4 +86,7 @@ spec:
             items:
               - key: blackbox.yml
                 path: blackbox.yml
+        - name: external-ca
+          secret:
+            secretName: invis-external-bundle
 {{- end }}

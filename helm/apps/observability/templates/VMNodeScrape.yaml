@@ -10,14 +10,6 @@ spec:
     - action: labelmap
       regex: __meta_kubernetes_node_label_(.+)
 
-  metricRelabelConfigs:
-    - action: replace
-      sourceLabels: [pod]
-      targetLabel: pod_name
-    - action: replace
-      sourceLabels: [container]
-      targetLabel: container_name
-
   scheme: https
   interval: 10s
   bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

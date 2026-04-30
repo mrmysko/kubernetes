@@ -94,11 +94,14 @@ spec:
           regex: __meta_kubernetes_service_label_(.+)
 
         - sourceLabels: [__meta_kubernetes_namespace]
-          targetLabel: kubernetes_namespace
+          targetLabel: namespace
 
         - sourceLabels: [__meta_kubernetes_service_name]
-          targetLabel: kubernetes_name
+          targetLabel: service
 
         - sourceLabels: [__meta_kubernetes_pod_node_name]
-          targetLabel: kubernetes_node
+          targetLabel: node
+
+        - action: labeldrop
+          regex: "kubernetes_namespace|kubernetes_name|kubernetes_node"
 ---
