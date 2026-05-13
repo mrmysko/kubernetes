@@ -11,10 +11,10 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.1.0
+    version: 0.4.0
     repository: "file://../../library/baseResources"
 
   - name: mariadb
-    version: 0.1.0
+    version: 0.2.0
     repository: "file://../../library/mariadb"
     alias: database

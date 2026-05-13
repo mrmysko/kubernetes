@@ -7,7 +7,7 @@ metadata:
   annotations:
     reloader.stakater.com/auto: "true"
 data:
-  VIKUNJA_SERVICE_PUBLICURL: "https://{{ .Values.ingress.baseUrl }}"
+  VIKUNJA_SERVICE_PUBLICURL: "https://{{ .Values.app.route.baseUrl }}"
   VIKUNJA_DATABASE_HOST: "{{ .Values.database.host }}"
   VIKUNJA_DATABASE_TYPE: "{{ .Values.database.type }}"
   VIKUNJA_DATABASE_USER: "{{ .Values.database.username }}"
@@ -21,6 +21,8 @@ data:
   VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_CLIENTID: "{{ .Values.config.oidc.clientID }}"
   VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_SCOPE: "openid email profile"
   VIKUNJA_DEFAULTSETTINGS_WEEK_START: "1"
+  VIKUNJA_LOG_FORMAT: "structured"
+  VIKUNJA_LOG_HTTP: "off"
 ---
 apiVersion: v1
 kind: ConfigMap

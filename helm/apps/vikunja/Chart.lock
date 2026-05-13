@@ -4,9 +4,9 @@ dependencies:
   version: 0.1.0
 - name: baseResources
   repository: file://../../library/baseResources
-  version: 0.1.0
+  version: 0.4.0
 - name: mariadb
   repository: file://../../library/mariadb
-  version: 0.1.0
-digest: sha256:63d04aa082deeb16027cc894c0fee2f83e7e77c1c671bee4c844e9c3a37cd186
-generated: "2026-02-08T19:44:56.879271273+01:00"
+  version: 0.2.0
+digest: sha256:a329c1f8d6e51cdb49089e203cf0a2080d1220c244eff2149611b8c67cd2466f
+generated: "2026-05-13T21:06:41.3276587+02:00"
