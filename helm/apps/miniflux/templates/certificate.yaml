@@ -1,11 +1,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ print .Release.Name "-server-cert" | quote }}
+  name: {{ printf "%s-server-cert" .Release.Name }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  secretName: {{ print .Release.Name "-server-cert" | quote }}
+  secretName: {{ printf "%s-server-cert" .Release.Name }}
   issuerRef:
     name: cluster-ca
     kind: ClusterIssuer

@@ -1,53 +1,62 @@
-{{ include "baseResources.service" . }}
+{{- with .Values.app }}
+{{ include "baseResources.service" (dict "root" $ "vals" .) }}
+{{- end }}
 ---
-{{ include "baseResources.ingress" . }}
+{{- with .Values.app.route }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
+{{- end }}
 ---
+{{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name | quote }}
+  name: {{ $.Release.Name }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
     
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.app.replicaCount | default 1 }}
+  replicas: {{ .replicaCount | default 1 }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
       app.kubernetes.io/component: frontend
 
   template:
     metadata:
       labels:
-        {{- include "common.labels" . | nindent 8 }}
+        {{- include "common.labels" $ | nindent 8 }}
         app.kubernetes.io/component: frontend
 
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
-        fsGroup: {{ .Values.app.gid }}
+        fsGroup: {{ .gid }}
 
       initContainers:
-        - {{ include "baseResources.waitForMariadb" . | nindent 10 }}
+        - {{ include "baseResources.waitForMariadb" (dict "root" $ "vals" $.Values) | nindent 10 }}
 
-        - {{ include "baseResources.waitForSamba" . | nindent 10 }}
+        - {{ include "baseResources.waitForSamba" (dict "root" $ "vals" $.Values) | nindent 10 }}
 
       containers:
-        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
 
           ports:
-            - containerPort: {{ .Values.service.port }}
+            {{- range .service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+            {{- end }}
 
           securityContext:
-            runAsUser: {{ .Values.app.uid }}
-            runAsGroup: {{ .Values.app.gid }}
+            runAsUser: {{ .uid }}
+            runAsGroup: {{ .gid }}
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
@@ -57,24 +66,25 @@ spec:
 
           envFrom:
             - configMapRef:
-                name: {{ print .Release.Name "-env" | quote }}
+                name: {{ printf "%s-env" $.Release.Name }}
             - secretRef:
-                name: {{ print .Release.Name "-secret" | quote }}
+                name: {{ printf "%s-secret" $.Release.Name }}
 
-          {{- if .Values.app.resources }}
+          {{- if .resources }}
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml .resources | nindent 12 }}
           {{- end }}
 
-          {{- if .Values.app.livenessProbe }}
+          {{- if .livenessProbe }}
           livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- toYaml .livenessProbe | nindent 12 }}
           {{- end }}
 
-          {{- if .Values.app.readinessProbe }}
+          {{- if .readinessProbe }}
           readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- toYaml .readinessProbe | nindent 12 }}
           {{- end }}
+{{- end }}
 
           volumeMounts:
             - name: assets
@@ -92,16 +102,16 @@ spec:
       volumes:
         - name: assets
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-assets
+            claimName: {{ printf "%s-assets" .Release.Name }}
         - name: games
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-games
+            claimName: {{ printf "%s-games" .Release.Name }}
         - name: resources
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-resources
+            claimName: {{ printf "%s-resources" .Release.Name }}
         - name: config
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-config
+            claimName: {{ printf "%s-config" .Release.Name }}
         - name: authelia-fullchain
           configMap:
             name: authelia-fullchain

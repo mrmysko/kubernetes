@@ -23,9 +23,10 @@ data:
   OIDC_TLS_CACERTFILE: "{{ .Values.config.oidc.tlsCaCertFile }}"
   REDIS_HOST: {{ include "redis.fullname" $redis | quote }}
   REDIS_PORT: "{{ .Values.redis.port }}"
-  ROMM_BASE_URL: "https://{{ .Values.ingress.baseUrl }}"
+  ROMM_BASE_URL: "https://{{ .Values.app.route.baseUrl }}"
   ROMM_DB_DRIVER: "{{ .Values.database.type }}"
   SCHEDULED_RESCAN_CRON: "0 5 * * *"
   HASHEOUS_API_ENABLED: "true"
   HLTB_API_ENABLED: "true"
   ENABLE_RESCAN_ON_FILESYSTEM_CHANGE: "true"
+  LOGLEVEL: "WARNING"

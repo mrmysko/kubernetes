@@ -1,61 +1,74 @@
-{{ include "baseResources.service" . }}
+{{- with .Values.app }}
+{{ include "baseResources.service" (dict "root" $ "vals" .) }}
+{{- end }}
 ---
-{{ include "baseResources.ingress" . }}
+{{- with .Values.app.route }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
+{{- end }}
 ---
+{{- with .Values.app }}
+{{ include "baseResources.authDelegate" (dict "root" $) }}
+{{- end }}
+---
+{{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ $.Release.Name }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
     app.kubernetes.io/component: frontend
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.app.replicaCount | default 1 }}
+  replicas: {{ .replicaCount | default 1 }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
       app.kubernetes.io/component: frontend
   template:
     metadata:
       labels:
-        {{- include "common.labels" . | nindent 8 }}
+        {{- include "common.labels" $ | nindent 8 }}
         app.kubernetes.io/component: frontend
 
     spec:
       securityContext:
-        fsGroup: {{ .Values.app.gid }}
+        fsGroup: {{ .gid }}
 
       containers:
-        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
 
           ports:
-            - containerPort: {{ .Values.service.port }}
+            {{- range .service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+            {{- end }}
 
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-secret
+                name: {{ $.Release.Name }}-secret
 
-          {{- if .Values.app.resources }}
+          {{- if .resources }}
           resources:
-          {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- toYaml .resources | nindent 12 }}
           {{- end }}
 
-          {{- if .Values.app.livenessProbe }}
+          {{- if .livenessProbe }}
           livenessProbe:
-          {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          {{- toYaml .livenessProbe | nindent 12 }}
           {{- end }}
 
-          {{- if .Values.app.readinessProbe }}
+          {{- if .readinessProbe }}
           readinessProbe:
-          {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          {{- toYaml .readinessProbe | nindent 12 }}
           {{- end }}
 
           securityContext:
-            runAsUser: {{ .Values.app.uid }}
-            runAsGroup: {{ .Values.app.gid }}
+            runAsUser: {{ .uid }}
+            runAsGroup: {{ .gid }}
             capabilities:
               drop: ["ALL"]
             runAsNonRoot: true
@@ -66,7 +79,7 @@ spec:
           volumeMounts:
             - name: assets
               mountPath: /app/assets
-          {{- range $path, $_ := .Files.Glob "files/*.yml" }}
+          {{- range $path, $_ := $.Files.Glob "files/*.yml" }}
             - name: config
               mountPath: /app/config/{{ base $path }}
               subPath: {{ base $path }}
@@ -75,7 +88,8 @@ spec:
       volumes:
         - name: assets
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-assets
+            claimName: {{ $.Release.Name }}-assets
         - name: config
           configMap:
-            name: {{ .Release.Name }}-config
+            name: {{ $.Release.Name }}-config
+{{- end }}
