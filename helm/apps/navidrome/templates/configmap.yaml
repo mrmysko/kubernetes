@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ print .Release.Name "-configmap" | quote }}
+  name: {{ printf "%s-configmap" .Release.Name }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
 data:
   navidrome.toml: |
-    LogLevel = 'info'
+    LogLevel = 'warn'
     EnableInsightsCollector = 'false'
-    BaseUrl = 'https://{{ .Values.ingress.baseUrl }}'
+    BaseUrl = 'https://{{ .Values.app.route.baseUrl }}'
     ExtAuth.TrustedSources = '{{ .Values.config.trustedSources }}'
     ExtAuth.UserHeader = 'Remote-User'
     ExtAuth.LogoutURL = '{{ .Values.config.logoutUrl }}'

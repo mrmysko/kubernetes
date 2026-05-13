@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-music" | quote }}
+  name: {{ printf "%s-music" .Release.Name }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -12,13 +12,13 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  volumeName: {{ print .Release.Name "-music" | quote }}
+  volumeName: {{ printf "%s-music" .Release.Name }}
   storageClassName: ""
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-config-pvc" | quote }}
+  name: {{ printf "%s-config-pvc" .Release.Name }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage

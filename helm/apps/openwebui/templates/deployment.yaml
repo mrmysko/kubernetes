@@ -1,66 +1,75 @@
-{{ include "baseResources.service" . }}
+{{- with .Values.app }}
+{{ include "baseResources.service" (dict "root" $ "vals" .) }}
+{{- end }}
 ---
-{{ include "baseResources.ingress" . }}
+{{- with .Values.app.route }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
+{{- end }}
 ---
+{{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name | quote }}
+  name: {{ $.Release.Name }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
-    app.kubernetes.io/component: frontend
+    {{- include "common.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ .component }}
 
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.app.replicaCount | default 1 }}
+  replicas: {{ .replicaCount | default 1 }}
   strategy:
     type: Recreate
 
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name | quote }}
-      app.kubernetes.io/component: frontend
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+      app.kubernetes.io/component: {{ .component }}
 
   template:
     metadata:
       labels:
-        {{- include "common.labels" . | nindent 8 }}
-        app.kubernetes.io/component: frontend
+        {{- include "common.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ .component }}
 
     spec:
       automountServiceAccountToken: false
       securityContext:
-        fsGroup: {{ .Values.app.gid }}
+        fsGroup: {{ .gid }}
 
       containers:
-        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
 
           ports:
-            - containerPort: {{ .Values.service.port }}
+            {{- range .service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+            {{- end }}
 
           envFrom:
             - configMapRef:
-                name: {{ print .Release.Name "-env" | quote }}
+                name: {{ printf "%s-env" $.Release.Name }}
             - secretRef:
-                name: {{ print .Release.Name "-secret" | quote }}
+                name: {{ printf "%s-secret" $.Release.Name }}
 
-          {{- with .Values.app.resources }}
+          {{- with .resources }}
           resources:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.app.livenessProbe }}
+          {{- with .livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.app.readinessProbe }}
+          {{- with .readinessProbe }}
           readinessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
           securityContext:
-            runAsGroup: {{ .Values.app.gid }}
+            runAsGroup: {{ .gid }}
             capabilities:
               drop: ["ALL"]
             seccompProfile:
@@ -76,6 +85,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ print .Release.Name "-data" | quote }}
+            claimName: {{ printf "%s-data" $.Release.Name }}
         - name: static
           emptyDir: {}
+{{- end }}
