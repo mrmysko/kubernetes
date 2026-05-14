@@ -1,9 +1,0 @@
-kubectl run <pod_name> --image <image> --restart Never --rm -it -- /bin/bash
-kubectl debug -it -n <namespace> <pod> --image <image> --target <container>
-
-# Network troubleshooting image
-nicolaka/netshoot
-
-# Database
-mariadb:11.8.2
-postgres:17-alpine

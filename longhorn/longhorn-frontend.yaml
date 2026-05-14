@@ -1,0 +1,38 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: longhorn-https
+  namespace: longhorn-system
+  labels:
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
+  hostnames:
+    - longhorn.kube.invis.space
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: longhorn-auth-proxy
+      backendRefs:
+        - name: longhorn-frontend
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: longhorn-auth-proxy
+  namespace: longhorn-system
+spec:
+  chain:
+    middlewares:
+      - name: authelia-forward-auth
+        namespace: traefik
