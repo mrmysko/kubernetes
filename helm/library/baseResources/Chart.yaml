@@ -2,4 +2,4 @@ apiVersion: v2
 name: baseResources
 description: Some base resources as a library chart
 type: library
-version: 0.3.0
+version: 0.4.0

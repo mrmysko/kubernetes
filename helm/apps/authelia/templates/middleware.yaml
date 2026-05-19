@@ -1,14 +1,20 @@
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .Values.app ) }}
+
 # Traefik middleware to proxy things through Authelia
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: "authelia-forward-auth"
-  namespace: "{{ .Values.config.traefik.namespace }}"
+  namespace: "traefik"
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
   forwardAuth:
-    address: "{{ .Values.config.forwardAuth.address }}"
+    address: {{ printf "https://%s-svc.%s.svc:9091/api/authz/forward-auth" $fullname .Release.Namespace }}
+    tls:
+      #certSecret: "cluster-ca"
+      insecureSkipVerify: true
+    maxResponseBodySize: 1048576
     trustForwardHeader: true
     authResponseHeaders:
       - "Remote-User"

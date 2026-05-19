@@ -1,20 +1,22 @@
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .Values.app ) }}
+
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ print .Release.Name "-server-cert" | quote }}
+  name: {{ printf "%s-server-cert" .Release.Name }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  secretName: {{ .Release.Name }}-server-cert
+  secretName: {{ printf "%s-server-cert" .Release.Name }}
   issuerRef:
     name: cluster-ca
     kind: ClusterIssuer
   privateKey:
     rotationPolicy: Always
-  commonName: "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
+  commonName: "{{ $fullname }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
   dnsNames:
-    - "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
-    - "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc"
-    - "{{ .Release.Name }}-svc.{{ .Release.Namespace }}"
-    - "{{ .Release.Name }}-svc"
+    - "{{ $fullname }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ $fullname }}-svc.{{ .Release.Namespace }}.svc"
+    - "{{ $fullname }}-svc.{{ .Release.Namespace }}"
+    - "{{ $fullname }}-svc"
     - "localhost"

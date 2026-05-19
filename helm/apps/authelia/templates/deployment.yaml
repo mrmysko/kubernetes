@@ -1,52 +1,64 @@
-{{ include "baseResources.service" . }}
+{{- with .Values.app }}
+{{ include "baseResources.service" (dict "root" $ "vals" .) }}
+{{- end }}
 ---
+{{- with .Values.app.route }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
+{{- end }}
+---
+{{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name | quote }}
+  name: {{ $.Release.Name }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
-    app.kubernetes.io/component: frontend
+    {{- include "common.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ .component }}
   annotations:
     reloader.stakater.com/auto: "true"
 
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.app.replicaCount | default 1 }}
+  replicas: {{ .replicaCount | default 1 }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ .Values.app.name | default .Chart.Name }}"
-      app.kubernetes.io/component: frontend
+      app.kubernetes.io/name: "{{ .name | default $.Chart.Name }}"
+      app.kubernetes.io/component: {{ .component }}
 
   template:
     metadata:
       labels:
-        {{- include "common.labels" . | nindent 8 }}
-        app.kubernetes.io/component: frontend
+        {{- include "common.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ .component }}
 
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
 
       initContainers:
-        - {{ include "baseResources.waitForMariadb" . | nindent 10 }}
+        - {{ include "baseResources.waitForMariadb" (dict "root" $ "vals" $.Values) | nindent 10 }}
 
       containers:
-        - {{ include "baseResources.baseContainer" . | nindent 10 }}
+        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 10 }}
 
           command:
             - authelia
           args:
             - "--config=/config/configuration.yml"
             - "--config=/config/configuration.clients.yml"
+
           ports:
-            - containerPort: {{ .Values.service.port }}
+            {{- range .service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+            {{- end }}
             
           securityContext:
-            runAsUser: {{ .Values.app.uid }}
-            runAsGroup: {{ .Values.app.gid }}
+            runAsUser: {{ .uid }}
+            runAsGroup: {{ .gid }}
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
@@ -56,21 +68,21 @@ spec:
 
           envFrom:
             - configMapRef:
-                name: "{{ .Release.Name }}-env"
+                name: {{ printf "%s-env" $.Release.Name }}
             - secretRef:
-                name: "{{ .Release.Name }}-secret"
+                name: {{ printf "%s-secret" $.Release.Name }}
 
-          {{- with .Values.app.resources }}
+          {{- with .resources }}
           resources:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.app.livenessProbe }}
+          {{- with .livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.app.readinessProbe }}
+          {{- with .readinessProbe }}
           readinessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -82,16 +94,17 @@ spec:
               mountPath: /tmp/certs
               readOnly: true
             - name: secret
-              mountPath: "{{ .Values.config.secretsDir }}"
+              mountPath: "{{ $.Values.config.secretsDir }}"
               readOnly: true
 
       volumes:
         - name: config
           configMap:
-            name: "{{ .Release.Name }}-config"
+            name: {{ printf "%s-config" $.Release.Name }}
         - name: certs
           secret:
-            secretName: "{{ .Release.Name }}-server-cert"
+            secretName: {{ printf "%s-server-cert" $.Release.Name }}
         - name: secret
           secret:
-            secretName: "{{ .Release.Name }}-secret"
+            secretName: {{ printf "%s-secret" $.Release.Name }}
+{{- end }}

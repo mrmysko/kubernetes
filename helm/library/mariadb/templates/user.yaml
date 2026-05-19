@@ -13,7 +13,7 @@ spec:
   passwordSecretKeyRef:
     name: "{{ .Release.Name }}-secret"
     key: "{{ .Values.passwordKey }}"
-  maxUserConnections: 20
+  maxUserConnections: 50
   host: "%"
   cleanupPolicy: Delete
   requeueInterval: 30s

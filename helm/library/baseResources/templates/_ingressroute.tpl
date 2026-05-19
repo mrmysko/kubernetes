@@ -24,7 +24,17 @@ spec:
       services:
         - kind: Service
           name: {{ $vals.ingress.serviceOverride | default (printf "%s-svc" $fullname) }}
-          port: {{ $vals.service.port }}
+          port: {{ $vals.ingress.port }}
+          {{- with $vals.ingress.scheme }}
+          scheme: {{ . }}
+          {{- end }}
+          {{- with $vals.ingress.serversTransport }}
+          serversTransport: {{ . }}
+          {{- end }}
+          {{- if $vals.ingress.sticky }}
+          sticky:
+            cookie: {}
+          {{- end }}
       {{- if $vals.ingress.forwardAuth }}
       middlewares:
         - name: authelia-forward-auth

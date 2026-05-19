@@ -1,0 +1,22 @@
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values.app }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: {{ printf "%s-tls-policy" .Release.Name }}
+spec:
+
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ printf "%s-svc" $fullname }}
+      sectionName: https
+
+  validation:
+    hostname: {{ printf "%s-svc.%s.svc.cluster.local" $fullname $root.Release.Namespace }}
+    caCertificateRefs:
+      - name: {{ printf "%s-server-cert" .Release.Name }}
+        group: ""
+        kind: Secret
