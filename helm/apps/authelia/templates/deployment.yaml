@@ -38,10 +38,10 @@ spec:
       enableServiceLinks: false
 
       initContainers:
-        - {{ include "baseResources.waitForMariadb" (dict "root" $ "vals" $.Values) | nindent 10 }}
+        {{- include "baseResources.waitForMariadb" $.Values.database | nindent 8 }}
 
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 8 }}
 
           command:
             - authelia
@@ -55,37 +55,12 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol }}
             {{- end }}
-            
-          securityContext:
-            runAsUser: {{ .uid }}
-            runAsGroup: {{ .gid }}
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
 
           envFrom:
             - configMapRef:
                 name: {{ printf "%s-env" $.Release.Name }}
             - secretRef:
                 name: {{ printf "%s-secret" $.Release.Name }}
-
-          {{- with .resources }}
-          resources:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .readinessProbe }}
-          readinessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
 
           volumeMounts:
             - name: config

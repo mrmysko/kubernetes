@@ -37,8 +37,11 @@ spec:
       securityContext:
         fsGroup: {{ .gid }}
 
+      initContainers:
+        {{- include "baseResources.waitForPostgres" $.Values.mainDb | nindent 8 }}
+
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
           ports:
             {{- range .service.ports }}
@@ -52,29 +55,6 @@ spec:
                 name: {{ printf "%s-env" $.Release.Name }}
             - secretRef:
                 name: {{ printf "%s-secret" $.Release.Name }}
-
-          {{- with .resources }}
-          resources:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .readinessProbe }}
-          readinessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          securityContext:
-            runAsGroup: {{ .gid }}
-            capabilities:
-              drop: ["ALL"]
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
 
           volumeMounts:
             - name: data

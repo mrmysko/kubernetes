@@ -13,7 +13,7 @@ metadata:
   name: {{ $.Release.Name }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: frontend
+    app.kubernetes.io/component: {{ .component }}
   annotations:
     reloader.stakater.com/auto: "true"
     
@@ -25,27 +25,27 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: frontend
+      app.kubernetes.io/component: {{ .component }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: frontend
+        app.kubernetes.io/component: {{ .component }}
 
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
-        fsGroup: {{ .gid }}
+        fsGroup: {{ printf "%d" (int64 .gid) }}
 
       initContainers:
-        - {{ include "baseResources.waitForMariadb" (dict "root" $ "vals" $.Values) | nindent 10 }}
+        {{- include "baseResources.waitForMariadb" $.Values.database | nindent 8 }}
 
-        - {{ include "baseResources.waitForSamba" (dict "root" $ "vals" $.Values) | nindent 10 }}
+        {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
 
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
           ports:
             {{- range .service.ports }}
@@ -54,36 +54,11 @@ spec:
               protocol: {{ .protocol }}
             {{- end }}
 
-          securityContext:
-            runAsUser: {{ .uid }}
-            runAsGroup: {{ .gid }}
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-
           envFrom:
             - configMapRef:
                 name: {{ printf "%s-env" $.Release.Name }}
             - secretRef:
                 name: {{ printf "%s-secret" $.Release.Name }}
-
-          {{- if .resources }}
-          resources:
-          {{- toYaml .resources | nindent 12 }}
-          {{- end }}
-
-          {{- if .livenessProbe }}
-          livenessProbe:
-          {{- toYaml .livenessProbe | nindent 12 }}
-          {{- end }}
-
-          {{- if .readinessProbe }}
-          readinessProbe:
-          {{- toYaml .readinessProbe | nindent 12 }}
-          {{- end }}
 {{- end }}
 
           volumeMounts:

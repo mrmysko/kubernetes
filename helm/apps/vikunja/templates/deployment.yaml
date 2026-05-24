@@ -38,8 +38,11 @@ spec:
       securityContext:
         fsGroup: {{ .gid }}
 
+      initContainers:
+        {{- include "baseResources.waitForMariadb" $.Values.database | nindent 8 }}
+
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 8 }}
 
           ports:
             {{- range .service.ports }}
@@ -53,31 +56,6 @@ spec:
                 name: {{ printf "%s-secret" $.Release.Name }}
             - configMapRef:
                 name: {{ printf "%s-env" $.Release.Name }}
-
-          {{- with .resources }}
-          resources:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .readinessProbe }}
-          readinessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          securityContext:
-            runAsUser: {{ .uid }}
-            runAsGroup: {{ .gid }}
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
 
           volumeMounts:
             - name: config

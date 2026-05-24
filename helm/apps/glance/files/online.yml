@@ -51,13 +51,13 @@
         - type: videos
           hide-header: true
           channels:
-            - UC9PBzalIcEQCsiIkq36PyUA # Digital Foundry
-            - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
-            - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
-            - UCCgK6peZI5-FKDCWzMIFk2A # Almost Friday TV
-            - UC554eY5jNUfDq3yDOJYirOQ # Destiny
-            - UCSBHtM-U0q5dR7YE_aYcWzQ # Andrew Rousso
-            - UC9x0AN7BWHpCDHSm9NiJFJQ # NetworkChuck
+            - "UC9PBzalIcEQCsiIkq36PyUA" # Digital Foundry
+            - "UCXuqSBlHAE6Xw-yeJA0Tunw" # Linus Tech Tips
+            - "UCHnyfMqiRRG1u-2MsSQLbXA" # Veritasium
+            - "UCCgK6peZI5-FKDCWzMIFk2A" # Almost Friday TV
+            - "UC554eY5jNUfDq3yDOJYirOQ" # Destiny
+            - "UCSBHtM-U0q5dR7YE_aYcWzQ" # Andrew Rousso
+            - "UC9x0AN7BWHpCDHSm9NiJFJQ" # NetworkChuck
 
     - size: small
       widgets:
@@ -108,11 +108,12 @@
             # Kube-adjacent
             - helm/helm
             - kubernetes/kubernetes
+            - kubernetes/kube-state-metrics
+            - kubernetes-csi/csi-driver-smb
             - siderolabs/talos
             - traefik/traefik
             - longhorn/longhorn
             - cert-manager/cert-manager
-            - kubernetes-csi/csi-driver-smb
             - cloudnative-pg/plugin-barman-cloud
             - cert-manager/trust-manager
             - stakater/Reloader

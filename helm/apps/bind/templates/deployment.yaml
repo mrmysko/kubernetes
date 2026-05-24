@@ -1,7 +1,6 @@
 {{- with .Values.bind }}
 {{ include "baseResources.service" (dict "root" $ "vals" .) }}
 {{- end }}
-
 ---
 {{- with .Values.bind }}
 {{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
@@ -33,11 +32,12 @@ spec:
 
     spec:
       automountServiceAccountToken: false
+      enableServiceLinks: false
       securityContext:
-        fsGroup: 53
+        fsGroup: {{ .gid }}
 
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 8 }}
 
           command:
             - named
@@ -53,26 +53,6 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol | default "TCP" }}
             {{- end }}
-
-          {{- with .resources }}
-          resources:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .readinessProbe }}
-          readinessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            seccompProfile:
-              type: RuntimeDefault
 
           volumeMounts:
             - name: named

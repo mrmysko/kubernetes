@@ -7,38 +7,36 @@
 {{- end }}
 ---
 {{- with .Values.app }}
-{{ include "baseResources.authDelegate" (dict "root" $) }}
-{{- end }}
----
-{{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $.Release.Name }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: frontend
+    app.kubernetes.io/component: {{ .component }}
   annotations:
     reloader.stakater.com/auto: "true"
+
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .replicaCount | default 1 }}
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: frontend
+      app.kubernetes.io/component: {{ .component }}
+
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: frontend
+        app.kubernetes.io/component: {{ .component }}
 
     spec:
       securityContext:
         fsGroup: {{ .gid }}
 
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
           ports:
             {{- range .service.ports }}
@@ -50,31 +48,6 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ $.Release.Name }}-secret
-
-          {{- if .resources }}
-          resources:
-          {{- toYaml .resources | nindent 12 }}
-          {{- end }}
-
-          {{- if .livenessProbe }}
-          livenessProbe:
-          {{- toYaml .livenessProbe | nindent 12 }}
-          {{- end }}
-
-          {{- if .readinessProbe }}
-          readinessProbe:
-          {{- toYaml .readinessProbe | nindent 12 }}
-          {{- end }}
-
-          securityContext:
-            runAsUser: {{ .uid }}
-            runAsGroup: {{ .gid }}
-            capabilities:
-              drop: ["ALL"]
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
 
           volumeMounts:
             - name: assets

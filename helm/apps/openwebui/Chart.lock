@@ -4,12 +4,12 @@ dependencies:
   version: 0.1.0
 - name: baseResources
   repository: file://../../library/baseResources
-  version: 0.4.0
+  version: 0.5.0
 - name: cnpg-database
   repository: file://../../library/cnpg-database
   version: 0.1.0
 - name: cnpg-database
   repository: file://../../library/cnpg-database
   version: 0.1.0
-digest: sha256:c8a1276d9c4cc18f189f3d91902d14236fcbd64dcf86b426b68e4b35aad6d51f
-generated: "2026-05-13T21:33:55.861029497+02:00"
+digest: sha256:8e20cb6ca142a0d445ccc9420bbba599c59b22383ff10dd609f5c1f2ce0b8219
+generated: "2026-05-24T08:19:54.007474798+02:00"

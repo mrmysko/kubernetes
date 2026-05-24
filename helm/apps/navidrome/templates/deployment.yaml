@@ -38,10 +38,10 @@ spec:
         fsGroup: {{ .gid }}
 
       initContainers:
-        - {{ include "baseResources.waitForSamba" (dict "root" $ "vals" $.Values) | nindent 10 }}
+        {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
 
       containers:
-        - {{ include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 10 }}
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
           ports:
             {{- range .service.ports }}
@@ -56,31 +56,6 @@ spec:
           env:
             - name: ND_CONFIGFILE
               value: /data/navidrome.toml
-
-          {{- with .resources }}
-          resources:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          {{- with .readinessProbe }}
-          readinessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-
-          securityContext:
-            runAsUser: {{ .uid }}
-            runAsGroup: {{ .gid }}
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
 
           volumeMounts:
             - name: config-pvc
