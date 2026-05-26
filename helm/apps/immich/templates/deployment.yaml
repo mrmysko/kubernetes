@@ -36,7 +36,6 @@ spec:
 
         {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
 
-
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 

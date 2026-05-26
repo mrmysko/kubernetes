@@ -32,18 +32,13 @@ spec:
         app.kubernetes.io/component: {{ .component }}
 
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       securityContext:
-        fsGroup: {{ .gid }}
+        fsGroup: {{ printf "%d" (int64 .gid) }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
-
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
 
           envFrom:
             - secretRef:

@@ -7,6 +7,13 @@
   image: "{{ $vals.image.repository }}:{{ $vals.image.tag | default $root.Chart.AppVersion }}"
   imagePullPolicy: {{ $vals.image.pullPolicy | default "IfNotPresent" }}
 
+  ports:
+    {{- range $vals.service.ports }}
+    - name: {{ .name }}
+      containerPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+    {{- end }}
+
   {{- with $vals.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -20,6 +27,7 @@
   {{- with $vals.readinessProbe }}
   readinessProbe:
     {{- toYaml . | nindent 4 }}
+  {{- end }}
 
   {{- if $vals.securityContext }}
   securityContext:
@@ -35,6 +43,4 @@
     seccompProfile:
       type: RuntimeDefault
   {{- end }}
-
-{{- end }}
 {{- end }}

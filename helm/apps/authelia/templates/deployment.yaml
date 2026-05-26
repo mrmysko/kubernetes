@@ -49,13 +49,6 @@ spec:
             - "--config=/config/configuration.yml"
             - "--config=/config/configuration.clients.yml"
 
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-
           envFrom:
             - configMapRef:
                 name: {{ printf "%s-env" $.Release.Name }}

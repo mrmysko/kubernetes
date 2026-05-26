@@ -39,13 +39,6 @@ spec:
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-
           envFrom:
             - configMapRef:
                 name: {{ printf "%s-env" $.Release.Name }}

@@ -34,7 +34,7 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
-        fsGroup: {{ .gid }}
+        fsGroup: {{ printf "%d" (int64 .gid) }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 8 }}
@@ -46,13 +46,6 @@ spec:
             - "-c"
             - "/etc/bind/named2.conf"
             - "-4"
-
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol | default "TCP" }}
-            {{- end }}
 
           volumeMounts:
             - name: named
