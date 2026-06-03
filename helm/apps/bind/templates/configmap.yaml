@@ -52,7 +52,8 @@ data:
       };
 
       response-policy {
-          zone "adblock-rpz";
+          zone "local-block";
+          zone "hagezi";
       };
 
       forward first;
@@ -75,9 +76,14 @@ data:
       version "not currently available";
     };
 
-    zone "adblock-rpz" {
+    zone "local-block" {
         type master;
-        file "/etc/bind/adblock-rpz.zone";
+        file "/etc/bind/local-block.zone";
+    };
+
+    zone "hagezi" {
+        type master;
+        file "/rpz/hagezi.rpz";
     };
 
     {{- range $.Values.zones.zones }}
@@ -95,13 +101,13 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-adblock-rpz" $fullname }}
+  name: {{ printf "%s-local-block" $fullname }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
 data:
-  adblock-rpz.zone: |
+  local-block.zone: |
     $TTL 60
 
     @ IN SOA localhost. root.localhost. (

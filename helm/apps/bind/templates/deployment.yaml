@@ -36,6 +36,21 @@ spec:
       securityContext:
         fsGroup: {{ printf "%d" (int64 .gid) }}
 
+
+      initContainers:
+        - name: download-rpz
+          image: curlimages/curl
+          command:
+            - sh
+            - -c
+            - |
+              curl -L \
+                https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/rpz/multi.txt \
+                -o /rpz/hagezi.rpz
+          volumeMounts:
+            - name: rpz
+              mountPath: /rpz
+
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 8 }}
 
@@ -48,19 +63,21 @@ spec:
             - "-4"
 
           volumeMounts:
-            - name: named
+            - name: named-config
               mountPath: /etc/bind/named2.conf
               subPath: named2.conf
             - name: cache
               mountPath: /var/cache/bind
             - name: run
               mountPath: /run/named
-            - name: adblock-rpz
-              mountPath: /etc/bind/adblock-rpz.zone
-              subPath: adblock-rpz.zone
+            - name: local-block
+              mountPath: /etc/bind/local-block.zone
+              subPath: local-block.zone
+            - name: rpz
+              mountPath: /rpz
 
       volumes:
-        - name: named
+        - name: named-config
           configMap:
             name: {{ printf "%s-config" $fullname }}
             items:
@@ -72,10 +89,12 @@ spec:
         - name: run
           emptyDir:
             medium: Memory
-        - name: adblock-rpz
+        - name: local-block
           configMap:
-            name: {{ printf "%s-adblock-rpz" $fullname }}
+            name: {{ printf "%s-local-block" $fullname }}
             items:
-              - key: adblock-rpz.zone
-                path: adblock-rpz.zone
+              - key: local-block.zone
+                path: local-block.zone
+        - name: rpz
+          emptyDir: {}
 {{- end }}
