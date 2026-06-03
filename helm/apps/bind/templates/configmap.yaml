@@ -9,36 +9,78 @@ metadata:
     {{- include "common.labels" $ | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
-{{- end }}
 data:
   named.conf: |
-    http local {
-      endpoints { "/dns-query"; };
+    acl this_server {
+    {{- range $.Values.acls.this_server }}
+      {{ . }};
+    {{- end }}
+    };
+
+    acl home_net {
+    {{- range $.Values.acls.home_net }}
+      {{ . }};
+    {{- end }}
+    };
+
+    acl vpn {
+    {{- range $.Values.acls.vpn }}
+      {{ . }};
+    {{- end }}
+    };
+
+    acl k8s_pods {
+    {{- range $.Values.acls.k8s_pods }}
+      {{ . }};
+    {{- end }}
     };
 
     options {
       directory "/var/cache/bind";
+
+      listen-on port 53 {
+          any;
+      };
+
+      listen-on-v6 {
+          none;
+      };
 
       forwarders {
         1.1.1.1;
         8.8.8.8;
       };
 
+      response-policy {
+          zone "adblock-rpz";
+      };
+
       forward first;
 
       recursion yes;
+      rate-limit {
+          responses-per-second 15;
+      };
+
       allow-query { home_net; vpn; k8s_pods; };
       allow-query-cache { localhost; home_net; vpn; k8s_pods; };
       allow-recursion { home_net; vpn; k8s_pods; };
+      allow-transfer { none; };
       deny-answer-addresses { this_server; };
 
       dnssec-validation auto;
       empty-zones-enable yes;
+      minimal-responses yes;
 
       version "not currently available";
     };
 
-    {{- range .Values.zones.zones }}
+    zone "adblock-rpz" {
+        type master;
+        file "/etc/bind/adblock-rpz.zone";
+    };
+
+    {{- range $.Values.zones.zones }}
     zone "{{ . }}" {
       type forward;
       forward only;
@@ -49,27 +91,30 @@ data:
       };
     };
     {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-adblock-rpz" $fullname }}
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
+data:
+  adblock-rpz.zone: |
+    $TTL 60
 
-    acl this_server {
-    {{- range .Values.acls.this_server }}
-      {{ . }};
-    {{- end }}
-    };
+    @ IN SOA localhost. root.localhost. (
+        2026060301 ; serial
+        3H         ; refresh
+        1H         ; retry
+        1W         ; expiry
+        1H         ; minimum
+    )
 
-    acl home_net {
-    {{- range .Values.acls.home_net }}
-      {{ . }};
-    {{- end }}
-    };
+    @ IN NS localhost.
 
-    acl vpn {
-    {{- range .Values.acls.vpn }}
-      {{ . }};
-    {{- end }}
-    };
+    snu.lge.com CNAME .
+    su.lge.com  CNAME .
 
-    acl k8s_pods {
-    {{- range .Values.acls.k8s_pods }}
-      {{ . }};
-    {{- end }}
-    };
+{{- end }}

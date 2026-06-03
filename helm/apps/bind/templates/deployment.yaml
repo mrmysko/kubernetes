@@ -55,6 +55,9 @@ spec:
               mountPath: /var/cache/bind
             - name: run
               mountPath: /run/named
+            - name: adblock-rpz
+              mountPath: /etc/bind/adblock-rpz.zone
+              subPath: adblock-rpz.zone
 
       volumes:
         - name: named
@@ -69,4 +72,10 @@ spec:
         - name: run
           emptyDir:
             medium: Memory
+        - name: adblock-rpz
+          configMap:
+            name: {{ printf "%s-adblock-rpz" $fullname }}
+            items:
+              - key: adblock-rpz.zone
+                path: adblock-rpz.zone
 {{- end }}
