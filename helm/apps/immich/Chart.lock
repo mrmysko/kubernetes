@@ -5,11 +5,11 @@ dependencies:
 - name: baseResources
   repository: file://../../library/baseResources
   version: 0.5.0
-- name: cnpg-database
-  repository: file://../../library/cnpg-database
-  version: 0.1.0
+- name: cnpg
+  repository: file://../../library/cnpg
+  version: 0.2.0
 - name: redis
   repository: file://../../library/redis
-  version: 0.1.0
-digest: sha256:037df0340b3af5decd5b4a4c1f2c95d7abc403f0b0b28cfc938c08cf15b6579a
-generated: "2026-05-24T08:23:51.80922551+02:00"
+  version: 0.2.0
+digest: sha256:c68f874f6ae30d2ee2ed8c82a560065edb37d1f29e3512ec53609ec7bddfcd8c
+generated: "2026-07-13T22:35:55.636089107+02:00"

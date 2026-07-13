@@ -10,15 +10,20 @@ metadata:
     reloader.stakater.com/auto: "true"
 data:
   TZ: "Europe/Stockholm"
-  DB_DATABASE_NAME: {{ .Values.mainDb.name | quote }}
-  DB_HOSTNAME: {{ .Values.mainDb.host | quote }}
-  DB_USERNAME: {{ .Values.mainDb.owner | quote }}
-  IMMICH_MACHINE_LEARNING_URL: "{{ .Values.config.machineLearning.url }}"
-  REDIS_HOSTNAME: {{ include "redis.fullname" $redis | quote }}
-  REDIS_PORT: "{{ .Values.redis.port }}"
-  REDIS_USERNAME: "{{ .Values.redis.user }}"
+  IMMICH_VERSION: "v3"
   DISABLE_REVERSE_GEOCODING: "false"
   REVERSE_GEOCODING_PRECISION: "2"
   PUBLIC_LOGIN_PAGE_MESSAGE: ""
   IMMICH_HELMET_FILE: "true"
   IMMICH_LOG_FORMAT: "json"
+  IMMICH_MACHINE_LEARNING_URL: "{{ .Values.config.machineLearning.url }}"
+
+  # Redis
+  REDIS_HOSTNAME: {{ include "redis.fullname" $redis | quote }}
+  REDIS_PORT: "{{ .Values.redis.port }}"
+  REDIS_USERNAME: "{{ .Values.redis.user }}"
+
+  # Database
+  DB_DATABASE_NAME: {{ .Values.mainDb.name | quote }}
+  DB_HOSTNAME: {{ .Values.mainDb.host | quote }}
+  DB_USERNAME: {{ .Values.mainDb.owner | quote }}
