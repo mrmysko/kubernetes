@@ -1,0 +1,22 @@
+{{- define "cnpg.database" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ printf "%s-db" $fullname }}
+  namespace: {{ $vals.namespace | default $root.Release.Namespace }}
+  labels:
+    {{- include "common.labels" $root | nindent 4 }}
+spec:
+  cluster:
+    name: {{ required "database.cluster.name is required" $vals.clusterName | quote }}
+  name: {{ required "database.name is required" $vals.name | quote }}
+  owner: {{ required "database.owner is required" $vals.owner | quote }}
+  {{- with $vals.extensions }}
+  extensions:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,23 @@
+{{- define "cnpg.role" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: {{ printf "%s-role" $fullname }}
+  namespace: {{ $vals.namespace | default $root.Release.Namespace }}
+  labels:
+    {{- include "common.labels" $root | nindent 4 }}
+spec:
+  cluster:
+    name: {{ $vals.clusterName }}
+  name: {{ $vals.owner }}
+  ensure: "present"
+  login: true
+  superuser: false
+  passwordSecret:
+    name: {{ printf "%s-credentials" $vals.owner }}
+  databaseRoleReclaimPolicy: "delete"
+{{- end }}
