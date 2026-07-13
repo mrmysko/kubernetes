@@ -88,3 +88,24 @@
     seccompProfile:
       type: RuntimeDefault
 {{- end }}
+---
+{{- define "baseResources.waitForRedis" -}}
+- name: wait-for-redis
+  image: {{ .image | default "redis:7" | quote }}
+  command:
+    - sh
+    - -c
+    - |
+      until redis-cli -h "${REDIS_HOST}" -a "${REDIS_PASSWORD}" ping 2>&1 | grep -q PONG;
+      do echo "Waiting for Redis..."; sleep 3;
+      done
+  env:
+    - name: REDIS_HOST
+      value: {{ .host | quote }}
+    - name: REDIS_PASSWORD
+      value: {{ .password | quote }}
+  securityContext:
+    allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
+{{- end }}
