@@ -3,7 +3,7 @@ name: Miniflux
 description: A Helm chart for Miniflux RSS-reader. Connecting to a clustered CNPG postgres database.
 type: application
 version: 0.1.0
-appVersion: "2.3.0"
+appVersion: "2.3.2"
 
 dependencies:
   - name: common-labels
@@ -14,7 +14,6 @@ dependencies:
     version: 0.5.0
     repository: "file://../../library/baseResources"
 
-  - name: cnpg-database
-    version: 0.1.0
-    repository: "file://../../library/cnpg-database"
-    alias: mainDb
+  - name: cnpg
+    version: 0.2.0
+    repository: "file://../../library/cnpg"
