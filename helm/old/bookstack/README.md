@@ -4,6 +4,12 @@
 
 A Helm chart for BookStack. The database is handled by a clustered MariaDB deployment.
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../common-labels | common-labels | 0.1.0 |
+
 ## Values
 
 | Key | Type | Default | Description |

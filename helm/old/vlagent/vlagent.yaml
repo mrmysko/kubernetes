@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vlagent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vlagent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vlagent
+    spec:
+
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+
+      serviceAccountName: vlagent
+
+      containers:
+        - name: vlagent
+          image: victoriametrics/vlagent:v1.51.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9429
+              protocol: TCP
+
+          args:
+            - --kubernetesCollector
+            - --loggerFormat=json
+            - --remoteWrite.url={{ .Values.vlagent.remoteWriteUrl }}
+            - --tmpDataPath=/var/lib/vlagent
+
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+              readOnly: true
+            - name: vlagent-data
+              mountPath: /var/lib/vlagent
+
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: vlagent-data
+          hostPath:
+            path: /var/lib/vlagent
+            type: DirectoryOrCreate
+---
+{{- with .Values.vmagent }}
+{{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VLAgent
+metadata:
+  name: vlagent
+spec:
+  disableAutomountServiceAccountToken: true
+  image:
+    repository: victoriametrics/vlagent
+    tag: v1.51.0
+
+  logFormat: json
+
+  k8sCollector:
+    enabled: true
+
+    msgFields:
+      - "_msg"
+      - "record.message"
+
+  remoteWrite:
+    - url: {{ .remoteWriteUrl }}
+
+  remoteWriteSettings:
+    maxDiskUsagePerURL: "512MiB"
+
+  volumes:
+    - name: varlog
+      hostPath:
+        path: /var/log
+    - name: vlagent-data
+      hostPath:
+        path: /var/lib/vlagent
+        type: DirectoryOrCreate
+  volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+      readOnly: true
+    - name: vlagent-data
+      mountPath: /var/lib/vlagent
+
+  useStrictSecurity: true
+{{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vlagent
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vlagent
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vlagent
+subjects:
+  - kind: ServiceAccount
+    name: vlagent
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: vlagent
+  apiGroup: rbac.authorization.k8s.io

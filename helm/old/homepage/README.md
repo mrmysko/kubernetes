@@ -1,8 +1,15 @@
 # Homepage
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.4](https://img.shields.io/badge/AppVersion-v1.4-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.9.0](https://img.shields.io/badge/AppVersion-v1.9.0-informational?style=flat-square)
 
 A Helm chart for Homepage
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/common-labels | common-labels | 0.1.0 |
 
 ## Values
 
