@@ -1,12 +1,12 @@
 {{- define "cnpg.database" -}}
 {{- $root := .root | default . }}
 {{- $vals := .vals | default $root.Values }}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+{{- $fullname := include "cnpg.databaseName" (dict "root" $root "vals" $vals) }}
 
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: {{ printf "%s-db" $fullname }}
+  name: {{ $fullname }}
   namespace: {{ $vals.namespace | default $root.Release.Namespace }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}

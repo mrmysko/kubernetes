@@ -1,12 +1,12 @@
 {{- define "cnpg.role" -}}
 {{- $root := .root | default . }}
 {{- $vals := .vals | default $root.Values }}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+{{- $fullname := include "cnpg.roleName" (dict "root" $root "vals" $vals) }}
 
 apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
-  name: {{ printf "%s-role" $fullname }}
+  name: {{ $fullname }}
   namespace: {{ $vals.namespace | default $root.Release.Namespace }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
