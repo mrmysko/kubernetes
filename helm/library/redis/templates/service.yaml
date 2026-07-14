@@ -1,20 +1,23 @@
-{{- define "redis.fullname" -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name | lower | trunc 63 | trimSuffix "-" }}
-{{- end }}
+{{- define "redis.service" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "redis.serviceName" (dict "root" $root) }}
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "redis.fullname" . }}
+  name: {{ $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $root | nindent 4 }}
     app.kubernetes.io/component: cache
+
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
     app.kubernetes.io/component: cache
   ports:
     - protocol: TCP
-      port: {{ .Values.port }}
-      targetPort: {{ .Values.port }}
+      port: {{ $vals.port }}
+      targetPort: {{ $vals.port }}
+{{- end }}

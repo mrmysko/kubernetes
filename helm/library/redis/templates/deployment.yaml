@@ -1,70 +1,73 @@
-{{- define "redis.fullname" -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name | lower | trunc 63 | trimSuffix "-" }}
-{{- end }}
+{{- define "redis.deployment" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "redis.fullname" (dict "root" $root) }}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "redis.fullname" . }}
+  name: {{ $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $root | nindent 4 }}
     app.kubernetes.io/component: cache
 
 spec:
   revisionHistoryLimit: 3
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: {{ $vals.replicaCount | default 1 }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
       app.kubernetes.io/component: cache
 
   template:
     metadata:
       labels:
-        {{- include "common.labels" . | nindent 8 }}
+        {{- include "common.labels" $root | nindent 8 }}
         app.kubernetes.io/component: cache
 
     spec:
       containers:
-        - name: {{ include "redis.fullname" . }}
-          image: "11notes/redis:7.4.5"
-          imagePullPolicy: "IfNotPresent"
+        - name: {{ $fullname }}
+          image: "11notes/redis:8"
+          imagePullPolicy: IfNotPresent
           args:
-            - "--in-memory"
+            - --in-memory
 
           ports:
-            - containerPort: {{ .Values.port }}
+            - containerPort: {{ $vals.port }}
 
           env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ printf "%s-secret" .Release.Name | quote }}
+                  name: {{ printf "%s-secret" $root.Release.Name }}
                   key: REDIS_PASSWORD
 
-          {{- with .Values.resources }}
+          {{- with $vals.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          
-          {{- with .Values.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
+          {{ toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.readinessProbe }}
+          {{- with $vals.livenessProbe }}
+          livenessProbe:
+          {{ toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with $vals.readinessProbe }}
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
+          {{ toYaml . | nindent 12 }}
           {{- end }}
 
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
+            runAsNonRoot: true
             allowPrivilegeEscalation: false
             capabilities:
-              drop: ["ALL"]
-            runAsNonRoot: true
+              drop:
+                - ALL
             seccompProfile:
               type: RuntimeDefault
+{{- end }}
