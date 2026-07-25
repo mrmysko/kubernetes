@@ -13,3 +13,17 @@ spec:
       storage: 100Gi
   volumeName: {{ printf "%s-upload-pv" .Release.Name }}
   storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ printf "%s-ml-model-cache" .Release.Name }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

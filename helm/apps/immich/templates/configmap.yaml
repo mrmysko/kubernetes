@@ -1,5 +1,3 @@
-{{- $redis := dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis -}}
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -19,7 +17,7 @@ data:
   IMMICH_MACHINE_LEARNING_URL: "{{ .Values.config.machineLearning.url }}"
 
   # Redis
-  REDIS_HOSTNAME: {{ include "redis.fullname" $redis | quote }}
+  REDIS_HOSTNAME: {{ include "redis.serviceFQDN" (dict "root" $) | quote }}
   REDIS_PORT: "{{ .Values.redis.port }}"
   REDIS_USERNAME: "{{ .Values.redis.user }}"
 

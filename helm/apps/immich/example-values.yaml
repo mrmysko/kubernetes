@@ -83,3 +83,35 @@ ingress:
 config:
   machineLearning:
     url:
+
+machineLearning:
+  name: immich
+  component: machinelearning
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/immich-app/immich-machine-learning
+    tag: v3-openvino
+    pullPolicy:
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      memory: "2Gi"
+
+  service:
+    ports: 
+    - name: api
+      port: 3003
+      targetPort: 3003
+      protocol: TCP
+
+  securityContext:
+    runAsGroup: 1001
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+    allowPrivilegeEscalation: false

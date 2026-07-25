@@ -1,16 +1,10 @@
-{{- with .Values.app }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.app.route }}
-{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.mainDb }}
-{{ include "cnpg.database" (dict "root" $ "vals" . ) }}
+{{ include "redis.resources" (dict "root" $ "vals" .Values.redis) }}
 ---
-{{ include "cnpg.role" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "cnpg.resources" (dict "root" $ "vals" .Values.mainDb) }}
 ---
 {{- with .Values.app }}
 apiVersion: apps/v1
@@ -39,8 +33,10 @@ spec:
       automountServiceAccountToken: false
       initContainers:
         {{- include "baseResources.waitForPostgres" $.Values.mainDb | nindent 8 }}
-
         {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
+        {{- include "baseResources.waitForRedis" (dict
+            "host" (include "redis.serviceFQDN" (dict "root" $))
+            "password" $.Values.redis.password) | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
@@ -61,4 +57,59 @@ spec:
         - name: library
           persistentVolumeClaim:
             claimName: {{ printf "%s-upload-pvc" $.Release.Name }}
+{{- end }}
+---
+
+# MachineLearning
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.machineLearning) }}
+---
+{{- with .Values.machineLearning }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-ml" $.Release.Name }}
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ .component }}
+  annotations:
+    reloader.stakater.com/auto: "true"
+
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+      app.kubernetes.io/component: {{ .component }}
+
+  strategy:
+    type: Recreate
+
+  template:
+    metadata:
+      labels:
+        {{- include "common.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ .component }}
+
+    spec:
+      automountServiceAccountToken: false
+
+      securityContext:
+        supplementalGroups: [105]
+
+      containers:
+        {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
+
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
+
+          volumeMounts:
+            - name: model-cache
+              mountPath: /cache
+
+      volumes:
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-ml-model-cache" $.Release.Name }}
 {{- end }}
