@@ -1,3 +1,7 @@
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values.app }}
+{{- $serviceName := include "baseResources.serviceName" (dict "root" $root "vals" $vals) }}
+
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -11,10 +15,11 @@ spec:
     kind: ClusterIssuer
   privateKey:
     rotationPolicy: Always
-  commonName: "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
+  commonName: {{ printf "%s.%s.svc.cluster.local" $serviceName $root.Release.Namespace }}
   dnsNames:
-    - "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc.cluster.local"
-    - "{{ .Release.Name }}-svc.{{ .Release.Namespace }}.svc"
-    - "{{ .Release.Name }}-svc.{{ .Release.Namespace }}"
-    - "{{ .Release.Name }}-svc"
-    - "localhost"
+    - {{ printf "%s.%s.svc.cluster.local" $serviceName $root.Release.Namespace }}
+    - {{ printf "%s.%s.svc.cluster" $serviceName $root.Release.Namespace }}
+    - {{ printf "%s.%s.svc" $serviceName $root.Release.Namespace }}
+    - {{ printf "%s.%s" $serviceName $root.Release.Namespace }}
+    - {{ printf "%s" $serviceName}}
+    - localhost
