@@ -100,6 +100,9 @@
             - go-vikunja/vikunja
             - grafana/grafana
             - victoriametrics/victoriametrics
+            - victoriametrics/victorialogs
+            - NeptuneHub/AudioMuse-AI
+            - ollama/ollama
             # 11Notes
             - 11notes/docker-prowlarr
             - 11notes/docker-sonarr
@@ -118,6 +121,8 @@
             - cert-manager/trust-manager
             - stakater/Reloader
             - cilium/cilium
+            - intel/intel-device-plugins-for-kubernetes
+            - kubernetes-sigs/node-feature-discovery
             # Operators
             - VictoriaMetrics/operator
             - grafana/grafana-operator

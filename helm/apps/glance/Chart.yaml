@@ -3,7 +3,7 @@ name: Glance
 description: A Helm chart for Glance.
 type: application
 version: 0.2.0
-appVersion: "v0.8.4"
+appVersion: "v0.8.5"
 
 dependencies:
   - name: common-labels
