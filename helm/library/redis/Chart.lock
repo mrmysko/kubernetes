@@ -1,0 +1,6 @@
+dependencies:
+- name: baseResources
+  repository: file://../baseResources
+  version: 0.6.0
+digest: sha256:5d771546fbf5bef17fcbd1ed95b6def9ff2540b881ddee3408742d465e7a4ae3
+generated: "2026-07-26T15:14:24.40286292+02:00"

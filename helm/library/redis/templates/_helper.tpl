@@ -3,8 +3,8 @@ Redis resource name, derived from baseResources.fullname.
 */}}
 {{- define "redis.fullname" -}}
 {{- $root := .root | default . }}
-{{- $basename := include "baseResources.fullname" (dict "root" $root) }}
-{{- printf "%s-redis" $basename | trunc 63 | trimSuffix "-" }}
+{{- $fullname := include "baseResources.fullname" $root }}
+{{- printf "%s-redis" $fullname | trunc 63 | trimSuffix "-" }}
 {{- end -}}
 
 {{/*
@@ -19,5 +19,5 @@ Redis FQDN.
 */}}
 {{- define "redis.serviceFQDN" -}}
 {{- $root := .root | default . }}
-{{- printf "%s.%s.svc" (include "redis.serviceName" (dict "root" $root)) $root.Release.Namespace }}
+{{- printf "%s.%s.svc.cluster.local" (include "redis.serviceName" (dict "root" $root)) $root.Release.Namespace }}
 {{- end -}}
