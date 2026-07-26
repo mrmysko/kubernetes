@@ -1,7 +1,7 @@
 {{- define "baseResources.baseContainer" -}}
 {{- $root := .root | default . }}
 {{- $vals := .vals | default $root.Values }}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+{{- $fullname := include "baseResources.fullname" $root }}
 
 - name: {{ $fullname }}
   image: "{{ $vals.image.repository }}:{{ $vals.image.tag | default $root.Chart.AppVersion }}"
@@ -11,7 +11,7 @@
     {{- range $vals.service.ports }}
     - name: {{ .name }}
       containerPort: {{ .targetPort }}
-      protocol: {{ .protocol }}
+      protocol: {{ .protocol | default "TCP" }}
     {{- end }}
 
   {{- with $vals.resources }}
@@ -34,8 +34,8 @@
     {{- toYaml $vals.securityContext | nindent 4 }}
   {{- else }}
   securityContext:
-    runAsUser: {{ $vals.uid }}
-    runAsGroup: {{ $vals.gid }}
+    runAsUser: {{ int64 $vals.uid }}
+    runAsGroup: {{ int64 $vals.gid }}
     allowPrivilegeEscalation: false
     capabilities:
       drop: ["ALL"]

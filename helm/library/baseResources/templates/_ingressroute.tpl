@@ -2,7 +2,7 @@
 {{- define "baseResources.ingress" -}}
 {{- $root := .root | default . }}
 {{- $vals := .vals | default $root.Values }}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
+{{- $fullname := include "baseResources.fullname" $root }}
 
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute

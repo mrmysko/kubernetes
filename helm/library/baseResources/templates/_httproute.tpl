@@ -1,16 +1,19 @@
 {{- define "baseResources.httproute" -}}
 {{- $root := .root | default . }}
-{{- $vals := .vals | default $root.Values }}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
-{{- $routeName := $vals.nameOverride | default (printf "%s-https" $fullname) }}
+{{- $vals := .vals | default $root.Values.app }}
+
+{{- $route := $vals.route }}
+
+{{- $fullname := include "baseResources.fullname" $root }}
+{{- $routeName := $route.nameOverride | default (printf "%s-https" $fullname) }}
 
 {{- $needsAuth := false }}
-{{- range $vals.rules }}
+{{- range $route.rules }}
   {{- if .forwardAuth }}{{ $needsAuth = true }}{{ end }}
 {{- end }}
 
 {{- if $needsAuth }}
-{{ include "baseResources.authDelegate" (dict "root" $root "vals" $vals) }}
+{{ include "baseResources.authDelegate" (dict "root" $root "vals" $route) }}
 ---
 {{- end }}
 
@@ -27,9 +30,9 @@ spec:
       namespace: traefik
       sectionName: websecure
   hostnames:
-    - {{ $vals.baseUrl | quote }}
+    - {{ $route.baseUrl | quote }}
   rules:
-    {{- range $rule := $vals.rules }}
+    {{- range $rule := $route.rules }}
     - matches:
         - path:
             type: PathPrefix
@@ -52,7 +55,7 @@ spec:
         {{- end }}
       {{- end }}
       backendRefs:
-        - name: {{ $vals.serviceOverride | default (printf "%s-svc" $fullname) }}
-          port: {{ $vals.port }}
+        - name: {{ include "baseResources.serviceName" (dict "root" $root "vals" $vals) }}
+          port: {{ $route.port }}
     {{- end }}
 {{- end -}}

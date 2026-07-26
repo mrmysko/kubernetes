@@ -1,6 +1,7 @@
 {{- define "baseResources.authDelegate" -}}
 {{- $root := .root -}}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root) -}}
+{{- $fullname := include "baseResources.fullname" $root }}
+
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:

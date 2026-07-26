@@ -1,13 +1,11 @@
 {{- define "baseResources.service" -}}
 {{- $root := .root }}
 {{- $vals := .vals }}
-{{- $fullname := include "baseResources.fullname" (dict "root" $root "vals" $vals) }}
-{{- $serviceName := $vals.service.nameOverride | default (printf "%s-svc" $fullname) -}}
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}
+  name: {{ include "baseResources.serviceName" (dict "root" $root "vals" $vals) }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
     {{- with $vals.service.labels }}
