@@ -1,0 +1,90 @@
+frontend:
+  name: audiomuse
+  replicaCount: 1
+  component: frontend
+
+  image:
+    repository: ghcr.io/neptunehub/audiomuse-ai
+    tag: 3.0.5
+    pullPolicy: Always
+
+  uid: 1001
+  gid: 1001
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "128Mi"
+    limits:
+      memory: "2Gi"
+
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /
+      port: 8000
+    initialDelaySeconds: 15
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /
+      port: 8000
+    initialDelaySeconds: 2
+    periodSeconds: 5
+
+  service:
+    ports: 
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+
+  route:
+    baseUrl: 
+    port: 8000
+    rules:
+      - path: /
+        forwardAuth: false
+
+redis:
+  replicaCount: 1
+  port: 6379
+  username: default
+  password:
+
+mainDb:
+  host: 
+  port: 
+  name: 
+
+  namespace: 
+  clusterName: 
+  owner: 
+  password: 
+
+worker:
+  name: audiomuse
+  replicaCount: 1
+  component: worker
+
+  image:
+    repository: ghcr.io/neptunehub/audiomuse-ai
+    tag: 3.0.5
+    pullPolicy: Always
+
+  resources:
+    requests:
+      cpu: "1"
+      memory: "128Mi"
+    limits:
+      memory: "2Gi"
+
+  securityContext:
+    runAsGroup: 1001
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+    allowPrivilegeEscalation: false
