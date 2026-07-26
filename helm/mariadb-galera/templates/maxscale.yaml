@@ -1,13 +1,17 @@
-{{- if .Values.maxScale.enabled }}
+{{- $mariadbName := include "mariadb.fullname" $ -}}
+
+{{ with .Values.maxScale }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" $.Values.maxScale) }}
+---
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MaxScale
 metadata:
-  name: {{ print .Release.Name "-maxscale" | quote }}
+  name: {{ include "maxscale.fullname" $ }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
 spec:
   mariaDbRef:
-    name: {{ .Release.Name }}
+    name: {{ $mariadbName }}
 
   services:
     - name: rw-router
@@ -25,36 +29,23 @@ spec:
         params:
           connection_metadata: "tx_isolation=auto"
 
-    - name: rconn-master-router
-      router: readconnroute
-      params:
-        router_options: "master"
-        max_replication_lag: "3s"
-        master_accept_reads: "true"
-      listener:
-        port: 3307
-        
-    - name: rconn-slave-router
-      router: readconnroute
-      params:
-        router_options: "slave"
-        max_replication_lag: "3s"
-      listener:
-        port: 3308
-
   admin:
     port: 8989
     guiEnabled: true
 
   auth:
     generate: true
+    adminUsername: {{ .adminUsername }}
+    adminPasswordSecretKeyRef:
+      name: {{ printf "%s-maxscale-admin" $mariadbName }}
+      key: ADMIN_PASSWORD
 
   tls:
     enabled: true
     serverCASecretRef:
-      name: {{ print .Release.Name "-ca-bundle" | quote }}
+      name: {{ printf "%s-ca-bundle" $mariadbName }}
     serverCertSecretRef:
-      name: {{ print .Release.Name "-client-cert" | quote }}
+      name: {{ printf "%s-client-cert" $mariadbName }}
     adminCertIssuerRef:
       name: cluster-ca
       kind: ClusterIssuer
@@ -64,16 +55,30 @@ spec:
 
   securityContext:
     allowPrivilegeEscalation: false
-    seccompProfile:
-      type: RuntimeDefault
     capabilities:
       drop: ["ALL"]
 
   kubernetesService:
-    type: LoadBalancer
+    type: {{ .service.type }}
     metadata:
       annotations:
-        io.cilium/lb-ipam-ips: "{{ .Values.maxScale.metalLB.ip }}"
+        io.cilium/lb-ipam-ips: {{ .service.loadBalancerIP | quote }}
       labels:
         cilium.lb: "true"
+
+  metrics:
+    enabled: true
+    exporter:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        readOnlyRootFilesystem: true
+      podSecurityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+    serviceMonitor:
+      jobLabel: maxscale-metrics
 {{- end }}

@@ -1,11 +1,16 @@
+{{- $mariadbName := include "mariadb.fullname" $ -}}
+
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:
-  name: {{ .Release.Name | quote }}
+  name: {{ $mariadbName }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
+  updateStrategy:
+    autoUpdateDataPlane: false # Set this when required for upgrade
+
   replicas: {{ .Values.app.replicaCount | default 3 }}
 
   service:
@@ -23,8 +28,10 @@ spec:
       name: cluster-ca
       kind: ClusterIssuer
 
+  {{- if .Values.maxScale }}
   maxScaleRef:
-    name: {{ print .Release.Name "-maxscale" | quote }}
+    name: {{ include "maxscale.fullname" $ }}
+  {{- end }}
 
   galera:
     enabled: true
@@ -51,8 +58,18 @@ spec:
       drop: ["ALL"]
 
   rootPasswordSecretKeyRef:
-    name: {{ print .Release.Name "-secret" | quote }}
+    name: {{ printf "%s-secret" $mariadbName }}
     key: ROOT_PASSWORD
+    generate: false
+
+  metrics:
+    enabled: true
+    exporter:
+      podSecurityContext:
+        seccompProfile:
+          type: RuntimeDefault
+    serviceMonitor:
+      jobLabel: mariadb-metrics
 
   myCnf: |
     [mariadb-backup]

@@ -9,3 +9,7 @@ dependencies:
   - name: common-labels
     version: 0.1.0
     repository: "file://../library/common-labels"
+
+  - name: baseResources
+    version: 0.6.0
+    repository: "file://../library/baseResources"

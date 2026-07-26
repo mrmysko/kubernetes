@@ -1,0 +1,22 @@
+{{- if .Values.maxScale }}
+{{- $serviceName := .Values.maxScale.service.nameOverride | default (printf "%s-gui" (include "maxscale.fullname" $)) -}}
+{{- $maxscaleName := include "maxscale.fullname" $ -}}
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: {{ printf "%s-tls-policy" $maxscaleName }}
+spec:
+
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ $serviceName }}
+
+  validation:
+    hostname: {{ printf "%s.%s.svc" $serviceName $.Release.Namespace | quote }}
+    caCertificateRefs:
+      - name: {{ printf "%s-ca-bundle" $maxscaleName }}
+        group: ""
+        kind: Secret
+{{- end }}

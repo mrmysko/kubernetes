@@ -1,27 +1,29 @@
-{{- if .Values.backup.enabled }}
+{{- with .Values.backup }}
+{{- $mariadbName := include "mariadb.fullname" $ -}}
+
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: PhysicalBackup
 metadata:
-  name: {{ print .Release.Name "-backup" | quote }}
+  name: {{ printf "%s-backup" $mariadbName }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
     app.kubernetes.io/component: backup
 spec:
   mariaDbRef:
-    name: {{ .Release.Name }}
+    name: {{ $mariadbName }}
   maxRetention: 720h # 30 days
   compression: gzip
   storage:
     s3:
       bucket: mariadb
       prefix: mariadb
-      endpoint: "{{ .Values.backup.endpoint }}"
+      endpoint: {{ .endpoint | quote }}
       region:  us-east-1
       accessKeyIdSecretKeyRef:
-        name: {{ .Release.Name }}-s3-credentials
+        name: {{ printf "%s-s3-credentials" $mariadbName }}
         key: ACCESS_KEY
       secretAccessKeySecretKeyRef:
-        name: {{ .Release.Name }}-s3-credentials
+        name: {{ printf "%s-s3-credentials" $mariadbName }}
         key: SECRET_KEY
       tls:
         enabled: true
@@ -29,6 +31,6 @@ spec:
           name: invis-external-bundle
           key: ca.crt
   schedule:
-    cron: "{{ .Values.backup.schedule }}"
+    cron: {{ .schedule | quote }}
     suspend: false
 {{- end }}

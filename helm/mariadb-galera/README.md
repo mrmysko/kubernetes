@@ -4,6 +4,13 @@
 
 A Helm chart for a MariaDB cluster
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../library/baseResources | baseResources | 0.6.0 |
+| file://../library/common-labels | common-labels | 0.1.0 |
+
 ## Values
 
 | Key | Type | Default | Description |
