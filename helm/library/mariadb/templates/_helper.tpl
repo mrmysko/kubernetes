@@ -1,3 +1,18 @@
 {{- define "mariadb.fullname" -}}
-{{- printf "%s-%s-%s" .Release.Name .Chart.Name .Values.name | lower | trunc 63 | trimSuffix "-" }}
-{{- end }}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $basename := include "baseResources.fullname" (dict "root" $root) }}
+{{- printf "%s-%s" $basename $vals.name | lower | trunc 63 | trimSuffix "-" }}
+{{- end -}}
+
+{{- define "mariadb.databaseName" -}}
+{{- printf "%s-db" (include "mariadb.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end -}}
+
+{{- define "mariadb.userName" -}}
+{{- printf "%s-db-user" (include "mariadb.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end -}}
+
+{{- define "mariadb.grantName" -}}
+{{- printf "%s-db-grant" (include "mariadb.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end -}}

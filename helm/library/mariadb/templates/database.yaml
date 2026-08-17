@@ -1,17 +1,23 @@
+{{- define "mariadb.database" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "mariadb.databaseName" (dict "root" $root "vals" $vals) }}
+
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: Database
 metadata:
-  name: {{ printf "%s-db" (include "mariadb.fullname" .) | quote }}
+  name: {{ $fullname | quote }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $root | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  name: "{{ .Values.name }}"
+  name: {{ $vals.name | quote }}
   mariaDbRef:
-    name: "{{ .Values.instanceName }}"
-    namespace: "{{ .Values.namespace }}"
+    name: {{ $vals.instanceName | quote }}
+    namespace: {{ $vals.namespace | quote }}
   characterSet: utf8mb4
   collate: utf8mb4_unicode_ci
   cleanupPolicy: Skip
   requeueInterval: 30s
   retryInterval: 5s
+{{- end }}

@@ -1,21 +1,27 @@
+{{- define "mariadb.grant" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "mariadb.grantName" (dict "root" $root "vals" $vals) }}
+
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: Grant
 metadata:
-  name: {{ printf "%s-db-grant" (include "mariadb.fullname" .) | quote }}
+  name: {{ $fullname | quote }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $root | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
   mariaDbRef:
-    name: "{{ .Values.instanceName }}"
-    namespace: "{{ .Values.namespace }}"
+    name: {{ $vals.instanceName | quote }}
+    namespace: {{ $vals.namespace | quote }}
   privileges:
     - "ALL"
-  database: "{{ .Values.name }}"
+  database: {{ $vals.name | quote }}
   table: "*"
-  username: "{{ .Values.username }}"
+  username: {{ $vals.username | quote }}
   host: "%"
   grantOption: false
   cleanupPolicy: Delete
   requeueInterval: 30s
   retryInterval: 5s
+{{- end }}

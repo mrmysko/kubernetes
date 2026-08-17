@@ -1,20 +1,26 @@
+{{- define "mariadb.user" -}}
+{{- $root := .root | default . }}
+{{- $vals := .vals | default $root.Values }}
+{{- $fullname := include "mariadb.userName" (dict "root" $root "vals" $vals) }}
+
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: User
 metadata:
-  name: {{ printf "%s-db-user" (include "mariadb.fullname" .) | quote }}
+  name: {{ $fullname | quote }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $root | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
-  name: "{{ .Values.username }}"
+  name: {{ $vals.username | quote }}
   mariaDbRef:
-    name: "{{ .Values.instanceName }}"
-    namespace: "{{ .Values.namespace }}"
+    name: {{ $vals.instanceName | quote }}
+    namespace: {{ $vals.namespace | quote }}
   passwordSecretKeyRef:
-    name: "{{ .Release.Name }}-secret"
-    key: "{{ .Values.passwordKey }}"
+    name: {{ printf "%s-secret" $root.Release.Name }}
+    key: {{ $vals.passwordKey | quote }}
   maxUserConnections: 50
   host: "%"
   cleanupPolicy: Delete
   requeueInterval: 30s
   retryInterval: 5s
+{{- end }}
