@@ -5,4 +5,6 @@
 {{ include "cnpg.database" (dict "root" $root "vals" $vals) }}
 ---
 {{ include "cnpg.role" (dict "root" $root "vals" $vals) }}
+---
+{{ include "cnpg.credentials" (dict "root" $root "vals" $vals) }}
 {{- end }}
