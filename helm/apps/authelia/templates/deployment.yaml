@@ -1,10 +1,12 @@
-{{- with .Values.app }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.app.route }}
-{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
+---
+{{ include "baseResources.internalTLS" (dict "root" $ "vals" .Values.app) }}
+---
+{{ include "redis.resources" (dict "root" $ "vals" .Values.redis) }}
+---
+{{ include "mariadb.resources" (dict "root" $ "vals" .Values.database) }}
 ---
 {{- with .Values.app }}
 apiVersion: apps/v1
@@ -13,7 +15,7 @@ metadata:
   name: {{ $.Release.Name }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 
@@ -24,14 +26,14 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ .name | default $.Chart.Name }}"
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/name: {{ .name | default $.Chart.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
 
     spec:
       automountServiceAccountToken: false
@@ -39,6 +41,9 @@ spec:
 
       initContainers:
         {{- include "baseResources.waitForMariadb" $.Values.database | nindent 8 }}
+        {{- include "baseResources.waitForRedis" (dict
+            "host" (include "redis.serviceFQDN" (dict "root" $))
+            "password" $.Values.redis.password) | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" . ) | indent 8 }}
@@ -48,12 +53,13 @@ spec:
           args:
             - "--config=/config/configuration.yml"
             - "--config=/config/configuration.clients.yml"
+            - "--config=/config/configuration.acl.yml"
 
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env" $.Release.Name }}
+                name: {{ printf "%s-env" $.Release.Name | quote }}
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
 
           volumeMounts:
             - name: config
@@ -61,18 +67,18 @@ spec:
             - name: certs
               mountPath: /tmp/certs
               readOnly: true
-            - name: secret
-              mountPath: "{{ $.Values.config.secretsDir }}"
+            - name: secrets
+              mountPath: {{ $.Values.config.secretsDir | quote }}
               readOnly: true
 
       volumes:
         - name: config
           configMap:
-            name: {{ printf "%s-config" $.Release.Name }}
+            name: {{ printf "%s-config" $.Release.Name | quote }}
         - name: certs
           secret:
-            secretName: {{ printf "%s-server-cert" $.Release.Name }}
-        - name: secret
+            secretName: {{ printf "%s-server-cert" $.Release.Name | quote }}
+        - name: secrets
           secret:
-            secretName: {{ printf "%s-secret" $.Release.Name }}
+            secretName: {{ printf "%s-secret" $.Release.Name | quote }}
 {{- end }}

@@ -3,7 +3,7 @@ name: AudioMuse
 description: A chart for AudioMuse-AI
 type: application
 version: 0.3.0
-appVersion: "7"
+appVersion: "3.3.1"
 
 dependencies:
   - name: common-labels
@@ -11,13 +11,9 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.5.0
+    version: 0.6.0
     repository: "file://../../library/baseResources"
 
   - name: cnpg
-    version: 0.2.0
+    version: 0.3.0
     repository: "file://../../library/cnpg"
-
-  - name: redis
-    version: 0.2.0
-    repository: "file://../../library/redis"

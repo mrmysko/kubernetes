@@ -1,6 +1,6 @@
 # Authelia
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.39.17](https://img.shields.io/badge/AppVersion-4.39.17-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.39.19](https://img.shields.io/badge/AppVersion-4.39.19-informational?style=flat-square)
 
 A Helm chart for Authelia.
 
@@ -8,10 +8,10 @@ A Helm chart for Authelia.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/baseResources | baseResources | 0.6.0 |
 | file://../../library/common-labels | common-labels | 0.1.0 |
-| file://../../library/mariadb | database(mariadb) | 0.1.0 |
-| file://../../library/redis | redis | 0.1.0 |
+| file://../../library/mariadb | database(mariadb) | 0.2.0 |
+| file://../../library/redis | redis | 0.2.0 |
 
 ## Values
 

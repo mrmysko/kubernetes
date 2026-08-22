@@ -1,0 +1,15 @@
+access_control:
+  rules:
+    # Single factor login
+    - domain: 'somepage.example.com'
+      policy: 'one_factor'
+
+    # Catch-all - Everyone can login with two_factor to these.
+    - domain:
+        - 'home.example.com'
+      policy: 'two_factor'
+
+    # Only admins can login with two factor to these urls.
+    - domain_regex: '^.*\.example\.com$'
+      subject: 'group:service-admins'
+      policy: 'two_factor'

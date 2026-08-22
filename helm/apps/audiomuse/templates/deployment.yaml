@@ -2,8 +2,6 @@
 ---
 {{ include "baseResources.httproute" (dict "root" $ "vals" .Values.frontend) }}
 ---
-{{ include "redis.resources" (dict "root" $ "vals" .Values.redis) }}
----
 {{ include "cnpg.resources" (dict "root" $ "vals" .Values.mainDb) }}
 ---
 {{- with .Values.frontend }}
@@ -13,7 +11,7 @@ metadata:
   name: {{ include "baseResources.resourceName" (dict "root" $ "vals" .) }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
@@ -24,14 +22,14 @@ spec:
 
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -39,18 +37,15 @@ spec:
 
       initContainers:
         {{- include "baseResources.waitForPostgres" $.Values.mainDb | nindent 8 }}
-        {{- include "baseResources.waitForRedis" (dict
-            "host" (include "redis.serviceFQDN" (dict "root" $))
-            "password" $.Values.redis.password) | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env" $.Release.Name }}
+                name: {{ printf "%s-env" $.Release.Name | quote }}
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
 
           env:
           - name: SERVICE_TYPE
@@ -72,7 +67,7 @@ metadata:
   name: {{ include "baseResources.resourceName" (dict "root" $ "vals" .) }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
@@ -83,14 +78,14 @@ spec:
 
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -98,18 +93,15 @@ spec:
 
       initContainers:
         {{- include "baseResources.waitForPostgres" $.Values.mainDb | nindent 8 }}
-        {{- include "baseResources.waitForRedis" (dict
-            "host" (include "redis.serviceFQDN" (dict "root" $))
-            "password" $.Values.redis.password) | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env" $.Release.Name }}
+                name: {{ printf "%s-env" $.Release.Name | quote }}
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
 
           env:
           - name: SERVICE_TYPE
