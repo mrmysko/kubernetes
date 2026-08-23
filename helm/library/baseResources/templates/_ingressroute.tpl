@@ -7,7 +7,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ printf "%s-route" $fullname }}
+  name: {{ printf "%s-route" $fullname | quote }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
   {{- with $vals.ingress.annotations }}
@@ -20,16 +20,16 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ $vals.ingress.baseUrl }}`)
+      match: {{ printf "Host(`%s`)" $vals.ingress.baseUrl | quote }}
       services:
         - kind: Service
-          name: {{ $vals.ingress.serviceOverride | default (printf "%s-svc" $fullname) }}
+          name: {{ $vals.ingress.serviceOverride | default (printf "%s-svc" $fullname) | quote }}
           port: {{ $vals.ingress.port }}
           {{- with $vals.ingress.scheme }}
-          scheme: {{ . }}
+          scheme: {{ . | quote }}
           {{- end }}
           {{- with $vals.ingress.serversTransport }}
-          serversTransport: {{ . }}
+          serversTransport: {{ . | quote }}
           {{- end }}
           {{- if $vals.ingress.sticky }}
           sticky:

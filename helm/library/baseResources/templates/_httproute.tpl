@@ -20,8 +20,8 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ $routeName }}
-  namespace: {{ $root.Release.Namespace }}
+  name: {{ $routeName | quote }}
+  namespace: {{ $root.Release.Namespace | quote }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
 spec:
@@ -44,18 +44,18 @@ spec:
           extensionRef:
             group: traefik.io
             kind: Middleware
-            name: {{ printf "%s-auth-proxy" $root.Release.Name }}
+            name: {{ printf "%s-auth-proxy" $root.Release.Name | quote }}
         {{- end }}
         {{- range $rule.middlewares }}
         - type: ExtensionRef
           extensionRef:
             group: traefik.io
             kind: Middleware
-            name: {{ .name }}
+            name: {{ .name | quote }}
         {{- end }}
       {{- end }}
       backendRefs:
-        - name: {{ include "baseResources.serviceName" (dict "root" $root "vals" $vals) }}
+        - name: {{ $route.serviceOverride | default (include "baseResources.serviceName" (dict "root" $root "vals" $vals)) }}
           port: {{ $route.port }}
     {{- end }}
 {{- end -}}

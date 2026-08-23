@@ -6,7 +6,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $fullname }}
+  name: {{ $fullname | quote }}
   labels:
     {{- include "common.labels" $root | nindent 4 }}
     app.kubernetes.io/component: cache
@@ -29,7 +29,7 @@ spec:
 
     spec:
       containers:
-        - name: {{ $fullname }}
+        - name: {{ $fullname | quote }}
           image: "11notes/redis:8"
           imagePullPolicy: IfNotPresent
           args:
@@ -42,7 +42,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ printf "%s-secret" $root.Release.Name }}
+                  name: {{ printf "%s-secret" $root.Release.Name | quote }}
                   key: REDIS_PASSWORD
 
           {{- with $vals.resources }}

@@ -3,16 +3,20 @@
 {{- $vals := .vals | default $root.Values }}
 {{- $fullname := include "baseResources.fullname" $root }}
 
-- name: {{ $fullname }}
-  image: "{{ $vals.image.repository }}:{{ $vals.image.tag | default $root.Chart.AppVersion }}"
-  imagePullPolicy: {{ $vals.image.pullPolicy | default "IfNotPresent" }}
+- name: {{ $fullname | quote }}
+  image: {{ printf "%s:%s" $vals.image.repository ($vals.image.tag | default $root.Chart.AppVersion) | quote }}
+  imagePullPolicy: {{ $vals.image.pullPolicy | default "IfNotPresent" | quote }}
 
+  {{- with $vals.service }}
+    {{- with .ports}}
   ports:
-    {{- range $vals.service.ports }}
-    - name: {{ .name }}
+    {{- range . }}
+    - name: {{ .name | quote }}
       containerPort: {{ .targetPort }}
       protocol: {{ .protocol | default "TCP" }}
     {{- end }}
+    {{- end }}
+  {{- end }}
 
   {{- with $vals.resources }}
   resources:

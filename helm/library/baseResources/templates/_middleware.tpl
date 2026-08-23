@@ -5,8 +5,8 @@
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: {{ printf "%s-auth-proxy" $root.Release.Name }}
-  namespace: {{ $root.Release.Namespace }}
+  name: {{ printf "%s-auth-proxy" $root.Release.Name | quote }}
+  namespace: {{ $root.Release.Namespace | quote }}
 spec:
   chain:
     middlewares:
