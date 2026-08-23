@@ -1,5 +1,1 @@
-{{- with .Values.mainDb }}
-{{ include "cnpg.database" (dict "root" $ "vals" . ) }}
----
-{{ include "cnpg.role" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "cnpg.resources" (dict "root" $ "vals" .Values.mainDb) }}

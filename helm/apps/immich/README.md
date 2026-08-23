@@ -1,6 +1,6 @@
 # Immich
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.7.3](https://img.shields.io/badge/AppVersion-v2.7.3-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v3.0.3](https://img.shields.io/badge/AppVersion-v3.0.3-informational?style=flat-square)
 
 A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 
@@ -8,10 +8,10 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../library/baseResources | baseResources | 0.1.0 |
-| file://../../library/cnpg-database | mainDb(cnpg-database) | 0.1.0 |
+| file://../../library/baseResources | baseResources | 0.5.0 |
+| file://../../library/cnpg | cnpg | 0.2.0 |
 | file://../../library/common-labels | common-labels | 0.1.0 |
-| file://../../library/redis | redis | 0.1.0 |
+| file://../../library/redis | redis | 0.2.0 |
 
 ## Values
 
@@ -44,6 +44,23 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 | database.password | string | `nil` | Database password |
 | database.username | string | `nil` | Database username |
 | ingress.baseUrl | string | `nil` | FQDN for the application |
+| machineLearning.component | string | `"machinelearning"` |  |
+| machineLearning.image.pullPolicy | string | `nil` |  |
+| machineLearning.image.repository | string | `"ghcr.io/immich-app/immich-machine-learning"` |  |
+| machineLearning.image.tag | string | `"v3-openvino"` |  |
+| machineLearning.name | string | `"immich"` |  |
+| machineLearning.replicaCount | int | `1` |  |
+| machineLearning.resources.limits.memory | string | `"2Gi"` |  |
+| machineLearning.resources.requests.cpu | string | `"500m"` |  |
+| machineLearning.resources.requests.memory | string | `"512Mi"` |  |
+| machineLearning.securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| machineLearning.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| machineLearning.securityContext.runAsGroup | int | `1001` |  |
+| machineLearning.securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| machineLearning.service.ports[0].name | string | `"api"` |  |
+| machineLearning.service.ports[0].port | int | `3003` |  |
+| machineLearning.service.ports[0].protocol | string | `"TCP"` |  |
+| machineLearning.service.ports[0].targetPort | int | `3003` |  |
 | redis.password | string | `nil` | Redis password |
 | redis.port | int | `6379` | Redis port |
 | redis.replicaCount | int | `1` | Number of redis pods |

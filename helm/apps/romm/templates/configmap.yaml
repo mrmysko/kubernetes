@@ -1,16 +1,10 @@
-{{- $redis := dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis -}}
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ print .Release.Name "-env" | quote }}
+  name: {{ printf "%s-env" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
-  DB_HOST: "{{ .Values.database.host }}"
-  DB_NAME: "{{ .Values.database.name }}"
-  DB_PORT: "{{ .Values.database.port }}"
-  DB_USER: "{{ .Values.database.username }}"
   DB_QUERY_JSON: '{"ssl": "true"}'
   DISABLE_RUFFLE_RS: "true"
   DISABLE_USERPASS_LOGIN: "true"
@@ -18,13 +12,10 @@ data:
   OIDC_ENABLED: "true"
   OIDC_AUTOLOGIN: "true"
   OIDC_PROVIDER: "Authelia"
-  OIDC_REDIRECT_URI: "{{ .Values.config.oidc.redirectUri }}"
-  OIDC_SERVER_APPLICATION_URL: "{{ .Values.config.oidc.serverApplicationUrl }}"
-  OIDC_TLS_CACERTFILE: "{{ .Values.config.oidc.tlsCaCertFile }}"
-  REDIS_HOST: {{ include "redis.fullname" $redis | quote }}
-  REDIS_PORT: "{{ .Values.redis.port }}"
-  ROMM_BASE_URL: "https://{{ .Values.app.route.baseUrl }}"
-  ROMM_DB_DRIVER: "{{ .Values.database.type }}"
+  REDIS_HOST: {{ include "redis.serviceFQDN" (dict "root" $) | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
+  ROMM_BASE_URL: {{ printf "https://%s" .Values.app.route.baseUrl | quote }}
+  ROMM_DB_DRIVER: {{ .Values.database.type | quote }}
   SCHEDULED_RESCAN_CRON: "0 5 * * *"
   HASHEOUS_API_ENABLED: "true"
   HLTB_API_ENABLED: "true"

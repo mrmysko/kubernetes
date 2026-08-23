@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-configmap" .Release.Name }}
+  name: {{ printf "%s-configmap" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
@@ -9,6 +9,7 @@ metadata:
 data:
   navidrome.toml: |
     LogLevel = 'warn'
+    EnforceNonRootUser = 'true'
     EnableInsightsCollector = 'false'
     BaseUrl = 'https://{{ .Values.app.route.baseUrl }}'
     ExtAuth.TrustedSources = '{{ .Values.config.trustedSources }}'
@@ -18,10 +19,9 @@ data:
     LastFM.Enabled = 'true'
     Deezer.Enabled = 'true'
     ListenBrainz.Enabled = 'false'
-    Agents = 'deezer,lastfm'
+    Agents = 'audiomuseai,deezer,lastfm'
     LastFM.Language = 'en'
 
-    EnableTranscodingCancellation = 'true'
     EnableCoverAnimation = 'true'
     EnableSharing = 'false'
     DefaultTheme = 'nord'
@@ -32,3 +32,4 @@ data:
     Scanner.WatcherWait = '5s'
     Scanner.ScanOnStartup = 'true'
     EnableWebPEncoding = 'true'
+    Plugins.Enabled = 'true'

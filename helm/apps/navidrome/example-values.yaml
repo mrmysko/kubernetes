@@ -38,14 +38,6 @@ app:
     initialDelaySeconds: 2
     periodSeconds: 5
 
-service:
-  # -- App port
-  port: 4533
-
-ingress:
-  # -- FQDN for the application
-  baseUrl:
-
 middleware:
   whitelist:
     ip:

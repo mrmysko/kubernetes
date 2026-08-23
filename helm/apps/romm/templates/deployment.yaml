@@ -1,19 +1,19 @@
-{{- with .Values.app }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.app.route }}
-{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
+---
+{{ include "redis.resources" (dict "root" $ "vals" .Values.redis) }}
+---
+{{ include "mariadb.resources" (dict "root" $ "vals" .Values.database) }}
 ---
 {{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Release.Name }}
+  name: {{ $.Release.Name | quote }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
     
@@ -24,14 +24,14 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
 
     spec:
       automountServiceAccountToken: false
@@ -41,24 +41,19 @@ spec:
 
       initContainers:
         {{- include "baseResources.waitForMariadb" $.Values.database | nindent 8 }}
-
         {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
+        {{- include "baseResources.waitForRedis" (dict
+            "host" (include "redis.serviceFQDN" (dict "root" $))
+            "password" $.Values.redis.password) | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env" $.Release.Name }}
+                name: {{ printf "%s-env" $.Release.Name | quote }}
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
 {{- end }}
 
           volumeMounts:
@@ -71,25 +66,25 @@ spec:
             - name: config
               mountPath: /romm/config
             - name: authelia-fullchain
-              mountPath: "{{ .Values.config.oidc.tlsCaCertFile }}"
-              subPath: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
+              mountPath: {{ .Values.config.oidc.tlsCaCertFile | quote }}
+              subPath: {{ .Values.config.oidc.tlsCaCertFile | base | quote }}
 
       volumes:
         - name: assets
           persistentVolumeClaim:
-            claimName: {{ printf "%s-assets" .Release.Name }}
+            claimName: {{ printf "%s-assets" .Release.Name | quote }}
         - name: games
           persistentVolumeClaim:
-            claimName: {{ printf "%s-games" .Release.Name }}
+            claimName: {{ printf "%s-games" .Release.Name | quote }}
         - name: resources
           persistentVolumeClaim:
-            claimName: {{ printf "%s-resources" .Release.Name }}
+            claimName: {{ printf "%s-resources" .Release.Name | quote }}
         - name: config
           persistentVolumeClaim:
-            claimName: {{ printf "%s-config" .Release.Name }}
+            claimName: {{ printf "%s-config" .Release.Name | quote }}
         - name: authelia-fullchain
           configMap:
             name: authelia-fullchain
             items:
-              - key: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
-                path: "{{ .Values.config.oidc.tlsCaCertFile | base }}"
+              - key: {{ base .Values.config.oidc.tlsCaCertFile | quote }}
+                path: {{ base .Values.config.oidc.tlsCaCertFile | quote }}

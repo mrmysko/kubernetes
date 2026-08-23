@@ -1,6 +1,6 @@
 # RomM
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.8.1](https://img.shields.io/badge/AppVersion-4.8.1-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0](https://img.shields.io/badge/AppVersion-5.0.0-informational?style=flat-square)
 
 A Helm chart for RomM.
 
@@ -8,10 +8,10 @@ A Helm chart for RomM.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/baseResources | baseResources | 0.5.0 |
 | file://../../library/common-labels | common-labels | 0.1.0 |
-| file://../../library/mariadb | database(mariadb) | 0.1.0 |
-| file://../../library/redis | redis | 0.1.0 |
+| file://../../library/mariadb | database(mariadb) | 0.2.0 |
+| file://../../library/redis | redis | 0.2.0 |
 
 ## Values
 

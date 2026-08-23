@@ -9,7 +9,7 @@ metadata:
   name: {{ $.Release.Name }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 
@@ -18,14 +18,14 @@ spec:
   replicas: {{ .replicaCount | default 1 }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
 
     spec:
       automountServiceAccountToken: false
@@ -38,22 +38,22 @@ spec:
 
           envFrom:
             - secretRef:
-                name: {{ $.Release.Name }}-secret
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
 
           volumeMounts:
             - name: assets
               mountPath: /app/assets
           {{- range $path, $_ := $.Files.Glob "files/*.yml" }}
             - name: config
-              mountPath: /app/config/{{ base $path }}
+              mountPath: {{ printf "/app/config/%s" (base $path) | quote }}
               subPath: {{ base $path }}
           {{- end }}
 
       volumes:
         - name: assets
           persistentVolumeClaim:
-            claimName: {{ $.Release.Name }}-assets
+            claimName: {{ printf "%s-assets" $.Release.Name | quote }}
         - name: config
           configMap:
-            name: {{ $.Release.Name }}-config
+            name: {{ printf "%s-config" $.Release.Name | quote }}
 {{- end }}

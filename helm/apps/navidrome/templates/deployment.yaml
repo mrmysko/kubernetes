@@ -1,19 +1,15 @@
-{{- with .Values.app }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.app.route }}
-{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
 ---
 {{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Release.Name }}
+  name: {{ $.Release.Name | quote }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
@@ -24,14 +20,14 @@ spec:
 
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -45,7 +41,7 @@ spec:
 
           envFrom:
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
           env:
             - name: ND_CONFIGFILE
               value: /data/navidrome.toml
@@ -66,16 +62,16 @@ spec:
       volumes:
         - name: config-pvc
           persistentVolumeClaim:
-            claimName: {{ printf "%s-config-pvc" $.Release.Name }}
+            claimName: {{ printf "%s-config-pvc" $.Release.Name | quote }}
         - name: config
           configMap:
-            name: {{ printf "%s-configmap" $.Release.Name }}
+            name: {{ printf "%s-configmap" $.Release.Name | quote }}
             items:
               - key: navidrome.toml
                 path: navidrome.toml
         - name: music
           persistentVolumeClaim:
-            claimName: {{ printf "%s-music" $.Release.Name }}
+            claimName: {{ printf "%s-music" $.Release.Name | quote }}
         - name: cache
           emptyDir:
             medium: Memory

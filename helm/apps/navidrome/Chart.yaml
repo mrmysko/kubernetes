@@ -3,7 +3,7 @@ name: Navidrome
 description: A Helm chart for Navidrome.
 type: application
 version: 0.2.0
-appVersion: "0.61.1"
+appVersion: "0.63.2"
 
 dependencies:
   - name: common-labels
@@ -11,5 +11,5 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.5.0
+    version: 0.6.0
     repository: "file://../../library/baseResources"

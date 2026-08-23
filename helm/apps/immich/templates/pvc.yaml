@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ printf "%s-upload-pvc" .Release.Name }}
+  name: {{ printf "%s-upload-pvc" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -11,13 +11,13 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  volumeName: {{ printf "%s-upload-pv" .Release.Name }}
+  volumeName: {{ printf "%s-upload-pv" .Release.Name | quote }}
   storageClassName: ""
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ printf "%s-ml-model-cache" .Release.Name }}
+  name: {{ printf "%s-ml-model-cache" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage

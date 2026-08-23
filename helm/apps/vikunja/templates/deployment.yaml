@@ -1,19 +1,17 @@
-{{- with .Values.app }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.app.route }}
-{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
+---
+{{ include "mariadb.resources" (dict "root" $ "vals" .Values.database) }}
 ---
 {{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Release.Name }}
+  name: {{ $.Release.Name | quote }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 
@@ -24,14 +22,14 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
 
     spec:
       automountServiceAccountToken: false
@@ -44,18 +42,11 @@ spec:
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | nindent 8 }}
 
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-
           envFrom:
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
             - configMapRef:
-                name: {{ printf "%s-env" $.Release.Name }}
+                name: {{ printf "%s-env" $.Release.Name | quote }}
 
           volumeMounts:
             - name: config
@@ -67,11 +58,11 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ printf "%s-config" $.Release.Name }}
+            name: {{ printf "%s-config" $.Release.Name | quote }}
             items:
               - key: config.yml
                 path: config.yml
         - name: files
           persistentVolumeClaim:
-            claimName: {{ printf "%s-files" $.Release.Name }}
+            claimName: {{ printf "%s-files" $.Release.Name | quote }}
 {{- end }}

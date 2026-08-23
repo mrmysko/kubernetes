@@ -1,6 +1,6 @@
 # Vikunja
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.3.0](https://img.shields.io/badge/AppVersion-2.3.0-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.4.0](https://img.shields.io/badge/AppVersion-2.4.0-informational?style=flat-square)
 
 A Helm chart for Vikunja.
 
@@ -8,9 +8,9 @@ A Helm chart for Vikunja.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/baseResources | baseResources | 0.5.0 |
 | file://../../library/common-labels | common-labels | 0.1.0 |
-| file://../../library/mariadb | database(mariadb) | 0.1.0 |
+| file://../../library/mariadb | database(mariadb) | 0.2.0 |
 
 ## Values
 
@@ -44,7 +44,6 @@ A Helm chart for Vikunja.
 | database.name | string | `nil` | Database name |
 | database.namespace | string | `nil` | Database namespace |
 | database.password | string | `nil` | Database password |
-| database.passwordKey | string | `nil` |  |
 | database.type | string | `nil` | Kind of database |
 | database.username | string | `nil` | Database username |
 | ingress.baseUrl | string | `nil` | FQDN for application |

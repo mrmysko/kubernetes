@@ -3,7 +3,7 @@ name: Vikunja
 description: A Helm chart for Vikunja.
 type: application
 version: 0.3.0
-appVersion: "2.3.0"
+appVersion: "2.5.0"
 
 dependencies:
   - name: common-labels
@@ -11,10 +11,10 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.5.0
+    version: 0.6.0
     repository: "file://../../library/baseResources"
 
   - name: mariadb
-    version: 0.2.0
+    version: 0.3.0
     repository: "file://../../library/mariadb"
     alias: database

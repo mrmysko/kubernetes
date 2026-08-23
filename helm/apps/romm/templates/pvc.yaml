@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-games" | quote }}
+  name: {{ printf "%s-games" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -11,13 +11,13 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  volumeName: {{ print .Release.Name "-games" | quote }}
+  volumeName: {{ printf "%s-games" .Release.Name | quote }}
   storageClassName: ""
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-assets" | quote }}
+  name: {{ printf "%s-assets" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-resources" | quote }}
+  name: {{ printf "%s-resources" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage
@@ -51,7 +51,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ print .Release.Name "-config" | quote }}
+  name: {{ printf "%s-config" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: storage

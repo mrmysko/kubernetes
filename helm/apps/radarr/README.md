@@ -8,8 +8,8 @@ A WIP Helm chart for Radarr
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../library/baseResources | baseResources | 0.1.0 |
-| file://../../library/cnpg-database | mainDb(cnpg-database) | 0.1.0 |
+| file://../../library/baseResources | baseResources | 0.5.0 |
+| file://../../library/cnpg | cnpg | 0.2.0 |
 | file://../../library/common-labels | common-labels | 0.1.0 |
 
 ## Values

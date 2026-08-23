@@ -1,9 +1,10 @@
+{{- with .Values }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-env" .Release.Name }}
+  name: {{ printf "%s-env" $.Release.Name | quote }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" $ | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
 data:
@@ -14,14 +15,15 @@ data:
   PUBLIC_LOGIN_PAGE_MESSAGE: ""
   IMMICH_HELMET_FILE: "true"
   IMMICH_LOG_FORMAT: "json"
-  IMMICH_MACHINE_LEARNING_URL: "{{ .Values.config.machineLearning.url }}"
+  IMMICH_MACHINE_LEARNING_URL: {{ .config.machineLearning.url | quote }}
 
   # Redis
   REDIS_HOSTNAME: {{ include "redis.serviceFQDN" (dict "root" $) | quote }}
-  REDIS_PORT: "{{ .Values.redis.port }}"
-  REDIS_USERNAME: "{{ .Values.redis.user }}"
+  REDIS_PORT: {{ .redis.port | quote }}
+  REDIS_USERNAME: {{ .redis.user | quote }}
 
   # Database
-  DB_DATABASE_NAME: {{ .Values.mainDb.name | quote }}
-  DB_HOSTNAME: {{ .Values.mainDb.host | quote }}
-  DB_USERNAME: {{ .Values.mainDb.owner | quote }}
+  DB_DATABASE_NAME: {{ .mainDb.name | quote }}
+  DB_HOSTNAME: {{ .mainDb.host | quote }}
+  DB_USERNAME: {{ .mainDb.owner | quote }}
+{{- end }}

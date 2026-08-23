@@ -3,7 +3,7 @@ name: Immich
 description: A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 type: application
 version: 0.3.0
-appVersion: "v3.0.3"
+appVersion: "v3.1.0"
 
 dependencies:
   - name: common-labels
@@ -11,11 +11,11 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.5.0
+    version: 0.6.0
     repository: "file://../../library/baseResources"
 
   - name: cnpg
-    version: 0.2.0
+    version: 0.3.0
     repository: "file://../../library/cnpg"
 
   - name: redis

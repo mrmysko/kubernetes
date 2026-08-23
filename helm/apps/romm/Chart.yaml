@@ -3,7 +3,7 @@ name: RomM
 description: A Helm chart for RomM.
 type: application
 version: 0.2.0
-appVersion: "4.8.1"
+appVersion: "5.2.0"
 
 dependencies:
   - name: common-labels
@@ -11,14 +11,13 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.5.0
+    version: 0.6.0
     repository: "file://../../library/baseResources"
 
   - name: mariadb
-    version: 0.2.0
+    version: 0.3.0
     repository: "file://../../library/mariadb"
-    alias: database
 
   - name: redis
-    version: 0.1.0
+    version: 0.2.0
     repository: "file://../../library/redis"

@@ -1,33 +1,39 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ print .Release.Name "-env" | quote }}
+  name: {{ printf "%s-env" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
 data:
-  VIKUNJA_SERVICE_PUBLICURL: "https://{{ .Values.app.route.baseUrl }}"
-  VIKUNJA_DATABASE_HOST: "{{ .Values.database.host }}"
-  VIKUNJA_DATABASE_TYPE: "{{ .Values.database.type }}"
-  VIKUNJA_DATABASE_USER: "{{ .Values.database.username }}"
-  VIKUNJA_DATABASE_DATABASE: "{{ .Values.database.name }}"
-  VIKUNJA_DATABASE_TLS: "skip-verify"
+  VIKUNJA_SERVICE_PUBLICURL: {{ printf "https://%s" .Values.app.route.baseUrl | quote }}
   VIKUNJA_AUTH_LOCAL_ENABLED: "false"
-  VIKUNJA_AUTH_OPENID_ENABLED: "true"
-  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_NAME: "OIDC"
-  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_AUTHURL: "{{ .Values.config.oidc.url }}"
-  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_LOGOUTURL: "{{ .Values.config.oidc.url }}/logout"
-  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_CLIENTID: "{{ .Values.config.oidc.clientID }}"
-  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_SCOPE: "openid email profile"
   VIKUNJA_DEFAULTSETTINGS_WEEK_START: "1"
   VIKUNJA_LOG_FORMAT: "structured"
   VIKUNJA_LOG_HTTP: "off"
+
+  {{- with .Values.config.oidc }}
+  VIKUNJA_AUTH_OPENID_ENABLED: "true"
+  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_NAME: "OIDC"
+  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_AUTHURL: {{ .url | quote }}
+  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_LOGOUTURL: {{ printf "%s/logout" .url | quote }}
+  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_CLIENTID: {{ .clientID | quote }}
+  VIKUNJA_AUTH_OPENID_PROVIDERS_OIDC_SCOPE: "openid email profile"
+  {{- end }}
+
+  {{- with .Values.database }}
+  VIKUNJA_DATABASE_HOST: {{ .host | quote }}
+  VIKUNJA_DATABASE_TYPE: {{ .type | quote }}
+  VIKUNJA_DATABASE_USER: {{ .username | quote }}
+  VIKUNJA_DATABASE_DATABASE: {{ .name | quote }}
+  VIKUNJA_DATABASE_TLS: "skip-verify"
+  {{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ print .Release.Name "-config" | quote }}
+  name: {{ printf "%s-config" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 data:
