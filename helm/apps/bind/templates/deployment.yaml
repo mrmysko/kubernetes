@@ -1,41 +1,43 @@
-{{- with .Values.bind }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.bind) }}
 ---
 {{- with .Values.bind }}
 {{- $fullname := include "baseResources.fullname" (dict "root" $ "vals" .) }}
+{{- $serviceName := include "baseResources.serviceName" (dict "root" $ "vals" .) }}
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ $fullname }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
   annotations:
     reloader.stakater.com/auto: "true"
 
 spec:
+  serviceName: {{ $serviceName }}
   revisionHistoryLimit: 3
   replicas: {{ .replicaCount | default 1 }}
-  strategy:
+
+  updateStrategy:
     type: RollingUpdate
+
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
+
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
 
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
         fsGroup: {{ printf "%d" (int64 .gid) }}
-
 
       initContainers:
         - name: download-rpz
@@ -66,35 +68,49 @@ spec:
             - name: named-config
               mountPath: /etc/bind/named2.conf
               subPath: named2.conf
-            - name: cache
+
+            - name: bind-data
               mountPath: /var/cache/bind
+
             - name: run
               mountPath: /run/named
+
             - name: local-block
               mountPath: /etc/bind/local-block.zone
               subPath: local-block.zone
+
             - name: rpz
               mountPath: /rpz
 
       volumes:
         - name: named-config
           configMap:
-            name: {{ printf "%s-config" $fullname }}
+            name: {{ printf "%s-config" $fullname | quote }}
             items:
               - key: named.conf
                 path: named2.conf
-        - name: cache
-          emptyDir:
-            medium: Memory
+
         - name: run
           emptyDir:
             medium: Memory
+
         - name: local-block
           configMap:
-            name: {{ printf "%s-local-block" $fullname }}
+            name: {{ printf "%s-local-block" $fullname | quote }}
             items:
               - key: local-block.zone
                 path: local-block.zone
+
         - name: rpz
           emptyDir: {}
+
+  volumeClaimTemplates:
+    - metadata:
+        name: bind-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
 {{- end }}

@@ -8,7 +8,7 @@ A Helm chart for recursive BIND-servers.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../library/baseResources | baseResources | 0.1.0 |
+| file://../../library/baseResources | baseResources | 0.5.0 |
 | file://../../library/common-labels | common-labels | 0.1.0 |
 
 ## Values

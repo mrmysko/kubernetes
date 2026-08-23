@@ -4,13 +4,39 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-config" $fullname }}
+  name: {{ printf "%s-config" $fullname | quote }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
   annotations:
     reloader.stakater.com/auto: "true"
 data:
   named.conf: |
+    logging {
+        channel default_log {
+            stderr;
+            severity warning;
+            print-time yes;
+            print-category yes;
+            print-severity yes;
+        };
+
+        channel null {
+            null;
+        };
+
+        category rpz {
+            null;
+        };
+
+        category dnssec {
+            null;
+        };
+
+        category default {
+            default_log;
+        };
+    };
+
     acl this_server {
     {{- range $.Values.acls.this_server }}
       {{ . }};
@@ -33,6 +59,10 @@ data:
     {{- range $.Values.acls.k8s_pods }}
       {{ . }};
     {{- end }}
+    };
+
+    trust-anchors {
+      "invis.space." initial-ds 14785 8 2 "00E36912D43A8A42A5BC865AC758F809C7DCED4CB350D72E7737CD18D19F7FA8";
     };
 
     options {

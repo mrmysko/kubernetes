@@ -4,6 +4,6 @@ dependencies:
   version: 0.1.0
 - name: baseResources
   repository: file://../../library/baseResources
-  version: 0.5.0
-digest: sha256:454f97523f38b8e2fe1c9fb2a8f0f003f6904c61ea508db554bd4b87ba343c0e
-generated: "2026-05-24T08:26:52.33762834+02:00"
+  version: 0.6.0
+digest: sha256:b8a45500094e20a4b19768dc2293876339f09119595a8fb7aed43cc9d0f8e012
+generated: "2026-08-23T10:00:06.458610776+02:00"
