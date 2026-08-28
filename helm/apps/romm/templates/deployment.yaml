@@ -41,7 +41,7 @@ spec:
 
       initContainers:
         {{- include "baseResources.waitForMariadb" $.Values.database | nindent 8 }}
-        {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
+        {{- include "baseResources.waitForNfs" (dict "volumeName" "games") | nindent 8 }}
         {{- include "baseResources.waitForRedis" (dict
             "host" (include "redis.serviceFQDN" (dict "root" $))
             "password" $.Values.redis.password) | nindent 8 }}
@@ -74,8 +74,9 @@ spec:
           persistentVolumeClaim:
             claimName: {{ printf "%s-assets" .Release.Name | quote }}
         - name: games
-          persistentVolumeClaim:
-            claimName: {{ printf "%s-games" .Release.Name | quote }}
+          nfs:
+            server: {{ .Values.storage.nfs.server | quote }}
+            path: {{ .Values.storage.nfs.path | quote }}
         - name: resources
           persistentVolumeClaim:
             claimName: {{ printf "%s-resources" .Release.Name | quote }}

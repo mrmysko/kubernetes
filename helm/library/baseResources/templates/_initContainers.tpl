@@ -109,3 +109,20 @@
     seccompProfile:
       type: RuntimeDefault
 {{- end }}
+---
+{{- define "baseResources.waitForNfs" -}}
+- name: wait-for-nfs
+  image: busybox:1.37
+  command:
+    - sh
+    - -c
+    - |
+      set -eu
+      echo "Checking NFS mount..."
+      test -d /mnt/test
+      ls /mnt/test >/dev/null
+      echo "NFS mount is accessible"
+  volumeMounts:
+    - name: {{ .volumeName }}
+      mountPath: /mnt/test
+{{- end }}

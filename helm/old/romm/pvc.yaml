@@ -1,0 +1,18 @@
+# This is how PVC looked with smb, before moving to NFS
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ printf "%s-games" .Release.Name | quote }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: {{ printf "%s-games" .Release.Name | quote }}
+  storageClassName: ""
+---

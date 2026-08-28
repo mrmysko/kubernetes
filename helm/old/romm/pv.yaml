@@ -1,3 +1,5 @@
+# This is how PV looked with smb, before moving to NFS
+
 # This volume requires smb csi drivers - https://github.com/kubernetes-csi/csi-driver-smb
 apiVersion: v1
 kind: PersistentVolume

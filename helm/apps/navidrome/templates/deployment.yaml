@@ -34,7 +34,7 @@ spec:
         fsGroup: {{ .gid }}
 
       initContainers:
-        {{- include "baseResources.waitForSamba" $.Values.storage.smb | nindent 8 }}
+        {{- include "baseResources.waitForNfs" (dict "volumeName" "music") | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
@@ -70,8 +70,10 @@ spec:
               - key: navidrome.toml
                 path: navidrome.toml
         - name: music
-          persistentVolumeClaim:
-            claimName: {{ printf "%s-music" $.Release.Name | quote }}
+          nfs:
+            server: {{ $.Values.storage.nfs.server | quote }}
+            path: {{ $.Values.storage.nfs.path | quote }}
+            readOnly: true
         - name: cache
           emptyDir:
             medium: Memory
