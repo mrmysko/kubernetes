@@ -14,8 +14,8 @@ spec:
     tls:
       #certSecret: "cluster-ca"
       insecureSkipVerify: true
+    trustForwardHeader: false
     maxResponseBodySize: 1048576
-    trustForwardHeader: true
     authResponseHeaders:
       - "Remote-User"
       - "Remote-Groups"
@@ -24,3 +24,15 @@ spec:
     authRequestHeaders:
       - "Cookie"
       - "Authorization"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: "authelia-status-rewrite"
+  namespace: "traefik"
+spec:
+  plugin:
+    traefikerrorreplace:
+      matchStatus:
+        - 401
+      replaceStatus: 302

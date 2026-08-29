@@ -4,12 +4,12 @@ dependencies:
   version: 0.1.0
 - name: baseResources
   repository: file://../../library/baseResources
-  version: 0.6.0
+  version: 0.7.0
 - name: mariadb
   repository: file://../../library/mariadb
   version: 0.3.0
 - name: redis
   repository: file://../../library/redis
   version: 0.2.0
-digest: sha256:926f5d6d249b048d0b49748416325b9f83bb1563c38d144fb09ae30e2690d84f
-generated: "2026-08-17T20:02:44.002862911+02:00"
+digest: sha256:af8fd90e650fc8485811a84f432cd12b54f87ba61a33b87d3e6deb707455be2d
+generated: "2026-08-29T08:30:52.176977139+02:00"

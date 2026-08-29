@@ -44,7 +44,7 @@ spec:
           extensionRef:
             group: traefik.io
             kind: Middleware
-            name: {{ printf "%s-auth-proxy" $root.Release.Name | quote }}
+            name: {{ printf "%s-%s-proxy" $root.Release.Name $rule.name | quote }}
         {{- end }}
         {{- range $rule.middlewares }}
         - type: ExtensionRef
