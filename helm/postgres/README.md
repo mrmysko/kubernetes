@@ -14,20 +14,14 @@ A Helm chart for CNPG Postgres cluster, with VectorChord extensions.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| app.name | string | `"postgres-cluster"` | Name of the application |
 | backup.accessKey | string | `nil` |  |
 | backup.enabled | bool | `true` |  |
 | backup.endpointUrl | string | `nil` |  |
 | backup.secretKey | string | `nil` |  |
-| certificate.caBundleSecret | string | `nil` |  |
+| certificate.caBundleSecret | string | `"invis-external-bundle"` |  |
 | certificate.domainName | string | `nil` |  |
-| database.users[0].comment | string | `"Immich"` |  |
-| database.users[0].name | string | `"immich-user"` |  |
-| database.users[1].comment | string | `"Miniflux"` |  |
-| database.users[1].name | string | `"miniflux-user"` |  |
-| database.users[2].comment | string | `"Open WebUI"` |  |
-| database.users[2].name | string | `"openwebui-user"` |  |
-| database.users[3].comment | string | `"Open WebUI Vector"` |  |
-| database.users[3].name | string | `"openwebui-vector-user"` |  |
-| image.repository | string | `"ghcr.io/tensorchord/cloudnative-vectorchord"` |  |
-| image.tag | string | `"17-0.5.2"` |  |
+| image.repository | string | `"ghcr.io/tensorchord/cloudnative-vectorchord"` | Docker image repository for the application |
+| image.tag | string | `"17.10-1.1.1"` | Docker image tag (can be left empty to use the latest version) |
+| pooler.lb.ip | string | `nil` |  |
 | replicaCount | int | `3` |  |

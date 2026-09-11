@@ -1,22 +1,22 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ print .Release.Name "-server-cert" | quote }}
+  name: {{ printf "%s-server-cert" .Release.Name | quote }}
 spec:
-  secretName: {{ print .Release.Name "-server-cert" | quote }}
+  secretName: {{ printf "%s-server-cert" .Release.Name | quote }}
   usages:
     - server auth
   dnsNames:
-    - "{{ .Release.Name }}.{{ .Values.certificate.domainName }}"
-    - "{{ .Release.Name }}-rw"
-    - "{{ .Release.Name }}-rw.default"
-    - "{{ .Release.Name }}-rw.default.svc"
-    - "{{ .Release.Name }}-r"
-    - "{{ .Release.Name }}-r.default"
-    - "{{ .Release.Name }}-r.default.svc"
-    - "{{ .Release.Name }}-ro"
-    - "{{ .Release.Name }}-ro.default"
-    - "{{ .Release.Name }}-ro.default.svc"
+    - {{ printf "%s.%s" .Release.Name .Values.certificate.domainName | quote }}
+    - {{ printf "%s-rw" .Release.Name | quote }}
+    - {{ printf "%s-rw.default" .Release.Name | quote }}
+    - {{ printf "%s-rw.default.svc" .Release.Name | quote }}
+    - {{ printf "%s-r" .Release.Name | quote }}
+    - {{ printf "%s-r.default" .Release.Name | quote }}
+    - {{ printf "%s-r.default.svc" .Release.Name | quote }}
+    - {{ printf "%s-ro" .Release.Name | quote }}
+    - {{ printf "%s-ro.default" .Release.Name | quote }}
+    - {{ printf "%s-ro.default.svc" .Release.Name | quote }}
   issuerRef:
     name: cluster-ca
     kind: ClusterIssuer

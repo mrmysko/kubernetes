@@ -1,13 +1,13 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ print .Release.Name "-cluster" | quote }}
+  name: {{ printf "%s-cluster" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
 spec:
   instances: {{ .Values.replicaCount }}
-  imageName: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imageName: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
   imagePullPolicy: IfNotPresent
 
   postgresql:
@@ -18,20 +18,8 @@ spec:
       - "vchord.so"
 
   certificates:
-    serverTLSSecret: {{ print .Release.Name "-server-cert" | quote }}
-    serverCASecret: {{ print .Release.Name "-server-cert" | quote }}
-
-  managed:
-    roles:
-  {{- range .Values.database.users }}
-    - name: "{{ .name }}"
-      ensure: present
-      comment: "{{ .comment }}"
-      login: {{ default true .login }}
-      superuser: {{ default false .superuser }}
-      passwordSecret:
-        name: "{{ .name }}-credentials"
-  {{- end }}
+    serverTLSSecret: {{ printf "%s-server-cert" .Release.Name  | quote }}
+    serverCASecret: {{ printf "%s-server-cert" .Release.Name  | quote }}
 
   storage:
     storageClass: local-storage
@@ -42,5 +30,5 @@ spec:
   - name: barman-cloud.cloudnative-pg.io
     isWALArchiver: true
     parameters:
-      barmanObjectName: {{ print .Release.Name "-backup-storage" | quote }}
+      barmanObjectName: {{ printf "%s-backup-storage" .Release.Name  | quote }}
   {{- end }}

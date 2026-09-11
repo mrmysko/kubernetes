@@ -1,26 +1,26 @@
+app:
+  # -- Name of the application
+  name: postgres-cluster
+
+  # -- Number of replicas to deploy for the application
 replicaCount: 3
 
 image:
+  # -- Docker image repository for the application
   repository: ghcr.io/tensorchord/cloudnative-vectorchord
-  tag: 17-0.5.2
+  # -- Docker image tag (can be left empty to use the latest version)
+  tag: 17.10-1.1.1
 
 certificate:
-  domainName:
-  caBundleSecret:
+  domainName: 
+  caBundleSecret: invis-external-bundle
 
-database:
-  users:
-    - name: immich-user
-      comment: Immich
-    - name: miniflux-user
-      comment: Miniflux
-    - name: openwebui-user
-      comment: Open WebUI
-    - name: openwebui-vector-user
-      comment: Open WebUI Vector
+pooler:
+  lb:
+    ip: 
 
 backup:
   enabled: true
-  endpointUrl:
-  accessKey:
-  secretKey:
+  endpointUrl: 
+  accessKey: 
+  secretKey: 

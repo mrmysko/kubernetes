@@ -1,19 +1,21 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: {{ print .Release.Name "-pooler-rw" | quote }}
+  name: {{ printf "%s-pooler-rw" .Release.Name  | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
   cluster:
-    name: {{ print .Release.Name "-cluster" | quote }}
-  instances: 3
+    name: {{ printf "%s-cluster" .Release.Name  | quote }}
+  instances: 2
   type: rw
   pgbouncer:
     poolMode: session
     parameters:
       max_client_conn: "200"
-      default_pool_size: "10"
+      default_pool_size: "20"
+      log_connections: "0"
+      log_disconnections: "0"
   serviceTemplate:
     metadata:
       annotations:

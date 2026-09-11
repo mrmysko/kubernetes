@@ -2,13 +2,13 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: "{{ .Release.Name }}-backup-schedule"
+  name: {{ printf "%s-backup-schedule" .Release.Name | quote }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
     app.kubernetes.io/component: backup
 spec:
   cluster:
-    name: "{{ .Release.Name }}-cluster"
+    name: {{ printf "%s-cluster" .Release.Name | quote }}
   schedule: '0 0 0 * * *'
   backupOwnerReference: self
   method: plugin
