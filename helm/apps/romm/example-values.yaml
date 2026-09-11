@@ -1,123 +1,131 @@
 app:
-  # -- App name
+  # -- Name of the application
   name: romm
-  # -- Number of pods
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: frontend
+  # -- Number of replicas to deploy for the application
   replicaCount: 1
 
   image:
-    # -- App image
+    # -- Docker image repository for the application
     repository: rommapp/romm
-    # -- Image version
-    tag: 4.5.0
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 5.2.0
 
-  # -- Runtime user
-  uid: 3005
-  # -- Runtime group
-  gid: 3100
+  # -- User ID for the container
+  uid: 572400039
+  # -- Group ID for the container
+  gid: 572400077
 
   resources:
     requests:
-      cpu: "500m"
+      # -- Minimum CPU resources required by the container
+      cpu: "1000m"
+      # -- Minimum memory resources required by the container
       memory: "512Mi"
     limits:
-      memory: "5Gi"
+      # -- Maximum memory resources allowed for the container
+      memory: "5Gi" # Kinda high...but
 
   livenessProbe:
     httpGet:
+      # -- Protocol used for the liveness probe
       scheme: HTTP
+      # -- Path to the health check endpoint
       path: /api/heartbeat
+      # -- Port used for the liveness probe
       port: 8080
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 20
+    # -- Frequency of the liveness probe
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
+      # -- Protocol used for the readiness probe
       scheme: HTTP
+      # -- Path to the health check endpoint
       path: /api/heartbeat
+      # -- Port used for the readiness probe
       port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 10
+    # -- Delay before starting the readiness probe
+    initialDelaySeconds: 15
+    # -- Frequency of the readiness probe
+    periodSeconds: 5
+
+  service:
+    ports: 
+    - name: http
+      # -- Port exposed by the service
+      port: 8080
+      # -- Port the container is listening on
+      targetPort: 8080
+      # -- Protocol used for the service
+      protocol: TCP
+
+  route:
+    # -- Base URL for the service
+    baseUrl: 
+    # -- Port used for the route
+    port: 8080
+    rules:
+      - path: /
 
 database:
-  # -- Kind of database
+  # -- Type of database (e.g., mariadb, postgresql)
   type: mariadb
-  # -- Database URL
-  host:
-  # -- Database deployment name
-  instanceName:
-  # -- Database namespace
-  namespace:
-  # -- Database port
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Name of the database instance
+  instanceName: 
+  # -- Kubernetes namespace where the database is deployed
+  namespace: 
+  # -- Port used to connect to the database
   port: 3306
-  # -- Database name
-  name:
-  # -- Database username
-  username:
-  # -- Database password
-  password:
+  # -- Name of the database
+  name: 
+  # -- Username used to connect to the database
+  username: 
+  # -- Password used to connect to the database
+  password: 
+  # -- Key used to reference the password in a secret
+  passwordKey: DB_PASSWD
 
 redis:
-  # -- Number of Redis pods
-  replicaCount: 1
-
-  image:
-    repository: 11notes/redis
-    tag: 7.4.5
-
-  # -- Redis password
-  password:
-  # -- Redis port
+  # -- Port used to connect to Redis
   port: 6379
-
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "128Mi"
-    limits:
-      memory: "512Mi"
+  # -- Password used to connect to Redis
+  password: 
 
 storage:
-  smb:
-    url:
-    share:
-    username:
-    password:
+  nfs:
+    server: 
+    path: 
   assets:
-    size:
-    existingPvcName:
+    size: 3Gi
+    volumeName: pvc-8b409122-7e0a-4817-af58-c98dc74c1e0a
   resources:
-    size:
-    existingPvcName:
+    size: 15Gi
+    volumeName: pvc-2ef9a570-96d0-4329-ac49-d3d5293b5b11
   config:
-    size:
-    existingPvcName:
-
-service:
-  # App port
-  port: 8080
-
-ingress:
-  # FQDN for application
-  baseUrl:
-  annotations:
+    size: 1Gi
+    volumeName: pvc-41ffd175-2fc7-4a96-8955-15e55ef818fb
 
 config:
   igdb:
-    # -- IGDB client ID
-    clientId:
-    # -- IGDB client secret
-    clientSecret:
+    clientId: 
+    clientSecret: 
 
-  # -- Steam grid API key
-  steamGridApiKey:
-  rommAuthSecretKey:
+  steamGridApiKey: 
+  rommAuthSecretKey: 
+
+  screenscraper:
+    user: 
+    password: 
 
   oidc:
-    # -- App client ID
-    clientId:
-    # -- App client secret
-    clientSecret:
-    redirectUri:
-    serverApplicationUrl:
-    # -- Path to OIDC certificate
-    tlsCaCertFile:
+    clientId: 
+    clientSecret: 
+    redirectUri: 
+    serverApplicationUrl: 
+    tlsCaCertFile: /tmp/fullchain.pem

@@ -1,77 +1,100 @@
 app:
-  # -- App name
+  # -- Name of the application
   name: vikunja
-  # -- Number of pods
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: frontend
+  # -- Number of replicas to deploy for the application
   replicaCount: 1
 
   image:
-    # -- App image
+    # -- Docker image repository for the application
     repository: vikunja/vikunja
-    # -- App version
-    tag: 1.0.0-rc2
-    # -- Image pull policy
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 2.5.0
     pullPolicy: IfNotPresent
 
-  # -- Runtime user
+  # -- User ID for the container
   uid: 1000
-  # -- Runtime group
+  # -- Group ID for the container
   gid: 1000
 
   resources:
     requests:
+      # -- Minimum CPU resources required by the container
       cpu: "250m"
+      # -- Minimum memory resources required by the container
       memory: "256Mi"
     limits:
+      # -- Maximum memory resources allowed for the container
       memory: "512Mi"
 
   livenessProbe:
     httpGet:
+      # -- Protocol used for the liveness probe
       scheme: HTTP
+      # -- Path to the health check endpoint
       path: /favico.ico
+      # -- Port used for the liveness probe
       port: 3456
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 15
+    # -- Frequency of the liveness probe
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
+      # -- Protocol used for the readiness probe
       scheme: HTTP
+      # -- Path to the health check endpoint
       path: /favico.ico
+      # -- Port used for the readiness probe
       port: 3456
+    # -- Delay before starting the readiness probe
     initialDelaySeconds: 10
+    # -- Frequency of the readiness probe
     periodSeconds: 10
+
+  service:
+    ports: 
+    - name: http
+      # -- Port exposed by the service
+      port: 3456
+      # -- Port the container is listening on
+      targetPort: 3456
+      # -- Protocol used for the service
+      protocol: TCP
+
+  route:
+    # -- Base URL for the service
+    baseUrl: 
+    # -- Port used for the route
+    port: 3456
+    rules:
+      - path: /
 
 storage:
   files:
 
 database:
-  # -- Kind of database
-  type:
-  # -- Database url
-  host:
-  # -- Database deployment name
-  instanceName:
-  # -- Database namespace
-  namespace:
-  # -- Database name
-  name:
-  # -- Database username
-  username:
-  # -- Database password
-  password:
-
-service:
-  # -- App port
-  port: 3456
-
-ingress:
-  # -- FQDN for application
-  baseUrl:
+  # -- Type of database (e.g., mariadb, postgresql)
+  type: mysql
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Name of the database instance
+  instanceName: 
+  # -- Kubernetes namespace where the database is deployed
+  namespace: 
+  # -- Name of the database
+  name: 
+  # -- Username used to connect to the database
+  username: 
+  # -- Password used to connect to the database
+  password: 
+  # -- Key used to reference the password in a secret
+  passwordKey: VIKUNJA_DATABASE_PASSWORD
 
 config:
   oidc:
-    # -- URL to OIDC endpoint
-    url:
-    # -- App client ID
-    clientID:
-    # -- App client secret
-    clientSecret:
+    url: 
+    clientID: 
+    clientSecret: 
