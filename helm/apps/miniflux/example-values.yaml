@@ -1,51 +1,80 @@
 app:
-  # -- App name
+  # -- Name of the application
   name: miniflux
-  # -- Number of pods
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: frontend
+  # -- Number of replicas to deploy for the application
   replicaCount: 1
 
   image:
-    # -- App image
+    # -- Docker image repository for the application
     repository: miniflux/miniflux
-    # -- App version
-    tag: 2.2.13
-    # -- Image pull policy
-    pullPolicy: IfNotPresent
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 2.3.3
 
-  # -- Runtime user
+    # -- User ID for the container
   uid: 1001
-  # -- Runtime group
+    # -- Group ID for the container
   gid: 1001
 
   livenessProbe:
     httpGet:
+      # -- Protocol used for the liveness probe
       scheme: HTTPS
+      # -- Path to the health check endpoint
       path: /liveness
+      # -- Port used for the liveness probe
       port: 443
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 5
+    # -- Frequency of the liveness probe
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
+      # -- Protocol used for the readiness probe
       scheme: HTTPS
+      # -- Path to the health check endpoint
       path: /readiness
+      # -- Port used for the readiness probe
       port: 443
+    # -- Delay before starting the readiness probe
     initialDelaySeconds: 5
+    # -- Frequency of the readiness probe
     periodSeconds: 10
 
-mainDb:
-  # -- Database url
-  host: 
-  port: 5432
-  # -- Database name
-  name: miniflux
+  service:
+    ports: 
+    - name: https
+      # -- Port exposed by the service
+      port: 443
+      # -- Port the container is listening on
+      targetPort: 443
+      # -- Protocol used for the service
+      protocol: TCP
 
-  # -- Database namespace
+  route:
+    # -- Base URL for the service
+    baseUrl: 
+    # -- Port used for the route
+    port: 443
+    rules:
+      - path: /
+
+mainDb:
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Port used to connect to the database
+  port: 5432
+  # -- Name of the database
+  name: 
+
+  # -- Kubernetes namespace where the database is deployed
   namespace: 
   clusterName: 
-  # -- Database user
+  # -- Username used to connect to the database
   owner: 
-  # -- Database password
+  # -- Password used to connect to the database
   password: 
 
   extensions:
@@ -53,21 +82,9 @@ mainDb:
       ensure: present
 
 env:
-  # -- FQDN to application, with scheme
-  baseUrl:
-
   oidc:
-    # -- Name of OIDC application
-    name:
-    # -- URL to OIDC endpoint, without discovery
-    endpoint:
-    # -- App redirect URL
-    redirectURL:
-    # -- App client ID
-    clientID:
-    # -- App client secret
-    clientSecret:
-
-service:
-  # -- App port
-  port: 8080
+    name: OIDC
+    url: 
+    redirectUrl: 
+    clientID: 
+    clientSecret: 
