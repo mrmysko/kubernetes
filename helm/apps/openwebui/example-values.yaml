@@ -1,58 +1,123 @@
 app:
+  # -- Name of the application
   name: openwebui
-  image:
-    repository: ghcr.io/open-webui/open-webui
-    tag: v0.7.2
-    pullPolicy: IfNotPresent
-
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: frontend
+  # -- Number of replicas to deploy for the application
   replicaCount: 1
 
+  image:
+    # -- Docker image repository for the application
+    repository: ghcr.io/open-webui/open-webui
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: v0.11.3
+    pullPolicy: IfNotPresent
+
+  # -- User ID for the container
   uid: 1001
+  # -- Group ID for the container
   gid: 1001
 
-mainDb:
-  host:
-  port: 5432
-  name:
+  livenessProbe:
+    httpGet:
+      # -- Protocol used for the liveness probe
+      scheme: HTTP
+      # -- Path to the health check endpoint
+      path: /health
+      # -- Port used for the liveness probe
+      port: 3000
+    # -- Delay before starting the liveness probe
+    initialDelaySeconds: 15
+    # -- Frequency of the liveness probe
+    periodSeconds: 10
 
-  namespace:
-  clusterName:
-  owner:
-  password:
+  readinessProbe:
+    httpGet:
+      # -- Protocol used for the readiness probe
+      scheme: HTTP
+      # -- Path to the health check endpoint
+      path: /health
+      # -- Port used for the readiness probe
+      port: 3000
+    # -- Delay before starting the readiness probe
+    initialDelaySeconds: 2
+    # -- Frequency of the readiness probe
+    periodSeconds: 5
+
+  service:
+    ports: 
+    - name: http
+      # -- Port exposed by the service
+      port: 3000
+      # -- Port the container is listening on
+      targetPort: 3000
+      # -- Protocol used for the service
+      protocol: TCP
+
+  route:
+    # -- Base URL for the service
+    baseUrl: 
+    # -- Port used for the route
+    port: 3000
+    rules:
+      - path: /
+
+mainDb:
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Port used to connect to the database
+  port: 5432
+  # -- Name of the database
+  name: 
+
+  # -- Kubernetes namespace where the database is deployed
+  namespace: 
+  clusterName: 
+  # -- Username used to connect to the database
+  owner: 
+  # -- Password used to connect to the database
+  password: 
 
 vectorDb:
-  host:
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Port used to connect to the database
   port: 5432
-  name:
+  # -- Name of the database
+  name: 
 
-  namespace:
-  clusterName:
-  owner:
-  password:
+  # -- Kubernetes namespace where the database is deployed
+  namespace: 
+  clusterName: 
+  # -- Username used to connect to the database
+  owner: 
+  # -- Password used to connect to the database
+  password: 
 
   extensions:
     - name: vector
       ensure: present
 
-service:
-  port: 3000
-
-ingress:
-  baseUrl:
+redis:
+  replicaCount: 1
+  port: 6379
+  username: default
+  password: 
 
 storage:
   data:
-    volumeName:
+    existingClaim: pvc-c5696362-71b0-4e92-b277-234bf531c5a6
 
 config:
   webUI:
     admin:
-      name:
-      password:
-    secretKey:
+      name: 
+      password: 
+    secretKey: 
 
   oidc:
-    url:
-    redirectUrl:
-    clientId:
-    clientSecret:
+    url: 
+    logoutUrl: 
+    redirectUrl: 
+    clientId: openwebui
+    clientSecret: 

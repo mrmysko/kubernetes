@@ -1,9 +1,15 @@
 mainDb:
+  # -- Fully qualified domain name (FQDN) to the database
   host: 
+  # -- Port used to connect to the database
   port: 
+  # -- Name of the database
   name: 
 
+  # -- Kubernetes namespace where the database is deployed
   namespace: 
   clusterName: 
+  # -- Username used to connect to the database
   owner: 
+  # -- Password used to connect to the database
   password: 

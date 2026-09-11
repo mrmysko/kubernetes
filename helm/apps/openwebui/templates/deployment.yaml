@@ -1,19 +1,23 @@
-{{- with .Values.app }}
-{{ include "baseResources.service" (dict "root" $ "vals" .) }}
-{{- end }}
+{{ include "baseResources.service" (dict "root" $ "vals" .Values.app) }}
 ---
-{{- with .Values.app.route }}
-{{ include "baseResources.httproute" (dict "root" $ "vals" . ) }}
-{{- end }}
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
+---
+{{ include "redis.resources" (dict "root" $ "vals" .Values.redis) }}
+---
+{{ include "cnpg.resources" (dict "root" $ "vals" .Values.mainDb) }}
+---
+{{ include "cnpg.resources" (dict "root" $ "vals" .Values.vectorDb) }}
 ---
 {{- with .Values.app }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Release.Name }}
+  name: {{ $.Release.Name | quote }}
   labels:
     {{- include "common.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .component }}
+    app.kubernetes.io/component: {{ .component | quote }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 
 spec:
   revisionHistoryLimit: 3
@@ -23,14 +27,14 @@ spec:
 
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ $.Release.Name }}
-      app.kubernetes.io/component: {{ .component }}
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      app.kubernetes.io/component: {{ .component | quote }}
 
   template:
     metadata:
       labels:
         {{- include "common.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: {{ .component }}
+        app.kubernetes.io/component: {{ .component | quote }}
 
     spec:
       automountServiceAccountToken: false
@@ -39,22 +43,18 @@ spec:
 
       initContainers:
         {{- include "baseResources.waitForPostgres" $.Values.mainDb | nindent 8 }}
+        {{- include "baseResources.waitForRedis" (dict
+            "host" (include "redis.serviceFQDN" (dict "root" $))
+            "password" $.Values.redis.password) | nindent 8 }}
 
       containers:
         {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 8 }}
 
-          ports:
-            {{- range .service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env" $.Release.Name }}
+                name: {{ printf "%s-env" $.Release.Name | quote }}
             - secretRef:
-                name: {{ printf "%s-secret" $.Release.Name }}
+                name: {{ printf "%s-secret" $.Release.Name | quote }}
 
           volumeMounts:
             - name: data
@@ -65,7 +65,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ printf "%s-data" $.Release.Name }}
+            claimName: {{ printf "%s-data" $.Release.Name | quote }}
         - name: static
           emptyDir: {}
 {{- end }}

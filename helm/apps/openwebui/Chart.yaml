@@ -3,7 +3,7 @@ name: openwebui
 description: A Helm chart for Open WebUI
 type: application
 version: 0.1.0
-appVersion: "v0.8.12"
+appVersion: latest
 
 dependencies:
   - name: common-labels
@@ -11,15 +11,13 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.5.0
+    version: 0.8.0
     repository: "file://../../library/baseResources"
 
-  - name: cnpg-database
-    version: 0.1.0
-    repository: "file://../../library/cnpg-database"
-    alias: mainDb
+  - name: cnpg
+    version: 0.3.0
+    repository: "file://../../library/cnpg"
 
-  - name: cnpg-database
-    version: 0.1.0
-    repository: "file://../../library/cnpg-database"
-    alias: vectorDb
+  - name: redis
+    version: 0.2.0
+    repository: "file://../../library/redis"

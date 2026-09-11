@@ -1,63 +1,101 @@
 app:
-  # -- App name
+  # -- Name of the application
   name: navidrome
-  # -- Number of pods
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: frontend
+  # -- Number of replicas to deploy for the application
   replicaCount: 1
 
   image:
-    # -- App image
+    # -- Docker image repository for the application
     repository: ghcr.io/navidrome/navidrome
-    # -- Image version
-    tag: 0.59.0
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 0.63.2
 
-  # -- Runtime user
+  # -- User ID for the container
   uid: 1001
-  # -- Runtime group
+  # -- Group ID for the container
   gid: 1001
 
   resources:
     requests:
+      # -- Minimum CPU resources required by the container
       cpu: "500m"
+      # -- Minimum memory resources required by the container
       memory: "256Mi"
     limits:
+      # -- Maximum memory resources allowed for the container
       memory: "512Mi"
 
   livenessProbe:
     httpGet:
+      # -- Protocol used for the liveness probe
       scheme: HTTP
+      # -- Path to the health check endpoint
       path: /ping
+      # -- Port used for the liveness probe
       port: 4533
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 15
+    # -- Frequency of the liveness probe
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
+      # -- Protocol used for the readiness probe
       scheme: HTTP
+      # -- Path to the health check endpoint
       path: /ping
+      # -- Port used for the readiness probe
       port: 4533
+    # -- Delay before starting the readiness probe
     initialDelaySeconds: 2
+    # -- Frequency of the readiness probe
     periodSeconds: 5
+
+  service:
+    ports: 
+    - name: http
+      # -- Port exposed by the service
+      port: 4533
+      # -- Port the container is listening on
+      targetPort: 4533
+      # -- Protocol used for the service
+      protocol: TCP
+
+  route:
+    # -- Base URL for the service
+    baseUrl: 
+    # -- Port used for the route
+    port: 4533
+    rules:
+      - name: root
+        path: /
+        forwardAuth: true
+        statusRewrite: true
+      - name: rest
+        path: /rest
+        forwardAuth: false
+        statusRewrite: true
+      - name: api-events
+        path: /api/events
+        forwardAuth: true
 
 middleware:
   whitelist:
-    ip:
+    ip: 
 
 storage:
-  smb:
-    url:
-    share:
-    # -- Samba username
-    username:
-    # -- Samba password
-    password:
-
-  existingPvcName:
+  nfs: 
+    server: 
+    path: 
+  config:
+    volumeName: pvc-0619c9c5-cb2d-4c47-ae23-7e38b464842c
 
 config:
-  # -- Allowed proxy IPs
-  trustedSources:
+  trustedSources: 
 
   lastFM:
-    apiKey:
-    apiSecret:
-  logoutUrl:
+    apiKey: 
+    apiSecret: 
+  logoutUrl: 

@@ -11,7 +11,7 @@ app:
     repository: ghcr.io/immich-app/immich-server
     # -- Docker image tag (can be left empty to use the latest version)
     tag: v3.2.0
-    pullPolicy:
+    pullPolicy: IfNotPresent
 
     # -- User ID for the container
   uid: 572400040
@@ -121,7 +121,7 @@ machineLearning:
     repository: ghcr.io/immich-app/immich-machine-learning
     # -- Docker image tag (can be left empty to use the latest version)
     tag: v3-openvino
-    pullPolicy:
+    pullPolicy: IfNotPresent
 
   resources:
     requests:

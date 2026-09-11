@@ -1,1 +1,5 @@
 {{ include "cnpg.resources" (dict "root" $ "vals" .Values.mainDb) }}
+---
+# include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
+---
+# include "baseResources.service" (dict "root" $ "vals" .Values.app) }}

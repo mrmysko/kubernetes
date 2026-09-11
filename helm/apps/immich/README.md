@@ -19,7 +19,7 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 |-----|------|---------|-------------|
 | app.component | string | `"frontend"` | Component of the application being configured (e.g., frontend, backend) |
 | app.gid | int | `572400077` | Group ID for the container |
-| app.image.pullPolicy | string | `nil` |  |
+| app.image.pullPolicy | string | `"IfNotPresent"` |  |
 | app.image.repository | string | `"ghcr.io/immich-app/immich-server"` | Docker image repository for the application |
 | app.image.tag | string | `"v3.2.0"` | Docker image tag (can be left empty to use the latest version) |
 | app.livenessProbe.httpGet.path | string | `"/api/server/ping"` | Path to the health check endpoint |
@@ -47,7 +47,7 @@ A Helm chart for Immich. Connecting to a clustered CNPG postgres database.
 | app.uid | int | `572400040` |  |
 | config.machineLearning.url | string | `nil` |  |
 | machineLearning.component | string | `"machinelearning"` |  |
-| machineLearning.image.pullPolicy | string | `nil` |  |
+| machineLearning.image.pullPolicy | string | `"IfNotPresent"` |  |
 | machineLearning.image.repository | string | `"ghcr.io/immich-app/immich-machine-learning"` | Docker image repository for the application |
 | machineLearning.image.tag | string | `"v3-openvino"` | Docker image tag (can be left empty to use the latest version) |
 | machineLearning.name | string | `"immich"` |  |
