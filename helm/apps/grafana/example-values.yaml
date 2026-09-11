@@ -1,0 +1,119 @@
+app:
+  # -- Name of the application
+  name: grafana
+
+  image:
+    # -- Docker image repository for the application
+    repository: grafana/grafana
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 13.2.0
+
+  livenessProbe:
+    httpGet:
+      # -- Protocol used for the liveness probe
+      scheme: HTTP
+      # -- Path to the health check endpoint
+      path: /api/health
+      # -- Port used for the liveness probe
+      port: 3000
+    # -- Delay before starting the liveness probe
+    initialDelaySeconds: 10
+    # -- Frequency of the liveness probe
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      # -- Protocol used for the readiness probe
+      scheme: HTTP
+      # -- Path to the health check endpoint
+      path: /api/health
+      # -- Port used for the readiness probe
+      port: 3000
+    # -- Delay before starting the readiness probe
+    initialDelaySeconds: 10
+    # -- Frequency of the readiness probe
+    periodSeconds: 10
+
+  route:
+    baseUrl: 
+      # -- Port exposed by the service
+    port: 3000
+    serviceOverride: grafana-service
+    rules:
+      - name: root
+        path: /
+
+  service:
+    ports: 
+    - name: grafana-http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+
+database:
+  # -- Type of database (e.g., mariadb, postgresql)
+  type: mysql
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Name of the database instance
+  instanceName: 
+  # -- Kubernetes namespace where the database is deployed
+  namespace: 
+  # -- Port used to connect to the database
+  port: 3306
+  # -- Name of the database
+  name: grafana
+  # -- Username used to connect to the database
+  username: 
+  # -- Password used to connect to the database
+  password: 
+  # -- Key used to reference the password in a secret
+  passwordKey: MYSQL_PASSWORD
+
+smtp:
+  enabled: true
+    # -- SMTP server address
+  host: 
+    # -- Username used to connect to the SMTP server
+  user: 
+  password: 
+    # -- Email address used to send notifications
+  fromAddress: 
+
+datasource:
+  - name: victoriametrics
+    pluginName: victoriametrics-metrics-datasource
+    version: 0.25.2
+    url: 
+  - name: victorialogs
+    type: victoriametrics-logs-datasource
+    pluginName: victoriametrics-logs-datasource
+    version: 0.31.0
+    url: 
+
+dashboards:
+  - name: victoriametrics-single-node
+    id: 10229
+    folder: Imports
+    datasources:
+    - inputName: DS__VICTORIAMETRICS-PROD-ALL
+      datasourceName: victoriametrics
+  - name: kubernetes-cluster-monitoring-via-prometheus
+    id: 15661
+    folder: Imports
+    datasources:
+    - inputName: DS__VICTORIAMETRICS-PROD-ALL
+      datasourceName: victoriametrics
+
+config:
+  oidc:
+    url: 
+    clientId: 
+    clientSecret: 
+
+  contactpoint:
+    mailAddress: 
+
+  admin:
+    user: 
+    password: 

@@ -1,0 +1,25 @@
+{{- range .Values.dashboards }}
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: {{ .name | quote }}
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  folder: {{ .folder | quote }}
+  {{- with .datasources }}
+  datasources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .json }}
+  json: |
+{{ $.Files.Get . | indent 4}}
+  {{- else }}
+  grafanaCom:
+    id: {{ .id }}
+  {{- end }}
+{{- end }}

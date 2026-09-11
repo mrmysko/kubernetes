@@ -1,77 +1,107 @@
 frontend:
+  # -- Name of the application
   name: audiomuse
+  # -- Number of replicas to deploy for the application
   replicaCount: 1
+    # -- Component of the application being configured (e.g., frontend, backend)
   component: frontend
 
   image:
+  # -- Docker image repository for the application
     repository: ghcr.io/neptunehub/audiomuse-ai
-    tag: 3.0.5
+  # -- Docker image tag (can be left empty to use the latest version)
+    tag: 3.5.2
     pullPolicy: Always
 
+  # -- User ID for the container
   uid: 1001
+  # -- Group ID for the container
   gid: 1001
 
   resources:
     requests:
+    # -- Minimum CPU resources required by the container
       cpu: "500m"
+    # -- Minimum memory resources required by the container
       memory: "128Mi"
     limits:
-      memory: "2Gi"
+    # -- Maximum memory resources allowed for the container
+      memory: "3Gi"
 
   livenessProbe:
     httpGet:
+    # -- Protocol used for the liveness probe
       scheme: HTTP
-      path: /
+    # -- Path to the health check endpoint
+      path: /api/health
+    # -- Port used for the liveness probe
       port: 8000
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 15
+    # -- Frequency of the liveness probe
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
+      # -- Protocol used for the readiness probe
       scheme: HTTP
-      path: /
+      # -- Path to the health check endpoint
+      path: /api/health
+      # -- Port used for the readiness probe
       port: 8000
+    # -- Delay before starting the readiness probe
     initialDelaySeconds: 2
+    # -- Frequency of the readiness probe
     periodSeconds: 5
 
   service:
     ports: 
     - name: http
+      # -- Port exposed by the service
       port: 8000
+      # -- Port the container is listening on
       targetPort: 8000
+      # -- Protocol used for the service
       protocol: TCP
 
   route:
+    # -- Base URL for the service
     baseUrl: 
+    # -- Port used for the route
     port: 8000
     rules:
-      - path: /
-        forwardAuth: false
-
-redis:
-  replicaCount: 1
-  port: 6379
-  username: default
-  password:
+      - name: root
+        path: /
+        statusRewrite: true
+        forwardAuth: true
 
 mainDb:
+  # -- Fully qualified domain name (FQDN) to the database
   host: 
-  port: 
+  # -- Port used to connect to the database
+  port: 5432
+  # -- Name of the database
   name: 
 
+  # -- Kubernetes namespace where the database is deployed
   namespace: 
   clusterName: 
+  # -- Username used to connect to the database
   owner: 
+  # -- Password used to connect to the database
   password: 
 
 worker:
+  # -- Name of the application
   name: audiomuse
-  replicaCount: 1
+  # -- Number of replicas to deploy for the application
+  replicaCount: 2
+  # -- Component of the application being configured (e.g., frontend, backend)
   component: worker
 
   image:
     repository: ghcr.io/neptunehub/audiomuse-ai
-    tag: 3.0.5
+    tag: 
     pullPolicy: Always
 
   resources:
@@ -79,7 +109,7 @@ worker:
       cpu: "1"
       memory: "128Mi"
     limits:
-      memory: "2Gi"
+      memory: "4Gi"
 
   securityContext:
     runAsGroup: 1001

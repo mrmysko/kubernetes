@@ -1,24 +1,20 @@
 apiVersion: v2
-name: Authelia
-description: A Helm chart for Authelia.
+name: Grafana
+description: A Helm chart for Grafana. The database is handled by a clustered MariaDB deployment.
 type: application
-version: 0.3.0
+version: 0.2.0
 appVersion: latest
 
 dependencies:
-  - name: common-labels
-    version: 0.1.0
-    repository: "file://../../library/common-labels"
-
   - name: baseResources
     version: 0.8.0
     repository: "file://../../library/baseResources"
+
+  - name: common-labels
+    version: 0.1.0
+    repository: "file://../../library/common-labels"
 
   - name: mariadb
     version: 0.3.0
     repository: "file://../../library/mariadb"
     alias: database
-
-  - name: redis
-    version: 0.2.0
-    repository: "file://../../library/redis"

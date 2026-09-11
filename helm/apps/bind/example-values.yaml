@@ -1,16 +1,22 @@
-app:
-  # -- App name
+bind:
+  # -- Name of the application
   name: bind
-  # -- Number of pods
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: dns
+  # -- Number of replicas to deploy for the application
   replicaCount: 2
 
   image:
-    # -- App image
+    # -- Docker image repository for the application
     repository: internetsystemsconsortium/bind9
-    # -- App version
-    tag: 
-    # -- Image pull policy
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 9.20
     pullPolicy: IfNotPresent
+
+    # -- User ID for the container
+  uid: 53
+    # -- Group ID for the container
+  gid: 53
 
   readinessProbe:
     exec:
@@ -18,7 +24,9 @@ app:
         - /bin/sh
         - -c
         - dig @127.0.0.1 . NS +norecurse > /dev/null || exit 1
+    # -- Delay before starting the readiness probe
     initialDelaySeconds: 2
+    # -- Frequency of the readiness probe
     periodSeconds: 5
 
   livenessProbe:
@@ -27,20 +35,41 @@ app:
         - /bin/sh
         - -c
         - dig @127.0.0.1 . NS +norecurse > /dev/null || exit 1
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 15
+    # -- Frequency of the liveness probe
     periodSeconds: 10
     timeoutSeconds: 3
 
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 
+    externalTrafficPolicy: Cluster
+    ports:
+      - name: dns-tcp
+      # -- Port exposed by the service
+        port: 53
+      # -- Port the container is listening on
+        targetPort: 53
+      # -- Protocol used for the service
+        protocol: TCP
+      - name: dns-udp
+      # -- Port exposed by the service
+        port: 53
+      # -- Port the container is listening on
+        targetPort: 53
+      # -- Protocol used for the service
+        protocol: UDP
+    labels:
+      cilium.lb: "true"
+
 zones:
   forwarders: 
-    - 100.100.100.100
-    - 100.100.100.101
-  zones:
-    - example.com
-    - 100.100.100.in-addr.arpa
+    - 10.40.40.3
+  zones: []
 
 acls:
-  this_server:
-    - 127.0.0.1/32
-  example_net:
-    - 100.100.100.0/24
+  this_server: []
+  home_net: []
+  vpn: []
+  k8s_pods: []

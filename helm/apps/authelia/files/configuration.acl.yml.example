@@ -1,15 +1,65 @@
 access_control:
+  default_policy: deny
   rules:
-    # Single factor login
-    - domain: 'somepage.example.com'
+    ### API bypass (Also bypassed in traefik btw)
+    ### Worse security, but API calls to itself through its own url, which goes back to the middleware and get blocked)
+    - domain: 
+        - music
+      resources:
+        - '^/rest/.*'
+      methods: 
+        - 'GET'
+        - 'POST'
+      policy: 'bypass'
+
+    ### qBittorrent monitoring
+    - domain:
+        - qbit
+      resources:
+        - '^/api/v2/app/version$'
+      methods:
+        - 'GET'
+      policy: 'bypass'
+
+    ### Sites with ping endpoints ###
+    - domain: 
+        - music
+        # Arr
+        - example
+        - example2
+      resources:
+        - '^/ping$'
+      methods:
+        - 'GET'
+      policy: 'bypass'
+
+    - domain:
+        - example
+      resources: 
+        - '^/api/v2/nodes/ready$'
+      methods:
+        - 'GET'
+      policy: 'bypass'
+
+    ### Monitoring ###
+    - domain:
+        - example
+        - example2
+      methods:
+        - 'GET'
+      policy: 'one_factor'
+      subject:
+        - user:svc-monitor
+
+    ### Global single factor ###
+    - domain:
+        - example
       policy: 'one_factor'
 
-    # Catch-all - Everyone can login with two_factor to these.
-    - domain:
-        - 'home.example.com'
+    ### Service-admins ###
+    - domain: 
+        - example
+        - example2
       policy: 'two_factor'
-
-    # Only admins can login with two factor to these urls.
-    - domain_regex: '^.*\.example\.com$'
-      subject: 'group:service-admins'
-      policy: 'two_factor'
+      subject: 
+        - group:role-service-admin

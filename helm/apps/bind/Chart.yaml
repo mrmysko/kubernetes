@@ -3,7 +3,7 @@ name: BIND
 description: A Helm chart for recursive BIND-servers.
 type: application
 version: 0.2.0
-appVersion: "9.20"
+appVersion: latest
 
 dependencies:
   - name: common-labels
@@ -11,5 +11,5 @@ dependencies:
     repository: "file://../../library/common-labels"
 
   - name: baseResources
-    version: 0.6.0
+    version: 0.8.0
     repository: "file://../../library/baseResources"

@@ -1,0 +1,132 @@
+{{ include "baseResources.httproute" (dict "root" $ "vals" .Values.app) }}
+---
+{{ include "mariadb.resources" (dict "root" $ "vals" .Values.database) }}
+---
+# This requires the grafana-operator - https://github.com/grafana/grafana-operator
+
+{{- with .Values.app }}
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+    dashboards: "grafana"
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  version: {{ printf "%s:%s" .image.repository (.image.tag | default $.Chart.AppVersion) | quote }}
+  disableDefaultAdminSecret: true
+
+  deployment:
+    spec:
+      template:
+        spec:
+          containers:
+            {{- include "baseResources.baseContainer" (dict "root" $ "vals" .) | indent 12 }}
+
+              env:
+                - name: GF_SECURITY_ADMIN_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: GF_SECURITY_ADMIN_USER
+                      name: grafana-admin-credentials
+                - name: GF_SECURITY_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: GF_SECURITY_ADMIN_PASSWORD
+                      name: grafana-admin-credentials
+              envFrom:
+                - secretRef:
+                    name: {{ printf "%s-secret" $.Release.Name | quote }}
+
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
+
+              volumeMounts:
+                - name: invis-external-bundle
+                  mountPath: /tmp/certs
+                  readOnly: true
+
+          volumes:
+            - name: invis-external-bundle
+              secret:
+                secretName: invis-external-bundle
+
+{{- end }}
+
+  config:
+    global:
+      app_mode: production
+
+    log:
+      mode: console
+      level: warn
+      
+    log.console:
+      format: json
+
+    analytics:
+      enabled: "false"
+      reporting_enabled: "false"
+      feedback_links_enabled: "false"
+
+    server:
+      root_url: {{ printf "https://%s" .Values.app.route.baseUrl | quote }}
+      enable_gzip: "true"
+      router_logging: "false"
+
+    {{- with .Values.smtp }}
+    smtp:
+      enabled: {{ .enabled | quote }}
+      host: {{ .host | quote }}
+      user: {{ .user | quote }}
+      password: {{ .password | quote }}
+      from_address: {{ .fromAddress | quote }}
+      skip_verify: "true"
+    {{- end }}
+
+    {{- with .Values.database }}
+
+    database:
+      type: {{ .type | quote }}
+      host: {{ .host | quote }}
+      name: {{ .name | quote }}
+      user: {{ .username | quote }}
+      password: {{ .password | quote }}
+      ca_cert_path: /tmp/certs/ca.crt
+      server_cert_name: {{ .host | quote }}
+      ssl_mode: "true"
+      ssl_sni: "0"
+      max_open_conn: "50"
+    {{- end }}
+
+    auth.generic_oauth:
+      enabled: "true"
+      auto_login: "true"
+      name: SSO
+      icon: signin
+      client_id: "${OIDC_CLIENT_ID}"
+      client_secret: "${OIDC_CLIENT_SECRET}"
+      scopes: openid,email,profile,groups
+      empty_scopes: "false"
+      auth_url: {{ printf "https://%s/api/oidc/authorization" .Values.config.oidc.url | quote }}
+      token_url: {{ printf "https://%s/api/oidc/token" .Values.config.oidc.url | quote }}
+      api_url: {{ printf "https://%s/api/oidc/userinfo" .Values.config.oidc.url | quote }}
+      login_attribute_path: preferred_username
+      groups_attribute_path: groups
+      name_attribute_path: name
+      use_pkce: "true"
+      use_refresh_token: "true"
+      role_attribute_path: contains(groups[*], 'role-service-admin') && 'GrafanaAdmin'
+      allow_assign_grafana_admin: "true"
+      signout_redirect_url: {{ printf "https://%s/logout" .Values.config.oidc.url | quote }}
+      skip_org_role_sync: "false"
+
+    security:
+      cookie_secure: "true"

@@ -27,6 +27,8 @@ spec:
 
   template:
     metadata:
+      annotations:
+        logging.vlagent.io/exclude: "true"
       labels:
         {{- include "common.labels" $ | nindent 8 }}
         app.kubernetes.io/component: {{ .component | quote }}
@@ -83,6 +85,8 @@ spec:
 
   template:
     metadata:
+      annotations:
+        logging.vlagent.io/exclude: "true"
       labels:
         {{- include "common.labels" $ | nindent 8 }}
         app.kubernetes.io/component: {{ .component | quote }}

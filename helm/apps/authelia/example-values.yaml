@@ -1,116 +1,170 @@
 app:
-  # -- App name
+  # -- Name of the application
   name: authelia
-  # -- Number of pods
+  # -- Component of the application being configured (e.g., frontend, backend)
+  component: frontend
+  # -- Number of replicas to deploy for the application
   replicaCount: 2
 
   image:
-    # -- App image
+    # -- Docker image repository for the application
     repository: authelia/authelia
-    # -- Image version
-    tag: 4.39
+    # -- Docker image tag (can be left empty to use the latest version)
+    tag: 4.39.25
 
-  # -- Runtime user
-  uid: 1001
-  # -- Runtime group
-  gid: 1001
+    # -- User ID for the container
+    uid: 1001
+    # -- Group ID for the container
+    gid: 1001
 
   resources:
     requests:
-      cpu: "500m"
+      # -- Minimum CPU resources required by the container
+      cpu: "250m"
+      # -- Minimum memory resources required by the container
       memory: "128Mi"
     limits:
-      memory: "256Mi"
+      # -- Maximum memory resources allowed for the container
+      memory: "512Mi"
 
   livenessProbe:
     httpGet:
+      # -- Protocol used for the liveness probe
       scheme: HTTPS
+      # -- Path to the health check endpoint
       path: /api/health
+      # -- Port used for the liveness probe
       port: 9091
+    # -- Delay before starting the liveness probe
     initialDelaySeconds: 15
+    # -- Frequency of the liveness probe
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
+      # -- Protocol used for the readiness probe
       scheme: HTTPS
+      # -- Path to the health check endpoint
       path: /api/health
+      # -- Port used for the readiness probe
       port: 9091
+    # -- Delay before starting the readiness probe
     initialDelaySeconds: 2
+    # -- Frequency of the readiness probe
     periodSeconds: 5
 
+  service:
+    ports:
+    - name: https
+      # -- Port exposed by the service
+      port: 9091
+      # -- Port the container is listening on
+      targetPort: 9091
+      # -- Protocol used for the service
+      protocol: TCP
+
+  route:
+    # -- Base URL for the service
+    baseUrl: 
+    # -- Port used for the route
+    port: 9091
+    rules:
+      - path: /
+        # -- Enable sticky sessions for this route
+        sticky: true
+
 database:
-  # -- Kind of database
-  type:
-  # -- FQDN to database
-  host:
-  # -- Database deployment name
-  instanceName:
-  # -- Database namespace
-  namespace:
-  # -- Database port
+  # -- Type of database (e.g., mariadb, postgresql)
+  type: mariadb
+  # -- Fully qualified domain name (FQDN) to the database
+  host: 
+  # -- Name of the database instance
+  instanceName: 
+  # -- Kubernetes namespace where the database is deployed
+  namespace: 
+  # -- Port used to connect to the database
   port: 3306
-  # -- Database name
-  name:
-  # -- Database username
-  username:
-  # -- Database password
-  password:
+  # -- Name of the database
+  name: 
+  # -- Username used to connect to the database
+  username: 
+  # -- Password used to connect to the database
+  password: 
+  # -- Key used to reference the password in a secret
+  passwordKey: MYSQL_PASSWORD
 
 redis:
-  # -- Number of redis pods
+  # -- Number of Redis replicas
   replicaCount: 1
-  # -- Redis port
+  # -- Port used to connect to Redis
   port: 6379
-
-  # -- Redis username
+  # -- Username used to connect to Redis
   username: default
-  # -- Redis password
-  password:
-
-service:
-  # -- App port
-  port: 9091
-
-ingress:
-  # -- FQDN to application
-  baseUrl:
+  # -- Password used to connect to Redis
+  password: 
 
 config:
-  # -- Directory to mount secret files in
-  secretsDir: /secrets
-  jwtSecret:
-  sessionSecret:
-  storageEncryptionKey:
-  hmacSecret:
+  ntp:
+    # -- Address of the NTP server
+    address: 
 
-  # -- PEM-formatted key
-  oidcKey: |
+  secretsDir:
+    # -- Directory where secrets are stored
+    secretsDir: /secrets
+  # -- Secret used for JWT (JSON Web Token) signing
+  jwtSecret: 
+  # -- Secret used for session signing
+  sessionSecret: 
+  # -- Key used for encrypting storage
+  storageEncryptionKey: 
+  # -- Secret used for HMAC (Hash-based Message Authentication Code) signing
+  hmacSecret: 
 
-  notifier:
-    smtp:
-      address:
-      username:
-      sender:
-      startupCheckAddress:
-      tls:
-        serverName:
+  oidcKey: 
 
-  ldap:
-    # -- LDAP URL
-    url:
-    # -- LDAP user
-    searchUser:
-    # -- LDAP password
-    password:
-    # -- LDAP search root
-    baseDN:
-    # -- LDAP user filter
-    userFilter:
-    # -- LDAP group filter
-    groupFilter:
+notifier:
+  smtp:
+    # -- SMTP server address
+    address: submissions://10.40.40.6:465
+    # -- Username used to connect to the SMTP server
+    username: 
+    # -- Email address used to send notifications
+    sender: 
+    # -- Email address used for startup checks
+    startupCheckAddress: test@
+    tls:
+      # -- Server name used for TLS verification
+      serverName: 
 
-  traefik:
-    namespace:
+ldap:
+  # -- LDAP server address
+  address: 
+  # -- User DN used for LDAP authentication
+  userDN: 
+  # -- Password used to connect to the LDAP server
+  password: 
+  # -- Base DN for LDAP searches
+  baseDN: 
+  # -- User filter used for LDAP authentication
+  userFilter: 
+  # -- Group filter used for LDAP authentication
+  groupFilter: 
 
-  forwardAuth:
-    address:
+network:
+  # -- Home subnet range
+  home_subnet:
+    - '10.10.10.10'
+  # -- Servers subnet range
+  servers_subnet:
+    - '10.10.10.10'
+  # -- VPN client IP addresses
+  vpn_clients:
+    - '255.255.255.255'
+
+session:
+  cookies:
+    - domain: 
+      # -- Authelia URL for cookie domain
+      authelia_url:
+      # -- Default redirection URL for cookies
+      default_redirection_url:

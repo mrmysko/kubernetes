@@ -1,0 +1,24 @@
+{{- range .Values.datasource }}
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: {{ .name | quote }}
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+spec:
+  uid: {{ .name | quote }}
+  datasource:
+    access: proxy
+    type: {{ .type | default "prometheus" }}
+    jsonData:
+      timeInterval: 5s
+    name: {{ .name | quote }}
+    url: {{ .url | quote }}
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  plugins:
+    - name: {{ .pluginName | quote }}
+      version: {{ .version }}
+{{- end }}

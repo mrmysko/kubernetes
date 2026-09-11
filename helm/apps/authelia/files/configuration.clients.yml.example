@@ -1,29 +1,221 @@
 identity_providers:
   oidc:
+    claims_policies:
+      grafana:
+        id_token: 
+          - 'preferred_username'
+          - 'name'
+          - 'email'
+          - 'groups'
+
+      kubernetes:
+        id_token:
+          - 'preferred_username'
+          - 'groups'
+
+      romm:
+        id_token:
+          - 'preferred_username'
+          - 'name'
+          - 'email'
+          - 'email_verified'
+          - 'alt_emails'
 
     authorization_policies:
+      regular_access:
+        default_policy: 'deny'
+        rules:
+          - policy: 'one_factor'
+            subject: 
+              - group:users
+
       privileged_access:
         default_policy: 'deny'
         rules:
           - policy: 'two_factor'
             subject: 
-              - group:admins
+              - group:role-service-admin
 
     clients:
-      - client_id: "client1"
-        client_name: "Client"
-        client_secret: "<hashed secret>"
+      - client_id: "kubernetes"
+        client_name: "Kubernetes"
+        client_secret:
         public: false
+        authorization_policy: "privileged_access"
+        claims_policy: "kubernetes"
         require_pkce: true
         pkce_challenge_method: "S256"
         redirect_uris:
-          - "client1.example.com/login/oidc"
+          - 'http://localhost:8000'
+          - 'http://localhost:18000'
         consent_mode: "implicit"
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+        grant_types:
+          - 'authorization_code'
+          - 'urn:ietf:params:oauth:grant-type:device_code'
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_post"
+
+      - client_id: "proxmox"
+        client_name: "Proxmox"
+        client_secret: 
+        public: false
+        authorization_policy: "privileged_access"
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        redirect_uris:
+          - 'https://example:8006'
+          - 'https://example2:8006'
+        consent_mode: "implicit"
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        userinfo_signed_response_alg: "none"
+
+      - client_id: "pbs"
+        client_name: "Proxmox Backup Server"
+        client_secret: 
+        public: false
+        authorization_policy: "privileged_access"
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        redirect_uris:
+          - 'https://example:8007'
+        consent_mode: "implicit"
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        userinfo_signed_response_alg: "none"
+
+      - client_id: "grafana"
+        client_name: "Grafana"
+        client_secret: 
+        public: false
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        claims_policy: "grafana"
+        redirect_uris:
+          - 'https://example/login/generic_oauth'
+        consent_mode: "implicit"
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+          - 'email'
+          - 'offline_access'
+        grant_types:
+          - 'authorization_code'
+          - 'refresh_token'
+        authorization_policy: "privileged_access"
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_basic"
+
+      - client_id: "immich"
+        client_name: "Immich"
+        client_secret: 
+        public: false
+        redirect_uris:
+          - 'https://example/auth/login'
+          - 'app.immich:///oauth-callback'
+        consent_mode: "implicit"
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        authorization_policy: "regular_access"
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_post"
+
+      - client_id: "romm"
+        client_name: "RomM"
+        client_secret: 
+        public: false
+        authorization_policy: "regular_access"
+        require_pkce: false
+        pkce_challenge_method: ""
+        claims_policy: "romm"
+        redirect_uris:
+          - 'https://example/api/oauth/openid'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'profile'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        access_token_signed_response_alg: "none"
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_basic"
+        consent_mode: "implicit"
+
+      - client_id: vikunja
+        client_name: Vikunja
+        client_secret: 
+        public: false
+        authorization_policy: "regular_access"
+        require_pkce: false
+        pkce_challenge_method: ""
+        redirect_uris:
+          - 'https://example/auth/openid/oidc'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        access_token_signed_response_alg: "none"
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_basic"
+        consent_mode: "implicit"
+
+      - client_id: miniflux
+        client_name: Miniflux
+        client_secret: 
+        public: false
+        authorization_policy: "regular_access"
+        require_pkce: false
+        pkce_challenge_method: ""
+        redirect_uris:
+          - 'https://example/oauth2/oidc/callback'
         scopes:
           - "openid"
           - "profile"
-          - "groups"
           - "email"
-        authorization_policy: "two_factor"
+        response_types:
+          - "code"
+        grant_types:
+          - "authorization_code"
+        access_token_signed_response_alg: "none"
         userinfo_signed_response_alg: "none"
         token_endpoint_auth_method: "client_secret_basic"
+        consent_mode: "implicit"
+
+      - client_id: openwebui
+        client_name: OpenWebUI
+        client_secret: 
+        public: false
+        authorization_policy: "regular_access"
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        redirect_uris:
+          - 'https://example/oauth/oidc/callback'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        access_token_signed_response_alg: "none"
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_basic"
+        consent_mode: "implicit"
