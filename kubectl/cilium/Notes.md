@@ -1,3 +1,12 @@
+## Upgrading
+
+helm upgrade -n kube-system cilium \
+    oci://quay.io/cilium/charts/cilium \
+    --version 1.20.1 \
+    --reset-then-reuse-values
+
+## Migrate from Flannel
+
 1. Patch nodes to disable flannel and kube-proxy (Not really necessary, only used when bootstrapping a new cluster)
 
 cluster:
@@ -12,7 +21,7 @@ cluster:
 helm install \
     cilium \
     oci://quay.io/cilium/charts/cilium \
-    --version 1.19.5 \
+    --version 1.20.0 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set l2announcements.enabled=true \

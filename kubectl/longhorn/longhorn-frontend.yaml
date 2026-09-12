@@ -34,5 +34,7 @@ metadata:
 spec:
   chain:
     middlewares:
+      - name: authelia-status-rewrite
+        namespace: traefik
       - name: authelia-forward-auth
         namespace: traefik

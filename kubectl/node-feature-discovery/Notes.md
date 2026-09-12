@@ -10,7 +10,7 @@ Make namespace privileged
 
 Create NodeFeatureRules for detecting GPUs on nodes
 
-    kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.35.0'
+    kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.36.0'
 
 Create intel-gpu-plugin namespace
 
@@ -25,4 +25,4 @@ Make namespace privileged
 
 Create GPU plugin daemonset
 
-    kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.35.0' -n intel-gpu-plugin
+    kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.36.0' -n intel-gpu-plugin

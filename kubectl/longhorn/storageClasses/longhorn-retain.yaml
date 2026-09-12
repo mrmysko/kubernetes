@@ -11,11 +11,8 @@ volumeBindingMode: Immediate
 parameters:
   numberOfReplicas: "2"
   staleReplicaTimeout: "30"
-  fromBackup: ""
   fsType: "xfs"
-  dataLocality: "disabled"
-  unmapMarkSnapChainRemoved: "ignored"
+  dataLocality: "best-effort"
   disableRevisionCounter: "true"
   dataEngine: "v1"
-  backupTargetName: "default"
   accessMode: "ReadWriteMany"
