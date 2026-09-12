@@ -10,7 +10,7 @@ A Helm chart for FreshRSS. The database is handled by a clustered MariaDB deploy
 |-----|------|---------|-------------|
 | app.gid | int | `33` | Runtime group |
 | app.image.pullPolicy | string | `"Always"` | Image pull policy |
-| app.image.repository | string | `"ghcr.io/mrmysko/docker-compost/789548356823"` | App image |
+| app.image.repository | string | `nil` | App image |
 | app.image.tag | string | `"latest"` | Image version |
 | app.livenessProbe.httpGet.path | string | `"/api/greader.php"` |  |
 | app.livenessProbe.httpGet.port | int | `8080` |  |

@@ -1,11 +1,13 @@
 {{- range $name, $config := .Values.services }}
+{{- $host := printf "%s.%s" $name $.Values.domain }}
+
 # This requires traefik crds - https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ $.Release.Name }}-{{ $name }}-route
+  name: {{ printf "%s-%s-route" $.Release.Name $name | quote }}
   labels:
-    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/name: {{ $name | quote }}
     {{- include "common.labels" $ | nindent 4 }}
 spec:
   entryPoints:
@@ -13,19 +15,21 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ $name }}.{{ $.Values.domain }}`)
+      match: Host(`{{ $host }}`)
       services:
         - kind: Service
-          name: {{ $.Release.Name }}-{{ $name }}-external
+          name: {{ printf "%s-%s-external" $.Release.Name $name | quote }}
           port: {{ $config.port }}
           scheme: {{ $config.scheme }}
           {{- if eq $config.scheme "https"}}
           serversTransport: external-transport
           {{- end }}
+      {{- if $config.middleware.auth }}
       middlewares:
-        {{- if eq $config.middleware.auth true }}
+        - name: authelia-status-rewrite
+          namespace: traefik
         - name: authelia-forward-auth
           namespace: traefik
-        {{- end }}
+      {{- end }}
 ---
 {{- end }}

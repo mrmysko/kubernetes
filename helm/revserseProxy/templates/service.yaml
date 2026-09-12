@@ -1,16 +1,17 @@
 {{- range $name, $config := .Values.services }}
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $.Release.Name }}-{{ $name }}-external
+  name: {{ printf "%s-%s-external" $.Release.Name $name | quote }}
   labels:
-    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/name: {{ $name | quote }}
     {{- include "common.labels" $ | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - name: {{ $name }}
+    - name: {{ $name | quote }}
       port: {{ $config.port }}
       targetPort: {{ $config.port }}
       protocol: TCP

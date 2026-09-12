@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  serverName: "{{ .Values.external.url }}."
+  serverName: {{ printf "%s." .Values.external.url | quote }}
   insecureSkipVerify: false
   rootCAs:
     - secret: "invis-external-bundle"

@@ -1,21 +1,30 @@
+# -- Number of replicas to deploy for the application
 replicaCount: 1
+# -- Port exposed by the service
 port: 6379
 
 resources:
   requests:
+    # -- Minimum CPU resources required by the container
     cpu: "250m"
+    # -- Minimum memory resources required by the container
     memory: "64Mi"
   limits:
+    # -- Maximum memory resources allowed for the container
     memory: "256Mi"
 
 livenessProbe:
   exec:
     command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+  # -- Delay before starting the liveness probe
   initialDelaySeconds: 10
+  # -- Frequency of the liveness probe
   periodSeconds: 10
 
 readinessProbe:
   exec:
     command: ["redis-cli", "-a", "$(REDIS_PASSWORD)", "ping"]
+  # -- Delay before starting the readiness probe
   initialDelaySeconds: 5
+  # -- Frequency of the readiness probe
   periodSeconds: 2

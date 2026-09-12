@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: {{ $fullname | quote }}
-          image: "11notes/redis:8"
+          image: {{ printf "11notes/redis:%s" .Chart.AppVersion | quote }}
           imagePullPolicy: IfNotPresent
           args:
             - --in-memory

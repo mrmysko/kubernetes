@@ -1,16 +1,22 @@
+# -- Base domain used for the services
 domain:
 
 external:
+  # -- External URL used to access the services
   url:
 
 services:
   service1:
-    port:
-    scheme:
+    # -- Port the service listens on
+    port: 
+    # -- Protocol/scheme used to access the service (e.g. http, https)
+    scheme: 
     middleware:
-      auth:
+      # -- Enable authentication middleware for the service
+      auth: 
     external:
-      ip:
+      # -- External IP address of the service
+      ip: 
   service2:
     port:
     scheme:
